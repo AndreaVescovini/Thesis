@@ -1,0 +1,227 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{bbold}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\pgfplotsset{plot coordinates/math parser=false}
+
+\makeatletter
+\newcommand{\add@empty@sup}{\@ifnextchar^{}{^{}}}
+
+\newcommand{\phiU}{\phi_{U}\add@empty@sup}
+\newcommand{\phiUU}{\phi_{UU}\add@empty@sup}
+\newcommand{\phiUUs}{\phi_{UU^*}\add@empty@sup}
+\newcommand{\phiD}{\phi_{D}\add@empty@sup}
+\newcommand{\phiP}{\phi_{P}\add@empty@sup}
+
+\newcommand{\xU}{x_{U}\add@empty@sup}
+\newcommand{\xD}{x_{D}\add@empty@sup}
+\newcommand{\xUU}{x_{UU}\add@empty@sup}
+
+\newcommand{\RUD}{R_{U,D}\add@empty@sup}
+\newcommand{\RUUU}{R_{UU,U}\add@empty@sup}
+
+\graphicspath{{img/}}
+
+\title{\textbf{TVD discretization over non uniform grids}}
+\author{Andrea Vescovini}
+\date{\today}
+
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+\definecolor{mycolor2}{rgb}{0.85000,0.32500,0.09800}%
+\definecolor{mycolor3}{rgb}{0.92900,0.69400,0.12500}%
+\definecolor{mycolor4}{rgb}{0.49400,0.18400,0.55600}%
+\definecolor{mycolor5}{rgb}{0.46600,0.67400,0.18800}%
+\definecolor{mycolor6}{rgb}{0.30100,0.74500,0.93300}%
+
+\newlength{\figwidth}
+\setlength{\figwidth}{0.45\textwidth}
+
+\begin{document}
+	\maketitle
+
+\section{Introduction}
+The theory of TVD methods developed in \cite{sweeby} holds for structured 
+grids. If we want to deal with non uniform grids, or even with unstructured 
+grids, we have to consider the information about the distances between 
+the nodes where there are the variables of interest and  we can identify two 
+main 
+approaches to solve this issue. Of all the variants have to be consistent 
+with the uniform case.
+
+We will restrict our interest to structured non uniform meshes, so our TVD 
+approximations will be one-dimensional. 
+
+\subsection{First Approach}
+The first approach consists in modifying the the variable $r$ of the flux 
+limiter $\psi$, that was originally defined as:
+\begin{equation} \label{flux_lim}
+\phiP = \phiU + \frac{1}{2}\psi(r) (\phiD - \phiU), \quad r = \frac{\phiU - 
+\phiUU}{\phiD - \phiU}
+\end{equation}
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{non_uniform_cells}
+	\caption{Non uniform grid} \label{fig:li}
+\end{figure}
+If the grid is not uniform the distances between the nodes $D$ and $U$ and 
+between $U$ and $UU$ can be different as it is in Figure \ref{fig:li}. In this 
+case can not use directly 
+\eqref{flux_lim} because the node $UU$ is not at the position $UU^*$, where it 
+would be if the grid was uniform, with cell sizes equal to the distance between 
+$U$ and $D$ (i.e. at the position upstream with respect to $U$, at the a 
+distance equal to that between $U$ and $D$). We want to use the ratio:
+\begin{equation*}
+	r = \frac{\phiU - \phiUUs}{\phiD - \phiU}
+\end{equation*}
+Thus we need to find an approximated value for $\phiUUs$.\\
+
+Darwish and Moukalled (see \cite{dar_mou}) proposed the following scheme that 
+approximates the difference $\phiD - \phiUUs$:
+\begin{equation*}
+r = \frac{\phiU - \phiUUs}{\phiD - \phiU} = \frac{ (\phiD - \phiUUs) - 
+(\phiD - \phiU) }{\phiD - \phiU} = \frac{\phiD - \phiUUs}{\phiD - 
+\phiU} - 1
+\end{equation*}
+\begin{equation*}
+\phiD - \phiUUs \simeq 
+\frac{d\phiU}{dx} r_{ \scriptscriptstyle UU^*, D} = 2 \frac{d\phiU}{dx} r_{ 
+\scriptscriptstyle U, D}
+\end{equation*}
+where $r_{ \scriptscriptstyle A, B} $ is the vector from the node $A$ to $B$. 
+This solution shows to behave well with parabolic distributions but not so 
+well with exponential distributions.\\
+
+Li et al. in \cite{li} improved the above approximation introducing more upwind 
+information:
+\begin{equation*}
+r = \frac{\phiU - \phiUUs}{\phiD - \phiU}, \quad \phiUUs \simeq \phiUU + 
+\frac{d \phiUU}{dx} r_{\scriptscriptstyle UU, UU^*}
+\end{equation*}
+\subsection{Second Approach}
+  The second approach (see \cite{hou}) was derived in order to improve the Li's 
+  method described above by considering not only the distances between the 
+  nodes but also the sizes of the cells around them. Let us consider for 
+  example the case in which we want to apply this approach for the velocities 
+  over a staggered grid as in Figure \ref{fig:hou}.
+  \begin{figure*}[h]
+  	\centering
+  	\includegraphics[width=\textwidth]{cells_with_sizes}
+  	\caption{Non uniform staggered grid}
+  	\label{fig:hou}
+  \end{figure*}
+  
+  We start generalizing \eqref{flux_lim} in the following way:
+  \begin{equation*}
+  \phiP = \phiU + \frac{1}{\RUD} \psi(r) (\phiD - \phiU)
+  \end{equation*}
+  \begin{equation*}
+  	\RUD = \frac{\Delta \xU + \Delta \xD}{\Delta \xU}, \quad r = \frac{\phiU - 
+  	\phiUU}{\xU - \xUU} \cdot \frac{\xD - \xU}{\phiD - \phiU}
+  \end{equation*}
+  where $\RUD$ takes into account the sizes of the upstream and downstream 
+  staggered cells, while $r$ is adapted considering the variable gradient 
+  instead of the variable difference. Notice that if the grid is uniform $\RUD 
+  = 2$ and the usual formula is retrieved.
+  
+  Then the TVD condition $TV(\phi^{n+1}) \leq TV(\phi^n)$ and the second order 
+  condition are imposed, ending up with the following modified bounds in the 
+  Sweeby's diagram $\psi - r$:
+\begin{align*}
+\psi(r) = 0 \quad &\text{if} \quad r < 0\\
+r \leq \psi(r) \leq \min \bigg \{\frac{\RUUU}{\RUUU - 1}, 1 \bigg \} \quad 
+&\text{if} \quad 
+0 \leq r \leq 1\\
+1 \leq \psi(r) \leq \min \{r,\RUD \} \quad &\text{if} \quad r > 2
+\end{align*}
+Thus the usual flux limiter functions have to be generalized in order to fit 
+into these bounds.
+\section{Comparison over uniform grids}
+We would like to test the behaviour of the two approaches described above 
+against the standard uniform approach also over uniform grids because also in 
+this case we can have at the boundary velocities that are positioned in a non 
+uniform way.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=0.7\textwidth]{boundary_cells}
+	\caption{Non-uniformly distribuited velocities: two are inside the domain 
+	and one is on the boundary.} \label{fig:boundary_cells}
+\end{figure}
+
+Indeed when at the boundary we have a Dirichlet condition for the velocity, a 
+Beavers-Joseph-Saffman condition, a symmetry condition or a Dirichlet condition 
+for the velocity, we can obtain a value for the velocity at the boundary, even 
+if there is not a real degree of freedom, as shownn in Figure 
+\ref{fig:boundary_cells}. Using the first two values of the 
+velocity inside the domain we can compute a TVD approximation for the velocity 
+at the face $f$, but the employed values are not uniformly positioned. Starting 
+from this issue we would like to compare the three methods to see if the 
+uniform approach is enough or if a non-uniform approach is necessary.
+
+We use the Angeli test case and we compare the $L^2$-errors as the problem 
+evolves in time.
+\begin{figure}[h]
+	\centering
+	\subfloat[][Pressure relative error, $Re = 1$]{
+		\input{img/test_angeli_uniform_re10_errors_p}}
+	\subfloat[][Pressure relative error, $Re = 1000$]{
+		\input{img/test_angeli_uniform_re1000_errors_p}}\\
+	\subfloat[][$v_x$ relative error, $Re = 1$]{
+		\input{img/test_angeli_uniform_re10_errors_vx}}
+	\subfloat[][$v_x$ relative error, $Re = 1000$]{
+		\input{img/test_angeli_uniform_re1000_errors_vx}}\\
+	\subfloat[][$v_y$ relative error, $Re = 1$]{
+		\input{img/test_angeli_uniform_re10_errors_vy}}
+	\subfloat[][$v_y$ relative error, $Re = 1000$]{
+		\input{img/test_angeli_uniform_re1000_errors_vy}}
+	\caption{Relative errors for the Angeli problem at each time step.\\
+			 Hou MinMod (\ref{line:hou_mm}), Hou VanLeer (\ref{line:hou_vl}),
+			 Li MinMod (\ref{line:li_mm}), Li VanLeer (\ref{line:li_vl}),
+			 Uniform MinMod (\ref{line:uni_mm}), Uniform VanLeer 
+			 (\ref{line:uni_vl})}
+	\label{fig:ang}
+\end{figure}
+From the results in Figure \ref{fig:ang}, it seems that there could be an 
+advantage in using the Hou's methods. Indeed at high $Re$ there is a smaller 
+error for the pressure, the difference however is not very high and remains 
+constant in time.
+
+\section{Comparison over non-uniform grids}
+...
+\begin{thebibliography}{99}\label{sec:bib}
+		
+	\bibitem{dar_mou} M. Darwish and F. Moukalled. TVD schemes for unstructured 
+	grids. \emph{International Journal of Heat and Mass Transfer}, 
+	46(4):599–611, 2003.
+	
+	\bibitem{hou} J. Hou, F. Simons, and R. Hinkelmann. Improved total 
+	variation diminishing schemes for advection simulation on arbitrary grids. 
+	\emph{International Journal for Numerical Methods in Fluids}, 70:359–382, 
+	2012.
+	
+	\bibitem{li} L. Li and H. Liao. An improved r-factor algorithm for TVD 
+	schemes. \emph{International Journal of Heat and Mass Transfer}, 
+	51:610–617, 2008.
+	
+	\bibitem{sweeby} P.K. Sweeby. High Resolution Schemes Using Flux Limiters 
+	for Hyperbolyc Conservation Laws. \emph{SIAM J. Numer. Anal.}, 
+	21(5):995-1011, 1984.
+	
+	\bibitem{ver_mal} H.K. Versteeg and W. Malalasekera. \emph{An Introduction 
+	to Computational Fluid Dynamics: The Finite Volume Method.} Pearson 
+	Education Limited, 2007.
+	
+\end{thebibliography}
+\end{document}

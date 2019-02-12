@@ -1,0 +1,89 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = pdflatex
+ \documentclass[%
+ 	12pt,
+ 	a4paper,
+%	twoside, openright
+	oneside, openany
+]{book}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[british, italian]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{xspace}% per i colori
+\usepackage{tocbibind}%per aggiungere toc, listoffig, listoftab alla toc
+\usepackage{graphicx}
+\graphicspath{{../img/}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+%\usepackage{pgfgantt} %gantbar (mai usata..)
+%\usepackage{pdflscape} % forse inutile
+\usepackage{subfig} % per posizionare tante figure
+\usepackage{bbold} % per \mathbb
+%\usepackage[section]{placeins} % ridefinisce section inserendo un \FloatBarrier
+\usepackage{emptypage} % pagina tutta bianca a fine capitolo
+\usepackage{pdfpages} % per inserire pdf
+\usepackage[separate-uncertainty=true]{siunitx} % per le unitàdi misura
+\usepackage[autostyle]{csquotes} % per la bibliografia
+\usepackage[style=alphabetic,backend=biber]{biblatex}%styles: numeric,trad-plain
+%\usepackage[bindingoffset=4mm]{geometry} % aggiunge spazio per la rilegatura
+\usepackage{fancyhdr} % per le testatine
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter\ -\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ -\ #1}}
+\fancyhf{}
+%\fancyhead[RO]{\slshape\nouppercase{\rightmark}}%twoside
+%\fancyhead[LE]{\slshape\nouppercase{\leftmark}}%twhoside	
+\fancyhead[C]{\slshape\nouppercase{\leftmark}}%oneside
+\fancyfoot[C]{\thepage}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref} % va caricato per ultimo
+\hypersetup{%
+	pdfpagemode={UseOutlines},
+	bookmarksopen,
+	pdfstartview={FitH},
+	hidelinks
+}
+\pdfminorversion=7 % per togliere il warning delle immagini
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+\renewcommand*{\pagenumbering}[1]{} % per mettere un'unica numerazione
+
+\newlength{\figwidth}\setlength{\figwidth}{0.9\textwidth}
+\newlength{\widthsette}\setlength{\widthsette}{0.7\textwidth}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\includeonly{%
+	preliminariesBook,%
+	chapter1,%
+	chapter2,%
+	chapter3,%
+	chapter4,%
+	chapter5%	
+}
+%\emergencystretch=1em % per gli overfull hbox nella bibliografia. Ci sta.
+\addbibresource{bibliotesi.bib}
+
+\begin{document}
+\selectlanguage{british}
+\frontmatter
+%\pagenumbering{Roman}
+\includepdf[pages=-]{solofrontespizio.pdf}
+\include{preliminariesBook}
+\mainmatter
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+\backmatter
+\nocite{*}
+\printbibliography[heading=bibintoc]
+\end{document}

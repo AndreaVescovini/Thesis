@@ -1,0 +1,793 @@
+\chapter{Governing equations} \label{chap:equations} %mathematical model?
+In this chapter the equations that have been used to model the 
+free-flow and the porous-medium flow are presented. For the free-flow we start 
+considering the incompressible Navier-Stokes equations to simulate laminar 
+flows, then we move to the RANS equations employing the $k\text{-}\omega$ 
+model as a turbulence model to deal with turbulent flows. For the porous-medium 
+flow our choice is the Forchheimer's law, that is an extension of the more 
+common Darcy's law to higher Reynolds numbers.
+\section{Free-flow}
+\subsection{Navier-Stokes equations}
+The Navier-Stokes equations describe the motion of a Newtonian viscous fluid,
+defining a relation between the following physical quantities:
+\begin{itemize}
+	\item $\varrho$, the density of the fluid  [$\si{kg/m^3}$],
+	\item $\mathbf{v} = [u, v, w]^\mathrm{T}$, the velocity vector [$\si{m/s}$],
+	\item $e$, the specific total energy [$\si{J/kg}$].
+\end{itemize}
+They can be derived starting from the general principles of conservation of 
+mass:
+\begin{equation} \label{eq:masscons}
+\frac{d}{dt} \int_V \varrho \; dV = 0,
+\end{equation}
+the second Newton's law:
+\begin{equation} \label{eq:2newton}
+\frac{d}{dt} \int_V \varrho \mathbf{v} \; dV = \int_V \varrho \mathbf{b} \; dV 
++ 
+\int_{\partial V} \sigma \mathbf{n} \; dA
+\end{equation}
+and the first law of thermodynamics:
+\begin{equation} \label{eq:firstthermo}
+\frac{d}{dt} \int_V e \; dV = \dot{Q} + \dot{W}
+\end{equation}
+for an infinitesimal volume $V$. In the equation \eqref{eq:2newton} the vector 
+$\mathbf{b}$ represents possible external volume forces per unit of mass, for 
+example the gravity $\mathbf{g}$. $\sigma$ is the Cauchy stress tensor 
+and 
+$\mathbf{n}$ is the outward unit vector normal to the surface $\partial V$ of 
+$V$, while in the equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
+heat added to the fluid and $\dot{W}$ is the net rate of work done on the fluid.
+
+For viscous fluids we can identify two contributions in the Cauchy stress 
+tensor:
+\begin{equation}
+\sigma = -p\mathbb{1} + \tau,
+\end{equation}
+$-p\mathbb{1}$ is a contribution due to pressure, while $\tau$ is 
+the viscous stress tensor, for which the constitutive relation of Newtonian 
+fluids is used:
+\begin{equation}
+\tau = 2\mu \mathbf{S} + 
+\lambda (\nabla \cdot \mathbf{v}) \mathbb{1},
+\end{equation}
+where $\mu$ is the dynamic viscosity [$\si{\pascal\second}$], $\lambda$ 
+is a dilatation factor and $\mathbf{S}$ is the symmetric strain rate tensor:
+\begin{equation*}
+\mathbf{S} = \frac{\nabla \mathbf{v} + \nabla \mathbf{v}^\mathrm{T}}{2}.
+\end{equation*} 
+Moreover we define the kinematic viscosity 
+[$\si{m^2/s}$] as
+\begin{equation}
+\nu = \frac{\mu}{\varrho}.
+\end{equation}
+
+We want to deal with incompressible fluids, so that the density is taken 
+constant and not related to the pressure through a state equation. Thus the 
+energy equation is not needed anymore and we can exclude it from the system. 
+Notice that with this assumption $p$ is no more the thermodynamic pressure.
+Using these assumptions from the balance equations 
+\eqref{eq:masscons} and \eqref{eq:2newton} we obtain the Navier-Stokes 
+equations:
+\begin{align}
+\label{eq:nsmass} \nabla \cdot \mathbf{v} = 0&\\
+\label{eq:nsmom} \frac{\partial{(\varrho \mathbf{v}})}{\partial t} + \nabla 
+\cdot (\varrho \mathbf{v} \mathbf{v}^\mathrm{T}) - \nabla \cdot (\mu \nabla 
+\mathbf{v}) + \nabla p  - \varrho\mathbf{g} = \mathbf{0}&
+\end{align}
+All the computations needed to obtain these equations can be found in any book 
+of fluid mechanics, for example in \cite{main:vermal}. The continuity equations 
+reduces to an incompressibility constraint \eqref{eq:nsmass} that is enforced 
+in the momentum equation through the pressure that acts as a Lagrangian 
+multiplier. The second term of the momentum equation \eqref{eq:nsmom} is 
+non-linear and represents the advection that the velocity enforces on itself, 
+while the third one is a diffusive term that express the action of the 
+viscosity.
+%
+\subsubsection{Reynolds number}
+If we consider the non-dimensional form of equation \eqref{eq:nsmom}, scaling 
+the lengths by a reference quantity $L$ and the velocities by a reference 
+quantity $U$, and if we neglect the gravity, we obtain
+\begin{equation} \label{eq:momnondim}
+	\frac{\partial{\tilde{\mathbf{v}}}}{\partial \tilde{t}} + \tilde{\nabla} 
+	\cdot (\tilde{\mathbf{v}} \tilde{\mathbf{v}}^\mathrm{T}) - \tilde{\nabla} 
+	\cdot \bigg(\frac{1}{Re} \tilde{\nabla} \tilde{\mathbf{v}}\bigg) + 
+	\tilde{\nabla} 
+	\tilde{p} = 0
+\end{equation}
+where the non-dimensional number $Re$ that multiplies the viscous term is the 
+Reynolds number and it is defined as:
+\begin{equation}
+Re = \frac{UL}{\nu}.
+\end{equation}
+This quantity plays an important role in the behaviour of the solution of the 
+Navier-Stokes equations since it expresses the ratio between the inertia forces 
+and the viscous forces. This can be easily seen in the equation 
+\eqref{eq:momnondim} since, when $Re\gg 1$, the viscous term loses 
+importance with respect to the advective one and vice versa.
+
+If $Re < 1$ we have a creeping flow and generally the advection term can 
+be neglected, reducing the Navier-Stokes equations to the Stokes equations, 
+that are much simpler to analyse and to solve because they are linear. The 
+assumption of creeping flow is common in porous-media models, as we will 
+see in Section~\ref{sec:pm}. If $Re>1$ we have a laminar flow, which is 
+characterized by a well-ordered viscosity-dominated motion, with adjacent 
+layers of the fluid that slide with little interaction between each others.
+There exists a critical value $Re_c$ such that when $Re>Re_c$ a 
+transition from a laminar to a turbulent flow regime starts to take place, but 
+this threshold value is very problem dependent as it is affected by the 
+geometry of the domain and by the boundary conditions imposed.
+%
+\subsection{Turbulence and RANS equations}
+Turbulence is characterized by an irregular, chaotic and intermittent 
+behaviour, that shows space and time fluctuations of the physical quantities 
+related to the flow, as we can see in Figure~\ref{fig:fluctuations}. Due to 
+this complexity, turbulence is usually studied with 
+a statistical approach, relying on the theory developed by Kolmogorov 
+in 1941 \cite{turbo:kolmogorov}. A wider description of turbulence can be 
+found for example in \cite{main:pope}, \cite{main:wilcox} or 
+\cite{main:davidson}.
+\begin{figure}[ht]
+	\centering
+	\input{../img/fluctuations}
+	\caption[Fluctuating velocity in a turbulent flow]{Example of fluctuating 
+	velocity in a turbulent flow.} %Re=1e7
+	\label{fig:fluctuations}
+\end{figure}
+
+The first thing that can be observed in a turbulent flow is the presence of 
+many three-dimensional eddies, that enhance the diffusive and mixing properties 
+of the fluid. 
+They cover a wide spectrum of length scales, in which we can identify 
+three distinct bands; in the first one, corresponding to large scales, 
+comparable to the size of the domain, there is an injection of kinetic energy 
+and eddies are generated. Then there is an intermediate band in which the 
+convection is dominant and eddies shrink without a significant loss of energy. 
+The third band corresponds to the smallest scales at which eddies are present. 
+Indeed, once they reach a certain size, the effect of the viscosity starts to 
+be relevant and we assist to a dissipation of the kinetic energy of the eddies 
+into internal thermal energy. So, globally, energy is transferred from large 
+scales to small ones, until it gets dissipated; this process is known as 
+the Richardson energy cascade (Figure~\ref{fig:cascade}).
+\begin{figure}%[t]
+	\centering
+%	\includegraphics[width=\textwidth]{richardsoncascade.png}
+	\includegraphics[width=\textwidth]{richardsoncascade.pdf}
+	\caption[Richardson energy cascade]{Scheme of the Richardson energy 
+	cascade.}
+	\label{fig:cascade}
+\end{figure}
+%
+
+\subsubsection{Simulation of turbulent flows}
+From the Kolmogorov theory we can obtain useful information for the simulation 
+of turbulent flows. Let us indicate with $l_0$ the length scale at which the 
+eddies are generated and with $l_D$ the length scale at which they dissipate. 
+Then according to \cite{turbo:kolmogorov} it can be obtained that
+\begin{equation} \label{eq:scaleratio}
+	\frac{l_0}{l_D} \sim Re^\frac{3}{4}.
+\end{equation}
+If we want to perform a reliable simulation of a turbulent flow using the 
+Navier-Stokes equations \eqref{eq:nsmass}-\eqref{eq:nsmom} we need a grid with 
+a spatial resolution sufficient to resolve all the eddies until the smallest 
+ones, otherwise we would neglect the important information about the viscous 
+dissipation of these structures. Assuming to have a domain of size comparable 
+to $l_0$, then we need a size of the cells of the grid not bigger than $l_D$ and
+from \eqref{eq:scaleratio} we deduce that we need at least $Re^\frac{3}{4}$ 
+cells in each of the three dimensions of a domain. Because of the fluctuating 
+behaviour of turbulence, we always have to perform unsteady simulations, so let 
+us denote with $t_0$ the characteristic time of evolution of the eddies at 
+$l_0$ and with $t_D$ the characteristic time of evolution of the eddies at 
+$l_D$. Again from \cite{turbo:kolmogorov} we have that
+\begin{equation}
+\frac{t_0}{t_D} \sim Re^\frac{1}{2}.
+\end{equation}
+The total number of operations needed in a simulation $N$ can be considered 
+proportional to:
+\begin{equation}
+	N \sim  N_t N_\text{elem},
+\end{equation}
+where $N_t$ is the total number of time-steps and $N_\text{elem}$ is the total 
+number 
+of elements in the grid and. From the previous relations we obtain:
+\begin{equation}
+	N \sim N_t N_\text{elem} \sim \frac{t_0}{t_D} \bigg(\frac{l_0}{l_D}\bigg)^3 
+	= Re^\frac{11}{4}.
+\end{equation}
+%so we need at least $Re^\frac{1}{2}$ time-steps. Globally we end up with a 
+%number of 
+%degrees of freedom of the order of
+%\begin{equation}
+%	\# dof \sim \frac{t_0}{t_D} \bigg(\frac{l_0}{l_D}\bigg)^3 = Re^\frac{11}{4}.
+%\end{equation}
+Reynolds numbers can be easily of the order of $\num{e6}$ or greater in common 
+situations, so even with this rough estimate we can see that the computational 
+effort for these simulations, called Direct Numerical Simulations (DNS), is 
+usually very high. Moreover such a detailed information that we would obtain 
+usually goes beyond the real need in many applications, therefore other 
+approaches have been developed in order to solve this issue, such as the one 
+proposed by the RANS equations.
+%
+\subsubsection{RANS equations}
+The Reynolds Averaged Navier-Stokes (RANS) equations focus on the mean flow 
+field, avoiding to simulate all the eddies but without forgetting to take into 
+account their effect. In engineering applications this is the most common way 
+to simulate turbulent flows because it is cheap and usually the mean 
+information is enough for many applications, but we must not forget that 
+the obtained result is not the flow field as it appears in realty.
+In case that more detail is needed, another approach is given by the Large 
+Eddy Simulations (LES), that consist in applying a filter to the Navier-Stokes 
+equation that let resolve the eddies until a certain threshold.
+
+The first move towards the RANS equations is to decompose each instantaneous 
+quantity in the sum of a mean value and a fluctuation: 
+\begin{equation} \label{eq:decomp}
+\mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}'.
+\end{equation}
+According to \cite{main:vermal} the mean value can be obtained with a time 
+average over a long time interval 
+for steady flows, while it is obtained with an ensemble average for unsteady 
+flows, so that by definition
+\begin{equation}
+	\overline{\mathbf{v}'} = \mathbf{0}.
+\end{equation}
+We want equations for the mean 
+velocity $\bar{\mathbf{v}}$ and the mean pressure $\bar{p}$, so we apply the 
+average operation to the Navier-Stokes equations 
+\eqref{eq:nsmass}-\eqref{eq:nsmom} and we obtain:
+\begin{align}
+\label{eq:ransmass} \nabla \cdot \bar{\mathbf{v}} = 0&\\
+\label{eq:ransmom} \frac{\partial{(\varrho \bar{\mathbf{v}})}}{\partial t} 
++ 
+\nabla 
+\cdot (\varrho \bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) + \nabla 
+\cdot 
+(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}})- \nabla \cdot (\mu 
+\nabla 
+\bar{\mathbf{v}}) + \nabla \bar{p} - \varrho\mathbf{g} = \mathbf{0}&
+\end{align}
+For what concerns the continuity equation, the average commutes with the 
+divergence operator, so we obtain that also the mean velocity has to fulfil the 
+incompressibility constraint \eqref{eq:ransmass}. Averaging the momentum 
+equation all the terms behave analogously, except the non linear term which 
+produces an extra contribution:
+\begin{equation}
+	\overline{\mathbf{v} \mathbf{v}^\mathrm{T}} = \overline{(\bar{\mathbf{v}} + 
+	\mathbf{v}') (\bar{\mathbf{v}} + \mathbf{v}')^\mathrm{T}} = 
+	\bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T} + \overline{\mathbf{v}' 
+	{\mathbf{v}'}^\mathrm{T}}.
+\end{equation}
+The new term
+\begin{equation}
+\tau_R = -\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}
+\end{equation}
+is called Reynolds stress tensor. Mathematically it expresses the correlation 
+between the components of the instantaneous velocity field, while physically it 
+represents the diffusive effect of turbulence (see \cite{main:vermal}).
+%
+\subsubsection{Boundary layers} \label{subsec:bl}
+When a fluid flows along a boundary, such as a solid wall, the region near the 
+the wall is called boundary layer and it is important because the 
+viscosity plays an important role there, even in turbulent conditions.
+Independently of the flow regime, the no-slip condition imposes a null velocity 
+at the wall and thus a gradient orthogonal to the flow direction. The thickness 
+of the boundary layer $\delta$ is defined as the position where the velocity 
+reaches the 99\% of its maximum value and different values are observed for 
+different kinds of flow.  See for 
+example \cite{main:pope} or \cite{main:davidson} for a complete description.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{boundary_layer.png}
+	\caption[Boundary layer along a flat plate]{Scheme of the evolution of a 
+	boundary layer along a flat plate. Figure source: \cite{tesi:fetzer}.}
+	\label{fig:bl}
+\end{figure}
+
+Let us consider a flow over a flat plate as drawn in Figure~\ref{fig:bl}: when 
+the flow reaches the plate a laminar boundary layer starts to develop, inside 
+it a laminar regime holds and it is characterized by a moderate gradient of the 
+velocity profile at the wall. After a certain distance a turbulent boundary 
+layer starts to grow: it is thicker but the gradient of the velocity at the 
+wall is stronger. We can define a Reynolds number based on the distance from 
+the beginning of the plate and another one based on the boundary layer 
+thickness:
+\begin{equation}
+Re_x = \frac{u^\infty x}{\nu}, \quad Re_\delta = \frac{u^\infty 
+	\delta}{\nu},
+\end{equation}
+where $u^\infty$ is the maximum velocity far from the wall.
+
+For the laminar boundary layer the profile can be computed analytically 
+through the Blasius equation, which is obtained using dimensional arguments. 
+The thickness grows as the square root of $x$:
+\begin{equation}
+\delta(x) = 4.9 \frac{x}{\sqrt{Re_x}} = 4.91\sqrt{\frac{x 
+		\nu}{u^\infty}}.
+\end{equation}
+When $Re_\delta$ is higher than a certain threshold, the turbulent boundary 
+layer begins, but in this case the velocity profile can be expressed only 
+through some empirical laws. In order to do that it is useful to define a 
+non-dimensional wall coordinate:
+\begin{equation}
+y^+ = \frac{u_* y}{\nu}, \quad u_* = \sqrt{\frac{\tau_w}{\varrho}},
+\end{equation}
+where $\tau_w$ is the shear stress at the wall. In the boundary layer four 
+different regions can be identified:
+\begin{itemize}
+	\item near the wall, for approximately $y^+ < 5$, a small laminar viscous 
+	sublayer is 
+	always present and it can not be neglected. In this area the viscous 
+	stresses are dominant over the Reynolds stresses and the velocity profile 
+	can be approximated with a linear relation:
+	\begin{equation}
+	u = u_* y^+,
+	\end{equation}
+	\item after that there is a buffer layer in which the viscous and Reynolds 
+	stresses are comparable,
+	\item then, approximately in the region $30 < y^+ < 150$, there is the so 
+	called log-layer, in which the velocity profile can be approximated with a 
+	logarithmic function:
+	\begin{equation} \label{eq:loglaw}
+	u = u_* \bigg( \frac{1}{\kappa} \log y_+ + A\bigg), \quad \kappa=0.41, 
+	\quad A = 
+	5.5,
+	\end{equation}
+	where $\kappa$ is the von K\'arm\'an constant,
+	\item at last there is an external region, in which the behaviour depends 
+	on 
+	the real situation.	
+\end{itemize}
+Be aware that the numbers given above as bounds for $y^+$ are not universal but 
+are very problem-dependent.
+\subsubsection{Turbulence models}
+The quantity $\tau_R$ is a symmetric tensor with $dim \times dim$ entries, so 
+in three 
+dimensions we have 6 new unknowns that need to be modelled in order to close 
+the problem, this procedure is known as turbulence modelling.
+In 1877 Boussinesq proposed that $\tau_R$ could be similar to the viscous 
+stress tensor:
+\begin{equation} \label{eq:bouss}
+\tau_R = 2\mu_t \bar{\mathbf{S}} - 
+\frac{2}{3}\varrho k \mathbb{1}.
+\end{equation}
+The first term has the same form of $\tau$ if we consider the mean velocity 
+field, 
+the only difference is that the dynamic viscosity $\mu$ is substituted by a 
+turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term involves 
+the is needed to model correctly also the isotropic part of $\tau_R$, indeed:
+\begin{equation} \label{eq:tracciatau}
+tr(\tau_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
+-\varrho \sum_{i=1}^{dim} \overline{(v_i')^2} = -2\varrho k,
+\end{equation}
+where $k$ is the turbulent kinetic energy and it is defined as
+\begin{equation}
+k = \frac{1}{2} \sum_{i=1}^{dim} \overline{(v_i')^2},
+\end{equation}
+while exploiting equation \eqref{eq:ransmass} we get
+\begin{equation}
+	tr(2\mu_t \bar{S}) = 2 \mu_t \sum_{i=1}^{dim} \frac{\partial 
+	\bar{v}_i}{\partial x_i} = 2\mu_t (\nabla \cdot \bar{\mathbf{v}}) = 0.
+\end{equation}
+With this hypothesis $\mu_t$ and $k$ are the only unknowns left and the 
+momentum equation \eqref{eq:ransmom} becomes:
+\begin{equation} \label{eq:ransmom2}
+\frac{\partial{(\varrho \bar{\mathbf{v}})}}{\partial t} 
++ 
+\nabla 
+\cdot (\varrho \bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) - \nabla \cdot 
+(\mu_\text{eff} \nabla \bar{\mathbf{v}}) + \nabla (\bar{p} + \frac{2}{3}\varrho 
+k) 
+-\varrho\mathbf{g} = \mathbf{0},
+\end{equation}
+where we have introduced an effective viscosity
+\begin{equation}
+	\mu_\text{eff} = \mu + \mu_t.
+\end{equation}
+Since for incompressible fluids we have erased the thermodynamic relation 
+between $\varrho$ and $p$, we can consider as unknown a generalized pressure 
+$p_\text{gen}$ such that:
+\begin{equation}
+p_\text{gen} = \bar{p} + \frac{2}{3}\varrho k,
+\end{equation}
+reducing the unknowns to $\mu_t$ alone, for which we can employ different 
+turbulence models to estimate it.
+
+The idea of the Boussinesq hypothesis \eqref{eq:bouss} comes partially from an 
+analogy 
+between the motion 
+of the turbulent structures and the molecular motion, but there are cases in 
+which it can be shown that this hypothesis leads to poor results (see 
+\cite{main:pope}). There exist also turbulence models called Reynolds stress 
+equations models (RSM) that do not use it and try to find equations for 
+all the entries of the Reynolds stress tensor, but in this way a large set of 
+equations is obtained and consequently the required computational effort 
+increases. See \cite{main:pope} or \cite{main:vermal} for more information.
+
+From now on the over bar, used to denote the averaged quantities, will be 
+neglected in order to simplify the notation.
+
+\subsubsection{Zero-equations models}
+The simplest turbulence models are called zero-equations models or algebraic 
+models because they compute the turbulent viscosity using an algebraic relation 
+that exploits geometrical quantities, so they do not introduce any additional 
+PDE to the problem. Due to their simplicity they were used in the past years 
+when the computational resources were limited, but they have intrinsic weak 
+points because they can be applied only in special simple situations.
+
+An important example is Prandtl's \emph{mixing length} model. It is 
+useful with two-dimensional flows when the mean velocity field has a dominant 
+direction and the gradient in the longitudinal direction is negligible with 
+respect to that in the orthogonal direction. Let us assume that $u$ is the 
+main component of the velocity and that the flow is bounded by a wall at $y=0$. 
+From dimensional considerations it can be assumed that
+\begin{equation}
+\nu_t = \frac{\mu_t}{\varrho} = l_\text{mix}v_\text{mix},
+\end{equation}
+where $l_\text{mix}$ and $v_\text{mix}$ are a characteristic length scale and a 
+velocity 
+scale of turbulence. Then it is reasonable to chose
+\begin{equation}
+	v_\text{mix} = l_\text{mix} \left\lvert \frac{\partial u}{\partial y} 
+	\right\rvert,
+\end{equation}
+because the shear stress in the mean flow gives its contribution to the 
+turbulent mixing of the largest eddies. At last $l_\text{mix}$ is chosen from 
+empirical considerations coming from the boundary layer theory previously 
+described, for example
+\begin{equation}
+l_\text{mix} = \kappa y
+\end{equation}
+in the original version or
+\begin{equation}
+l_\text{mix} = \kappa y[1 - exp(y^+ / 26)]
+\end{equation}
+using a correction from Van Driest that dampens $\nu_t$ for $y \rightarrow 0$.
+%
+\subsubsection{$k\text{-}\varepsilon$ model}
+Two-equation models involve the solution of two additional PDEs and the 
+$k\text{-}\varepsilon$ is probably the most famous one of this category, the 
+key contribution to this model was given by \textcite{turbo:ke}. It is 
+based on the assumption that the turbulent viscosity $\nu_t$ could be correctly 
+determined through the turbulent kinetic energy $k$ and its dissipation rate 
+$\varepsilon$, so considering dimensions the relation must be
+\begin{equation}
+\nu_t = C_\mu \frac{k^2}{\varepsilon},
+\end{equation}
+where $C_\mu$ is a non-dimensional constant and $\varepsilon$ is defined as
+\begin{equation}
+\varepsilon = 2 \nu \overline{\mathbf{S}' \cdot \mathbf{S}'}, \quad \mathbf{S}' 
+= \frac{\nabla \mathbf{v}' + (\nabla \mathbf{v}')^\mathrm{T}}{2}.
+\end{equation}
+
+Starting from the momentum equation of the Navier-Stokes model \eqref{eq:nsmom} 
+and from the decomposition in mean value plus fluctuation \eqref{eq:decomp}, we 
+derive an equation for $k$:
+\begin{equation}
+	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla 
+	\bigg[ \bigg(\nu + \frac{\nu_t}{\sigma_k}\bigg) \nabla k\bigg] 
+	-2\nu_t \mathbf{S} \cdot \mathbf{S} + \varepsilon = 0,
+\end{equation}
+where $\sigma_k$ is a non-dimensional constant. In a similar way we could 
+derive an evolution equation for $\varepsilon$, but it would contain too many 
+terms difficult to model and to measure, so an empirical equation built in 
+analogy with the one for $k$ is used:
+\begin{equation} \label{eq:epsilon}
+		\frac{\partial \varepsilon}{\partial t} + \nabla \cdot (\varepsilon 
+		\mathbf{v}) - \bigg[ \bigg(\nu + \frac{\nu_t}{\sigma_\varepsilon} 
+		\bigg) \nabla \varepsilon \bigg] - C_{\varepsilon_1} 
+		\frac{\varepsilon}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} + 
+		C_{\varepsilon_2}\frac{\varepsilon^2}{k} = 0
+\end{equation}
+The standard model sets the following constants:
+\begin{equation}
+	C_\mu = 0.09, \quad \sigma_k = 1, \quad \sigma_\varepsilon = 1.3, \quad 
+	C_{\varepsilon_1} = 1.44, \quad C_{\varepsilon_2} = 1.92.
+\end{equation}
+
+This model gives its best for confined flows and high Reynolds number, where 
+the Reynolds stresses are dominant. Near the wall this assumption fails, so it 
+is common to use a wall function such as the one given by the boundary layer 
+theory \eqref{eq:loglaw} in order to compute the velocities at the cell near 
+the wall. This can be done easily for flat walls and it brings also 
+computational advantages because we can avoid to have very small cells near the 
+wall that solve until the viscous sublayer.
+
+Many variants of this model have been developed, for example the 
+\emph{low-$Re$} $k\text{-}\varepsilon$ model that adds extra terms in order to 
+model correctly the behaviour near the wall. See \cite{main:vermal} for more 
+information.
+%
+\subsubsection{$k\text{-}\omega$ model}
+The $k\text{-}\omega$ model is another two-equations model that uses a specific 
+dissipation rate $\omega$ instead of the dissipation rate $\varepsilon$; it was 
+originally proposed by \textcite{komega:kolmo} and subsequently refined many 
+times by \textcite{turbo:komega}.
+
+The equation for the turbulent kinetic energy is analogous to the one used in 
+the $k\text{-}\varepsilon$ model:
+\begin{equation} \label{eq:komegak}
+	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla 
+\bigg[\bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] -P + \beta^* k 
+\omega = 0,
+\end{equation}
+with the production term $P$ that can be limited in the following way:
+\begin{equation}
+	P = \min \{ 2 \nu_t \mathbf{S} \cdot \mathbf{S}, 20 \beta^* k \omega \}.
+\end{equation}
+The equation for $\omega$ is empirical and driven by physical considerations as 
+it was the equation \eqref{eq:epsilon} for $\varepsilon$:
+\begin{equation} \label{eq:komegaomega}
+	\frac{\partial \omega}{\partial t} + \nabla (\omega \mathbf{v}) - 
+	\nabla \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla \omega 
+	\bigg] - \alpha \frac{\omega}{k} P -\frac{\sigma_d}{\omega} \nabla k \cdot 
+	\nabla \omega+ \beta \omega^2 = 0
+\end{equation}
+The term
+\begin{equation}
+\frac{\sigma_d}{\omega} \nabla k \cdot \nabla \omega
+\end{equation}
+is new, it is related to cross-diffusion and its activation depends on the 
+direction of the gradients of $k$ and $\omega$:
+\begin{equation}
+\sigma_d =
+\begin{cases}
+0 &\text{if $\nabla k \cdot \nabla \omega \leq 0$}\\
+\sigma_{do} &\text{if $\nabla k \cdot \nabla \omega > 0$}
+\end{cases},
+\quad \sigma_{do} = \frac{1}{8}.
+\end{equation}
+The turbulent viscosity $\nu_t$ is obtained as
+\begin{equation}
+\nu_t = \frac{k}{\tilde{\omega}}, \quad \tilde{\omega} = \max \Bigg\{ \omega, 
+C_\text{lim} \sqrt{ 2\frac{\mathbf{S}\cdot\mathbf{S}}{\beta^*}} \Bigg\}.
+\end{equation}
+The model is closed with the following coefficients:
+\begin{equation}
+	\beta^* = \frac{9}{100}, \quad \sigma^* = \frac{3}{5}, \quad \alpha = 
+	\frac{13}{25}, \quad \beta = \frac{177}{2500}, \quad \sigma = \frac{1}{2}, 
+	\quad C_\text{lim} = \frac{7}{8}.
+\end{equation}
+
+The interpretation of $\omega$ is not straight-forward: originally it was 
+defined by Kolmogorov as ``the rate of dissipation of energy in unit volume and 
+time'', therefore defined as
+\begin{equation}
+	\omega = \frac{k}{\varepsilon}.
+\end{equation}
+Other contributors to the development of this model have referred to it as 
+the the root mean square (RMS) of the fluctuating vorticity, i.e.
+\begin{equation}
+	\omega = \sqrt{\overline{ (\boldsymbol\omega ')^2 }}, \quad 
+	\boldsymbol\omega 
+	= 
+	\nabla \times \mathbf{v},
+\end{equation}
+in this case $\omega^2$ is the double of the \emph{enstrophy}, which is a 
+quantity associated to the energy related to vorticity.
+
+%This model works also near the boundary... we can not fix $\omega$ at the 
+%boundary but we fix it a bit inside.
+This model has shown good results also near the boundaries, so it does not 
+require any wall correction. For our purposes it is the most appropriate choice 
+because we would like to have non-flat boundaries, so employing a 
+wall law would be cumbersome. Moreover the values near the boundary are 
+very important in our tests, because they influence the exchange processes 
+across the interface between free-flow and porous-medium flow.
+%
+\section{Porous-medium flow} \label{sec:pm}
+According to \cite{forch:nield} a porous-medium is ``a material consisting of a 
+solid matrix with an interconnected void''. The void spaces are called 
+\emph{pores} and they allow a fluid to go through the material. We consider the 
+solid matrix to be fixed, neglecting the fluid-structure interaction. Examples 
+of porous-media are sand, wood, soil, 
+sandstone and ceramics.
+
+In order to simulate a flow through a porous medium theoretically we could use 
+the standard fluid dynamics equations at the pore scale, but this approach is 
+often complex because at this level the model variables are very irregular and 
+it is hard to get measurements of them. What is usually done is to 
+simplify the description of the flow considering averaged quantities within a 
+Representative Elementary volume (REV), thus considering the 
+porous-medium as a continuum at a larger scale. In this way we lose the 
+information about discontinuities at the pore scale, i.e. whether a point 
+belongs to the solid matrix or is void, but we obtain more easily results that 
+are comparable to experimental measurements.
+
+Given a domain $\Omega_\text{pm}$ occupied by the porous-medium, we consider 
+for every point $\mathbf{x} \in \Omega_\text{pm}$ a ball $B_r(\mathbf{x})$ of 
+radius $r$, that will be the REV. Starting from a function $f$ defined at the 
+pore scale we compute its average $\hat{f}$:
+\begin{equation}
+	\hat{f}(\mathbf{x}) = \frac{1}{|B_r(\mathbf{x})|} \int_{B_r(\mathbf{x})} 
+	f(\mathbf{y}) d\mathbf{y}, \quad \forall \mathbf{x} \in \Omega_\text{pm}.
+\end{equation}
+The radius $r$, and thus the dimension of the REVs, should be chosen such that
+\begin{equation}
+	l \ll r \ll L,
+\end{equation}
+where $l$ is the pore scale size and $L$ is the macro scale size, as for 
+example in Figure~\ref{fig:rev}. In such a way 
+the high frequency variations of the microscopic properties should not be seen 
+at the REV scale, but the low frequency variations of macroscopic properties 
+should not be lost (see \cite{main:helmig}).
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{rev.png}
+	\caption[REV in a porous-medium]{An example of a REV in a porous-medium. 
+	Comparison of its size with the one of the pores and the one of 
+	$\Omega_\text{pm}$. Figure source: \cite{forch:nield}.}
+	\label{fig:rev}
+\end{figure}
+
+Let us define the \emph{porosity} of the porous-medium as
+\begin{equation}
+\varphi(\mathbf{x}) = \frac{1}{|B_r(\mathbf{x})|} \int_{B_r(\mathbf{x})} \chi 
+(\mathbf{y}) d\mathbf{y},
+\end{equation}
+where $\chi(\mathbf{x})$ is the characteristic function of the void space:
+\begin{equation}
+\chi(\mathbf{x}) =
+\begin{cases}
+1 &\text{if $\mathbf{x}$ is void}\\
+0 &\text{if $\mathbf{x}$ is not void}
+\end{cases}, \quad \forall \mathbf{x} \in \Omega_\text{pm}.
+\end{equation}
+
+For simplicity we will assume to have porous-media with constant porosity. In 
+natural materials usually $\varphi$ is not greater then $0.6$, but for some 
+artificial materials, such as metallic foams, $\varphi$ could be almost $1$.
+We will also consider only single-phase, single-component flows.
+%
+\subsection{Continuity equation}
+The governing equations for a porous-medium at the REV scale can be computed 
+from the standard equations for the fluid through the application of volume 
+averaging techniques (see \cite{volaver:withakerbook}).
+
+We obtain the following continuity equation:
+\begin{equation}
+\varphi\frac{\partial \varrho}{\partial t} + \nabla \cdot (\varrho 
+\mathbf{v}) = 0,
+\end{equation}
+where $\varrho$ denotes the density of the fluid. $\mathbf{v}$ is the velocity 
+obtained averaging over a REV containing both fluid and solid and it can be 
+called \emph{Darcy} velocity or \emph{seepage} velocity. It should not be 
+confused with the \emph{intrinsic} velocity $\mathbf{V}$ that we would obtain 
+averaging over a REV containing only fluid, as they are related by:
+\begin{equation}
+	\mathbf{v} = \varphi \mathbf{V}.
+\end{equation}
+
+If we assume that the fluid is incompressible, then the continuity equation 
+reduces to:
+\begin{equation}
+\nabla \cdot \mathbf{v} = 0
+\end{equation}
+\subsection{Momentum equation}
+\subsubsection{Darcy's law}
+For the momentum equation the most common choice is the Darcy's law:
+\begin{equation} \label{eq:darcy}
+	\mathbf{v} = -\frac{1}{\mu}\mathbf{K} (\nabla p - \varrho \mathbf{g}),
+\end{equation}
+where $\mathbf{K}$ [$\si{m^2}$] is the permeability tensor of the 
+porous-medium; it is symmetric and positive-definite and it can be simplified 
+to a scalar for isotropic porous-media. 
+This equation holds for creeping flows, with $Re < 1$, for which 
+inertial effect can be neglected.
+
+It was first obtained experimentally by Henry Darcy in 1856, who discovered a 
+proportionality between the flow rate and the pressure drop across a uniform 
+porous-medium. After that there have been many tries to derive it analytically, 
+starting from the Navier-Stokes equations and using volume averaging techniques 
+with different assumptions made, see for example \cite{volaver:ithakerdarcy}. 
+Moreover it can be obtained through a formal homogenization procedure if the 
+porous-medium is periodic (see \cite{homo:holmes}).
+
+The permeability is a quantity that depends only on the geometry of the porous 
+medium and not on the flow, typical values range from $\SI{e-7}{m^2}$ of 
+gravel to $\SI{e-16}{m^2}$ of limestone.
+There are models to compute it in the case of simple geometries, for example 
+through the Carman-Kozeny equation (see \cite{forch:nield}). 
+%
+\subsubsection{Forchheimer's law}
+There exist many generalization of the Darcy's law, for example to multiphase 
+and multicomponent flows, to non-Newtonian fluids or, as in this case, to 
+higher Reynolds numbers. The 
+extension that we are interested in is the following Forchheimer's law:
+\begin{equation} \label{eq:forch}
+	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} 
+	|\mathbf{v}|\mathbf{v} = - \frac{1}{\mu} \mathbf{K}(\nabla p - \varrho 
+	\mathbf{g} ),
+\end{equation}
+where the second term is added to the Darcy's law in order to take into account 
+also possible inertial effects. $C_F$ is a non-dimensional coefficient which is 
+here taken equal to $0.55$, even if there exist many different corrections (see 
+\cite{forch:nield} and \cite{forch:tesi}).
+
+As reported by \textcite{forch:nield}, the equation was originally proposed by 
+\textcite{forch:1901}, but the dependence on $\sqrt{\mathbf{K}}$ was introduced 
+by \textcite{forch:ward}. \textcite{volaver:withakerforch} 
+derived it with the volume averaging  starting from the Navier-Stokes equations.
+
+This equation holds when the flow in the porous-medium is laminar, but 
+the drag from linear becomes quadratic because the contribution due to solid 
+obstacles becomes comparable to the one due to friction. According to 
+\cite{forch:nield}, the transition from a linear to a quadratic regime is 
+smooth and takes place at
+\begin{equation}
+	Re_\mathrm{K} \simeq 100,
+\end{equation}
+where $Re_\mathrm{K}$ is a Reynolds number based on the square root of the 
+permeability:
+\begin{equation}
+	Re_\mathrm{K} = \frac{U \sqrt{\mathrm{K}}}{\nu}.
+\end{equation}
+%
+\section{Coupling conditions}
+At the interface between the free-flow region and the porous-medium we have to 
+impose suitable conditions in order to couple the two subdomains. Let us denote 
+with $\Omega_\text{ff}$ the free-flow domain and with $\Omega_\text{pm}$ the 
+porous-medium domain, then
+\begin{equation}
+	 \Gamma_\text{int} = \overline{\Omega}_\text{ff} \cap 
+	 \overline{\Omega}_\text{pm}
+\end{equation}
+is the interface between them.
+
+Following \textcite{paper:mosthaf}, we would like to have conditions such that 
+the interface could be as close as possible to the local thermodynamic 
+equilibrium, which, however, can not be rigorously achieved because of the 
+different model concepts in the two subdomains. Since we are dealing with 
+single-phase, single-component isothermal flows, we only have to impose the 
+mechanical equilibrium, for which we need:
+\begin{itemize}
+	\item the continuity of normal mass fluxes:
+	\begin{equation}
+		[\varrho \mathbf{v} \cdot \mathbf{n}]_\text{ff} = - [\varrho \mathbf{v} 
+		\cdot \mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
+	\end{equation}
+	where the subscripts $_\text{ff}$ and $_\text{pm}$ denote that the 
+	quantities are 
+	evaluated in the free-flow or in the porous-medium subdomain. Notice that
+	\begin{equation}
+		\mathbf{n}_\text{ff} = -\mathbf{n}_\text{pm} \quad \text{on 
+		$\Gamma_\text{int}$},
+	\end{equation}
+	\item the continuity of normal stresses:
+	\begin{equation}
+		[(\varrho \mathbf{v} \mathbf{v}^\mathrm{T} - \mu_\text{eff} \nabla 
+		\mathbf{v} + p\mathbb{1}) 
+		\mathbf{n}]_\text{ff} = 
+		- [p\mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
+	\end{equation}
+	that may result in a jump of the pressure at the interface, even if it is 
+	usually a continuous thermodynamic variable,
+	\item a condition for the tangential component of the velocity in the 
+	free-flow and in particular we use the one proposed by \textcite{inter:bj}:
+	\begin{equation}
+		\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_{BJ}} (\nabla \mathbf{v}) 
+		\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 
+		[\mathbf{v} \cdot \mathbf{t}_i]_\text{pm}, \quad \forall i \in \{1, 
+		\dots, dim - 1\},
+	\end{equation}
+	on $\Gamma_\text{int}$, where $\alpha_{BJ}$ is a non-dimensional 
+	coefficient that depends on 
+	properties of the permeable material and $\mathbf{t}_i, \; 
+	i \in \{1, \dots, dim-1\}$ is a basis of the plane tangential to the 
+	interface $\Gamma_\text{int}$. With this condition we allow a slip of the 
+	tangential component of the velocity and the more the porous-medium is 
+	permeable, the more slip is allowed.
+	
+	We also employ the simplification introduced by \textcite{inter:bjs}:
+	\begin{equation}
+		[\mathbf{v} \cdot \mathbf{t}_i]_\text{pm} \simeq 0, \quad \forall i \in 
+		\{1, 
+		\dots, dim-1\},
+	\end{equation}
+	so we neglect the velocity in the porous-medium since it is very small with 
+	respect to the one in the free-flow region, thus obtaining the 
+	Beavers-Joseph-Saffman (BJS) condition:
+	\begin{equation}
+		\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_{BJ}} (\nabla \mathbf{v}) 
+		\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 0, 
+		\quad \forall i \in \{1, \dots, dim - 1\}.
+	\end{equation}
+\end{itemize} 

@@ -1,0 +1,69 @@
+% This file was created by matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+\definecolor{mycolor2}{rgb}{0.85000,0.32500,0.09800}%
+\definecolor{mycolor3}{rgb}{0.92900,0.69400,0.12500}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\figwidth,
+height=0.75\figwidth,
+at={(0\figwidth,0\figwidth)},
+scale only axis,
+xmode=log,
+xmin=5.65685424949238,
+xmax=181.019335983756,
+xminorticks=true,
+ymode=log,
+ymin=1e-08,
+ymax=100,
+yminorticks=true,
+axis background/.style={fill=white},
+legend style={legend cell align=left, align=left, draw=white!15!black}
+]
+\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}]
+  table[row sep=crcr]{%
+5.65685424949238	5.76306696\\
+11.3137084989848	1.57416994\\
+22.6274169979695	0.402855803\\
+45.254833995939	0.101316682\\
+90.5096679918781	0.0253689885\\
+181.019335983756	0.00634520364\\
+};
+\addlegendentry{$p$}
+
+\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}]
+  table[row sep=crcr]{%
+5.65685424949238	0.00755771065\\
+11.3137084989848	0.0024004207\\
+22.6274169979695	0.000637765901\\
+45.254833995939	0.000162032481\\
+90.5096679918781	4.06613238e-05\\
+181.019335983756	1.0172044e-05\\
+};
+\addlegendentry{$u$}
+
+\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}]
+  table[row sep=crcr]{%
+5.65685424949238	0.000194019117\\
+11.3137084989848	7.70773454e-05\\
+22.6274169979695	2.70614838e-05\\
+45.254833995939	8.52850536e-06\\
+90.5096679918781	2.25326552e-06\\
+181.019335983756	5.58000331e-07\\
+};
+\addlegendentry{$v$}
+
+\addplot [color=white!70!black, forget plot]
+  table[row sep=crcr]{%
+5.65685424949238	3.2e-07\\
+181.019335983756	1e-08\\
+};
+\addplot [color=white!70!black, forget plot]
+  table[row sep=crcr]{%
+5.65685424949238	1.024e-05\\
+181.019335983756	1e-08\\
+};
+\end{axis}
+\end{tikzpicture}%

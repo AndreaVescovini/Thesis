@@ -1,0 +1,199 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{bbold}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+%\usetikzlibrary{plotmarks}
+%\usetikzlibrary{arrows.meta}
+%\usepgfplotslibrary{patchplots}
+%\usepackage{grffile}
+\usepackage[section]{placeins}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage[separate-uncertainty=true]{siunitx}
+\pgfplotsset{plot coordinates/math parser=false}
+
+\newlength{\figwidth}
+\setlength{\figwidth}{0.45\textwidth}
+
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+
+\graphicspath{{img/}}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\title{\textbf{Backward facing step}}
+\author{Andrea Vescovini}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+\section{Introduction}
+The backward facing step is a widely-used test configuration in which a 
+turbulent flow in a channel encounters separation because of a sudden 
+enlargement; in Figure \ref{fig:bfs_glimphs} the velocity field is represented.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{bfs_glimphs}
+	\caption{Velocity field after the backward facing step.}
+	\label{fig:bfs_glimphs}
+\end{figure}
+We want to use this case to validate the results of our 
+$k\text{-}\omega$ model, comparing them with experimental results from 
+\cite{driver} and numerical results from \cite{sitonasa}.
+
+\section{The test}
+The domain is chosen as in Figure~\ref{fig:bfs_domain}, with a step height $H = 
+\SI{1}{m}$. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{bfs_domain}
+	\caption{Domain of the backward facing step test.}
+	\label{fig:bfs_domain}
+\end{figure}
+The following boundary conditions are imposed:
+\begin{itemize}
+	\item On the wall boundary $\Gamma_w$ we set no slip conditions for the 
+	velocity 
+	$\mathbf{v}$, a homogeneous Dirichlet condition for the turbulent kinetic 
+	energy $k$ and a Dirichlet condition for the turbulent variable $\omega$ 
+	such that:
+	\begin{equation*}
+	\omega = \frac{6 \nu}{\beta_\omega l_w^2}
+	\end{equation*}
+	where $\beta_\omega$ is a constant equal to 0.0708 and $l_w$ is the 
+	distance from the wall. This formula implies that $\omega \rightarrow \inf$ 
+	as $l_w \rightarrow 0$, so it is imposed at the centre of the cells that 
+	touch the wall to avoid infinite values.
+	%
+	\item On the inflow boundary $\Gamma_{in}$ we set a Dirichlet condition for 
+	the velocity, imposing a flat profile $\mathbf{v} = [U_{in}, 
+	0]^\mathrm{T}$. For $k$ and $\omega$ we impose Dirichlet conditions such 
+	that:
+	\begin{equation} \label{bc:ko}
+	k = \frac{3}{2} (U_{in}I)^2, \quad \omega = \frac{k^{1/2}}{C_{\mu}^{1/4}L}
+	\end{equation}
+	where $I = 0.16 Re^{-\frac{1}{4}}$ is the turbulence intensity, $C_\mu = 
+	0.09$ and $L = \alpha H$ is a turbulence length scale, with 
+	$\alpha = 0.07$.
+	%
+	\item On the outflow boundary $\Gamma_{out}$ we set a zero-gradient 
+	condition for the velocity and a Dirichlet condition for the pressure $p = 
+	p_{ext} = \SI{1.1e5}{Pa}$. For $k$ and $\omega$ we impose 
+	Dirichlet conditions analogous to 
+	\eqref{bc:ko}.
+\end{itemize}
+
+Notice that with respect to \cite{sitonasa} we do not use any symmetry 
+condition near the inlet of the channel, but we start suddenly with a wall. For 
+this reason we have adapted the length of the channel before the step in order 
+to obtain at the position $x/H = -1$ a boundary layer thickness of $1.5H$, as 
+it 
+is in \cite{driver} and \cite{sitonasa}. In this way we have a correct velocity 
+profile before the step.
+
+In order to reproduce the results from \cite{driver} and \cite{sitonasa} we 
+need 
+a Reynolds number based on the step height of approximately 36000. Therefore we 
+choose 
+$U_{in} 
+= \SI{44.2}{m/s}$ as in \cite{driver}, $\varrho = \SI{1}{kg/m^3}$ and $\mu 
+= \SI{1.228e-3}{\pascal\second}$.
+
+The results are adimensionalized using the step height $H$ as reference length 
+and the velocity near the centre of the channel at $x/H = -4$ as a reference 
+velocity $U_{ref}$.
+
+For what concerns the time discretization we simulate the time interval $[0, 
+T_{end}]$, with $T_{end} = \SI{30}{s}$. At approximately $t = \SI{20}{s}$ a 
+stationary solution is reached, then we compare the results at $T_{end}$. We 
+start the simulation with $\Delta t = \SI{e-5}{s}$, the the time 
+step is adapted depending on the convergence of the Newton method at the 
+previous time iteration.
+
+\section{Grid analysis}
+Several grids with different numbers of cells and different gradings have been 
+tried. In order to compare the results we have compared the velocity profiles 
+before and after the step, at $x/H = -4$ and $x/H = 1$, and the friction 
+coefficient $C_f$ after the step. $C_f$ is a dimensionless form of the stress 
+at the wall as is it defined by:
+\begin{equation*}
+C_f = \frac{\tau_w}{\frac{1}{2}\varrho U_{ref}^2}
+\end{equation*}
+In out case when $C_f < 0$ the flow is recirculating, so from its value we can 
+predict the point where the flow \emph{reattaches}, as $C_f$ becomes positive; 
+according to \cite{sitonasa} this is a relevant information about the 
+reliability of the simulation.\\
+The numerical reference predicts the reattachment near $x/H=6.8$; the 
+experimental measure of the reattachment position was $x/H = \num{6.26+-0.10}$.
+
+\begin{itemize}
+	\item With coarse mesh the reattachment point was lower, a refinement of 
+	the smallest cell in the $y$ direction was needed.
+	\item Too stretched cells leaded to problems in the Newton convergence.
+	\item I could coarsen cells in the $x$ direction in the downstream portion 
+	of the channel.
+	\item A refinement of the cells in the $y$ direction in the recirculation 
+	area was useless.
+\end{itemize}
+\section{Results comparison}
+The following results are obtained with a grid made of \num{121 x 70} cells, 
+employing gradings up to 1.25 in order to better refine the grid near the 
+walls. In general we have obtained a good agreement with the numerical solution 
+from \cite{sitonasa}, in particular the Van Leer result is better than the 
+Upwind one.
+\begin{itemize}
+	\item The position of main eddy is slightly anticipated, the profile at 
+	$x/H = 1$ is that one that the reference has at $x/H = 1.2$ or something 
+	like that, we can see it also from the $C_f$ plot.
+	% 
+	\item However the reattachment point is almost the same, but looking at the 
+	$C_f$ plot is seems that out eddy is a bit bigger.
+	%
+	\item For the upwind this behaviour is enhanced, showing in the test plot 
+	different results. (Reattachment point and small eddies in the $C_f$ plot)
+	%
+	\item Experimental results are sometimes different, in particular in the 
+	velocity profiles near the wall at $x/H=6$ and $x/H=10$.
+	%
+	\item The value of $C_f$ going to the end of the channel.
+\end{itemize}
+\begin{figure}
+	\centering
+	\subfloat[Velocity profiles at $x/H = -4$]{\input{img/bfs_fin_vel0}}
+	\subfloat[Velocity profiles at $x/H = 1$]{\input{img/bfs_fin_vel1}}\\
+	\subfloat[Velocity profiles at $x/H = 4$]{\input{img/bfs_fin_vel2}}
+	\subfloat[Velocity profiles at $x/H = 6$]{\input{img/bfs_fin_vel3}}\\
+	\subfloat[Velocity profiles at $x/H = 10$]{\input{img/bfs_fin_vel4}}
+	\subfloat[Friction coefficient at the bottom wall]{\input{img/bfs_fin_cf}}
+	\caption{Comparison between the solution from \cite{sitonasa}, the 
+	experimental values from \cite{driver} and the solutions computed using Van 
+	Leer and Upwind.}
+	\label{fig:bfs_fin}
+\end{figure}
+\FloatBarrier
+\begin{thebibliography}{99}\label{sec:bib}
+	
+	\bibitem{sitonasa} Langley Research Center, \emph{Turbulence Modeling 
+	Resource}.\\ 
+	\hyperlink{https://turbmodels.larc.nasa.gov/backstep_val.html}{https://turbmodels.larc.nasa.gov/backstep\_val.html}
+	
+	\bibitem{driver} D.M. Driver, H.L. Seegmiller. Features of Reattaching 
+	Turbulent Shear Layer in Divergent Channel Flow. \emph{AIAA Journal}, 
+	23(2):163-171, 1985.
+	
+\end{thebibliography}
+
+\end{document}

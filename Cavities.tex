@@ -1,0 +1,304 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm} % per i teoremi e le definizioni
+\usepackage{booktabs} % per le righe di separazione nelle tabelle
+\usepackage{subfig} % per mettere tante figure affiancate
+\usepackage{bbold}
+\usepackage[hidelinks]{hyperref} % per i collegamenti ipertestuali
+\usepackage{graphicx} % per le immagini
+\usepackage{xspace}
+\usepackage{pgfplots} % per i plot
+\pgfplotsset{compat=newest}
+%\usetikzlibrary{plotmarks}
+%\usetikzlibrary{arrows.meta}
+%\usepgfplotslibrary{patchplots}
+%\usepackage{grffile}
+\usepackage[section]{placeins}
+\usepackage{tikz} % per i plot
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage[separate-uncertainty=true]{siunitx} % per le unitàdi misura
+\pgfplotsset{plot coordinates/math parser=false}
+
+\newlength{\figwidth}
+\setlength{\figwidth}{0.9\textwidth}
+
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+
+\graphicspath{{img/}}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\title{\textbf{Cavities}}
+\author{Andrea Vescovini}
+\date{\today}
+
+\begin{document}
+	\maketitle
+	
+\section{Introduction}
+Our goal is to study the behaviour of a coupled turbulent free-flow and 
+porous-medium 
+system, that are in contact by means of a rough interface or that presents 
+obstacles. A first 
+approximation of this kind of interface can be obtained with a series of little 
+cavities as we used when we studied the \emph{rough channel} with the 
+Navier-Stokes equations. Now we want to use the RANS equations and as 
+turbulence model we 
+choose the $k\text{-}\omega$. Since the domain is not flat we have decided not 
+to employ any wall law for the boundary layer, because their application in 
+such a situation could become complex. So we have decided to integrate the RANS 
+equations up to the boundary, therefore we need very small cells next to it in 
+order to resolve the viscous sub-layer. Employing structured grid it can become 
+quite expensive to have small cells near a wall that has different orientations 
+through the domain, so we decide to start from a simple 
+configuration with only two cavities. We start our analysis from the free-flow, 
+then we take into account the effect of a porous-medium.
+
+\section{The single-domain test}
+In this first test we simulate only the free-flow in the domain depicted in 
+Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
+condition on the left boundary $\Gamma_{in}$, outflow boundary conditions on 
+the 
+right boundary $\Gamma_{out}$, symmetry boundary conditions on the upper part 
+$\Gamma_{sym}$ and no-slip conditions on the lower boundary $\Gamma_w$, where 
+we have also the two cavities.\\
+The first portion of the lower wall is flat, in order to le the flow develop, 
+then there are the two cavities of height $h=\SI{0.1}{m}$ and length 
+$\SI{0.5}{m}$, spaced by a tunable distance $d$. The height of the channel has 
+been chosen such that the flow is uniform in the upper part of the domain. 
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{cavities_domain}
+	\caption{Domain for the single-domain test.}
+	\label{fig:singledomain}
+\end{figure}
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{ccc}
+	\toprule
+	\text{Density} & \varrho & \SI{1}{kg/m^3}\\
+	\midrule
+	\text{Kinematic viscosity} & \nu & \SI{e-5}{m^2/s}\\
+	\midrule
+	\text{Inlet velocity} & \mathbf{v}_{in} & [\SI{1}{m/s}, 0]^\mathrm{T}\\
+	\midrule
+	\text{Outlet pressure} & p_{ext} & \SI{1.1e5}{Pa}\\
+	\midrule
+	\text{Reynolds number} & Re & \num{6e5}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Properties of the fluid used for the test.}
+	\label{tab:fluidprop}
+\end{table}
+
+We want to see how the flow field in the second cavity is affected by the 
+presence of the first cavity, depending on the distance $d$ between them that 
+has been varied from $\SI{0.05}{m}$ to $\SI{2}{m}$.
+
+As previously said we employ an unsteady $k\text{-}\omega$ model and we 
+simulate the time interval $[0, T_{end}]$, starting from the initial 
+conditions of uniform parallel flow for $y>h$ and no flow for $y\leq h$. The 
+simulation time has been chosen equal to $\SI{30}{s}$, time after which 
+the solution has reached an equilibrium.
+The fluid properties are set as in Table~\ref{tab:fluidprop}. After having 
+performed a sensitivity analysis we have chosen a mesh with $\num{377x50}{}$ 
+elements with gradings in the inlet and outlet portions of the channel in order 
+to have small uniform cells around the two cavities with sizes of 
+$\SI{5x3.3}{mm}$.
+% eulero all'indietro o bdf2 per la discretizzazione temporatle è uguale e poi 
+%usiamo sempre i nostr TVD con Van Leer
+
+\subsection{Results}
+At a first glance the behaviour of the fluid in the two cavities is very 
+similar, there is not any strong influence of the first one on the second one 
+and the pattern of the velocity field is the same (see Figure~\ref{fig:veld1}). 
+%aggiungere cenno a quali recirculations ci sono e mettere le freccette 
+%nell'immagine?
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth, trim={0 0 0 6cm}, 
+	clip]{cavities_dist1_vel}
+	\caption{Magnitude of the velocity field [$\si{m/s}$] around the cavities 
+		with $d=\SI{1}{m}$ at $t=\SI{30}{s}$. $Re=\num{6e5}$.}
+	\label{fig:veld1}
+\end{figure}
+
+In order to better analyse the results of the simulations we compare the 
+profiles of the velocity in the first cells above $y=h$, always at 
+$t=\SI{30}{s}$. The velocity in these points drives the flow in the cavities, 
+since we start from zero velocity inside them.
+\begin{figure*}
+	\centering
+	\input{img/cavities_vel1}
+	\caption{Velocity profile at $y=h$, with a distance $d=\SI{1}{m}$ between 
+		cavities, at $t=\SI{30}{s}$. $Re = \num{6e5}$.}
+	\label{fig:velprofile1}
+\end{figure*}
+
+Looking at the profiles in Figure~\ref{fig:velprofile1}, there is a positive 
+peak of the velocity near the centre of each cavity, then, when the wall starts 
+again, there is a negative peak, followed by a space that we call recovery 
+distance $d_{rec}$ of approximately $\SI{0.5}{m}$, in which there is a recovery 
+of the value that the velocity had before the cavity. The values in the second 
+cavity are slightly lower than the correspondent ones in the first cavity, but 
+the shape is the same and this confirms the fact that the behaviour of the flow 
+in the two cavities is the analogous.
+
+The peaks above the cavities are due to the fact that those sections are not 
+touching the wall, so the wall friction is not highly affecting the velocity as 
+in the other sections and this allows the velocity to reach higher values.
+When cavity a is over and the wall begins there is a sudden decrease in the 
+velocity because before the corner of the cavity the flow is split into a 
+portion that goes down and generates the recirculation and another portion that 
+instead goes up (see Figure~\ref{fig:vel_split}).
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{cavities_vel_split.png}
+	\caption{$y$-component of the velocity near end of a cavity. It can be 
+		observed that the flow splits.}
+	\label{fig:vel_split}
+\end{figure}
+This change in the flow 
+direction implies a reduction of the $x$ component of the velocity. After the 
+distance $d_{rec}$ the effect of the wall has restored the boundary layer that 
+there was before the cavity. If $d < d_{rec}$, i.e. the distance between the 
+cavities is smaller than the recovery distance, then the flow in the second 
+cavity will be slower because it will be driven by lower velocities.
+
+We report in Figure~\ref{fig:velpeaks} the maximum values of the $x$-component 
+of the velocity in the peak in correspondence of the second cavity, depending 
+of the distance between the cavities.
+\begin{figure}
+	\centering
+	\input{img/cavities_peaks}
+	\caption{Relation between the maximum velocity above the second cavity and 
+	the distance between the cavities $d$.}
+	\label{fig:velpeaks}
+\end{figure}
+We see that if $d < d_{rec}$ there velocities are affected by the presence of 
+the first cavity and so the value is lower. For $d>d_{rec}$ the velocities are 
+slightly decreasing as $d$ increases, this fact is due to the turbulence that 
+is generated near the end of the first cavity. As it can be seen in 
+Figure~\ref{fig:kd1} the turbulent kinetic energy that is generated from the 
+first cavity is transported towards the second one, leading to an increased 
+thickness of the boundary layer as we move in the $x$ direction.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth, trim={0 0 0 7cm}, 
+	clip]{cavities_dist1_k}
+	\caption{Turbulent kinetic energy [$\si{m^2/s^2}$] around the cavities with 
+		$d=\SI{1}{m}$, at $t=\SI{30}{s}$. $Re=\num{6e5}$.}
+	\label{fig:kd1}
+\end{figure}
+
+\FloatBarrier
+\section{The multi-domain test}
+In this second test we simulate the same situation of the single-domain test 
+with a distance between the cavities $d=\SI{1}{m}$, but now we couple the 
+free-flow with the simulation of a porous-medium that fills the space between 
+the cavities, as it is shown in Figure~\ref{fig:multidomain}. We have so two 
+domains, $\Omega_{ff}$ and $\Omega_{pm}$, that are in contact through the 
+interface $\Gamma_{int}$.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{cavities_multidomain.png}
+	\caption{The domain for the multi-domain test.}
+	\label{fig:multidomain}
+\end{figure}
+
+In the domain $\Omega_{ff}$ we solve as before the RANS equations with the 
+$k\text{-}\omega$ model, while in the $\Omega_{pm}$ we solve the Forchheimer 
+equation. We use the same boundary conditions we used before, but this time we 
+have in addition to impose suitable coupling conditions at the interface 
+$\Gamma_{int}$ and no flow conditions on the boundary $\Gamma_{base}$.
+We employ the same mesh we used before in $\Omega_{ff}$ and we extend it in 
+$\Omega_{pm}$ in a conforming way.
+
+We want to analyse the differences that the presence of the porous-medium 
+induces in the flow field and how it changes varying the permeability.
+% riempiamo il buco con un mezzo poroso
+% usiamo forcheimer, l'equazione è fatta così e così viene dal volume averaging 
+%oppure empirica, il coefficiente scelto così e così (prima va spiegata anche 
+%darcy), perchè usiamo forcheimer, quando vale
+% coupled model con delle coupling conditions che vanno spiegate
+% mesh come prima, variamo la permeabilità (cos'è la permeabilità)
+\subsection{Results}
+We compare the profile of the velocity in the $x$ direction at the position 
+$y=h$ (see Figure~\ref{fig:md_wall_velocities}).
+\begin{figure}[h]
+	\centering
+	\input{img/cavities_coupled_velx}
+	\caption{Velocity profile at $y=h$, at $t=\SI{30}{s}$ for different values 
+		of permeability.}
+	\label{fig:md_wall_velocities}
+\end{figure}
+
+For values of permeability lower than $\SI{e-8}{m^2}$ the porous-medium results 
+to be almost impermeable, or at least the flow field in $\Omega_{ff}$ is the 
+same that we had in the single domain test and the maximum velocities in the 
+corner of the porous-medium are of some orders of magnitude lower than those in 
+the cavities.
+
+Starting from $K=\SI{3.1e-8}{m^2}$ we observe some changes in the velocity 
+profile and increasing the permeability those changes are enhanced. In 
+correspondence of the first cavity the maximum velocity increases because the 
+porous-medium reduces its wall effect and so the flow is less forced to reduce 
+its velocity because a more relevant quantity of fluid enters into the 
+porous-medium (see Figure~\ref{fig:coupled_arrows}). Then this flow comes out 
+from the top of $\Omega_{pm}$ within the first $\SI{20}{cm}$; this spreads and 
+moves a bit ahead the zone with a peak in the $y$-component of the velocity, as 
+it can be seen in Figure~\ref{fig:coupled_vel_split}, where we can compare the 
+velocities for different values of permeability.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{coupled_first_cavity.png}
+	\caption{Velocity field near the end of the first cavity where some flow 
+		enters into the porous-medium. $K=\SI{3.1e-7}{m^2}$. The length of the 
+		arrows is not scaled. $Re=\num{6e5}$.}
+	\label{fig:coupled_arrows}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{split_comparison.png}
+	\caption{$y$-component of the velocity near the end of the first cavity in 
+	the free-flow domain $\Omega_{ff}$. $K = \SI{3.1e-7}{m^2}$ on the left and 
+	$K = \SI{3.1e-9}{m^2}$ on the right. $Re=\num{6e5}$.}
+	\label{fig:coupled_vel_split}
+\end{figure}
+
+After a certain distance $d_{rec}$ the value of the velocity that there was 
+before the cavity is recovered and the boundary layer is restored. With high 
+values of permeability this equilibrium value is higher than that one with low 
+permeabilities; this is due to the Beavers-Joseph-Saffman condition that allows 
+more slip as the permeability increases. Eventually the behaviour around the 
+second cavity is the same with all the permeabilities; there is some flow that 
+goes back inside the porous-medium, but since it comes from the corner eddy the 
+values involved are lower compared to what happens in the first cavity (see 
+Figure~\ref{fig:coupledsecondcav}).
+% risultati: il fluido non attraversa mai il mezzo poroso
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{coupled_second_cavity.png}
+	\caption{Velocity field near the beginning of the second cavity where some 
+flow enters into the porous medium. $K=\SI{3.1e-7}{m^2}$. The length of the 
+arrows is not scaled. $Re=\num{6e5}$.}
+	\label{fig:coupledsecondcav}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{coupled_vel_3.png}
+	\caption{Magnitude of the velocity field for $K=\SI{3.1e-9}{m^2}$, at 
+	$t=\SI{30}{s}$. $Re=\num{6e5}$.}
+	\label{fig:coupled_vel_3}
+\end{figure}
+
+\end{document}

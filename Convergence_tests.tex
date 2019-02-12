@@ -1,0 +1,513 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{bbold}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+%\usetikzlibrary{plotmarks}
+%\usetikzlibrary{arrows.meta}
+%\usepgfplotslibrary{patchplots}
+%\usepackage{grffile}
+
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\pgfplotsset{plot coordinates/math parser=false}
+
+\newlength{\figwidth}
+\setlength{\figwidth}{0.45\textwidth}
+
+\graphicspath{{img/}}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\title{\textbf{Space convergence tests for TVD methods}}
+\author{Andrea Vescovini}
+\date{\today}
+
+\begin{document}
+	\maketitle
+
+\section{Introduction}
+We want to test the space convergence order of the $L^2$-error of the solution 
+of the 
+isothermal Navier-Stokes equations \eqref{eq:mass_bal}-\eqref{eq:mom_bal}, 
+computed using TVD methods for the discretization of the convective term and to 
+make a comparison with the results obtained employing the first order upwind 
+approximation.
+\begin{align}
+\label{eq:mass_bal} \frac{\partial\rho}{\partial t} + \nabla \cdot (\rho 
+\mathbf{v}) = 0&\\
+\label{eq:mom_bal} \frac{\partial{(\rho \mathbf{v}})}{\partial t} + \nabla 
+\cdot (\rho \mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu (\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p = \mathbf{f}&
+\end{align}
+
+\begin{defn}
+Let $h$ be the diameter of a cell of the grid and let $err_h$ be the 
+$L^2$-error of the solution computed over a grid with cells of diameter $h$.\\
+A method is said to have a convergence order of $p$ if
+\begin{equation*}
+\exists C > 0 \quad \text{such that} \quad err_h \leq C h^p \quad \forall h
+\end{equation*}
+\end{defn}
+
+While discretizing equations \eqref{eq:mass_bal}-\eqref{eq:mom_bal} with finite 
+volumes over a staggered grid, we use centred finite differences for both the 
+diffusive term and the gradient of the pressure, with a second order accuracy.
+For what concerns the convective term we can use the first order upwind or the 
+TVD methods that are second order everywhere but at the points where we have 
+local extrema.
+
+
+\section{Tests}
+We have chosen five test cases with a known analytical solution and we have 
+solved the problem over sequences of uniform grids each time refined. Since we 
+are interested in the space convergence, we have chosen four steady cases and 
+only one unsteady case, for which we have computed the error at the second 
+time-step. 
+As TVD methods we have used the Van Leer and the MinMod. We have tried both 
+low (\textasciitilde 1) and high (\textasciitilde 1000) Reynolds numbers, 
+obtained modifying the viscosity.
+
+\subsection{1D problem}
+We have started with a one-dimensional problem in the domain $\Omega = [0,1]$:
+\begin{align*}
+\frac{ \partial (\rho v)}{\partial x} =& \; f_1 \quad \text{in} \quad \Omega\\
+\frac{ \partial (\rho v^2)}{\partial x} - \frac{ \partial}{\partial x} \bigg (2 
+\mu 
+\frac{\partial v}{\partial x} \bigg) + \frac{\partial p}{\partial x} =& \; f_2 
+\quad 
+\text{in} \quad \Omega\\
+v =& \; v_{ex} \quad \text{on} \quad \partial \Omega\\
+p =& \; p_{ex} \quad \text{on} \quad \partial \Omega
+\end{align*}
+with the the source terms:
+\begin{align*}
+&f_1 = 6 x^2 \rho\\
+&f_2 = 6 x^5 \rho - 24 \mu x - 2
+\end{align*}
+such that the exact solution is:
+\begin{align*}
+&v_{ex} = 2 x^3\\
+&p_{ex} = 2 (1 - x)
+\end{align*}
+We have chosen $\rho = 1$ and $\mu = 1$ or $\mu = 10^{-3}$.
+We have made seven refinements starting from a grid of 4 cells.
+
+We have obtained the following convergence orders:
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 0.985 & 1.000 & 0.990\\
+	v & 1.985 & 1.996 & 1.996\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1$ for the 1D problem.}
+	\label{tab:1d_lre}
+
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 0.852 & 1.501 & 2.172\\
+	v & 1.318 & 2.274 & 2.356\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1000$ for the 1D problem.}
+	\label{tab:1d_hre}
+\end{table}
+
+\begin{figure}[t]
+	\centering
+	\subfloat[][1D problem, Upwind, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_1d}}
+	\subfloat[][1D problem, Upwind, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_1d_hre}}\\
+	\subfloat[][1D problem, MinMod, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_1d_mm}}
+	\subfloat[][1D problem, MinMod, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_1d_mm_hre}}\\
+	\subfloat[][1D problem, VanLeer, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_1d_vl}}
+	\subfloat[][1D problem, VanLeer, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_1d_vl_hre}}
+    \caption{Errors for the 1D problem.}
+    \label{fig:1d_err}
+\end{figure}
+
+\subsection{Steady channel problem}
+The steady channel problem is solved over a domain $\Omega = [0,10] \times 
+[-0.5, 
+0.5]$:
+\begin{align*}
+\nabla \cdot (\rho \mathbf{v}) =& \; 0 \quad \text{in} \quad \Omega\\
+\nabla \cdot (\rho \mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu 
+(\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p =& \; 0 \quad \text{in} \quad \Omega\\
+\mathbf{v} =& \; \mathbf{v}_{ex} \quad \text{on} \quad \Gamma_{in} \cup 
+\Gamma_w\\
+(\nabla \mathbf{v}) \mathbf{n} =& [0, 0]^\mathrm{T} \quad 
+\text{on} 
+\quad \Gamma_{out}\\
+p =& \; p_{ex} \quad \text{on} \quad \Gamma_{out}
+\end{align*}
+with $\Gamma_{in} = \{0\} \times [-0.5, 0.5]$ i.e. the inflow boundary, 
+$\Gamma_w = [0, 10] \times 
+\{-0.5, 
+0.5\}$ i.e. the wall boundary, $\Gamma_{out} = \{10\} \times [-0.5, 0.5]$ i.e. 
+the outflow boundary.
+The exact solution is:
+\begin{align*}
+&v_{x,ex} = \frac{3}{2} V (1 - y^2)\\
+&v_{y,ex} = 0\\
+&p_{ex} = 3 \mu V (10 - x)
+\end{align*}
+We have chosen $\rho = 1$, $V = 1$ and $\mu = 1$ or $ \mu = 10^{-3}$.
+We have made five refinements starting from a grid of $8 \times 4$ cells.
+We have obtained the following convergence orders:
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.999 & 1.999 & 1.999\\
+	v_x & 1.999 & 1.999 & 1.999\\
+	v_y & 2.013 & 2.013 & 2.013\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1$ for the steady channel problem.}
+	\label{tab:cha_lre}
+	
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.999 & 1.999 & 1.999\\
+	v_x & 1.999 & 1.999 & 1.999\\
+	v_y & 2.013 & 2.013 & 2.013\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1000$ for the steady channel 
+	problem.}
+	\label{tab:cha_hre}
+\end{table}
+
+\begin{figure}[t]
+	\centering
+	\subfloat[][Channel, Upwind, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_channel_steady}}
+	\subfloat[][Channel, Upwind, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_channel_steady_hre}}\\
+	\subfloat[][Channel, MinMod, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_channel_steady_mm}}
+	\subfloat[][Channel, MinMod, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_channel_steady_mm_hre}}\\
+	\subfloat[][Channel, VanLeer, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_channel_steady_vl}}
+	\subfloat[][Channel, VanLeer, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_channel_steady_vl_hre}}
+    \caption{Errors for the steady channel problem.}
+    \label{fig:cha_err}
+\end{figure}
+
+\subsection{Kovasznay problem}
+The Kovasznay problem is solved over a domain $\Omega = [-0.5,2] \times [-0.5, 
+1.5]$:
+\begin{align*}
+\nabla \cdot (\rho \mathbf{v}) =& \; 0 \quad \text{in} \quad \Omega\\
+\nabla \cdot (\rho \mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu 
+(\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p =& \; 0 \quad \text{in} \quad \Omega\\
+\mathbf{v} =& \; \mathbf{v}_{ex} \quad \text{on} \quad \partial \Omega\\
+p =& \; p_{ex} \quad \text{on the lower let cell}
+\end{align*}
+The exact solution is:
+\begin{align*}
+&v_{x,ex} = 1 - e^{\lambda x} cos(2 \pi y)\\
+&v_{y,ex} = \frac{\lambda}{2\pi} e^{\lambda x} sin(2 \pi y)\\
+&p_{ex} = \frac{1}{2} (1 - e^{2 \lambda x})
+\end{align*}
+with $\lambda = \frac{1}{2 \mu} - \sqrt{\frac{1}{4\mu^2} + 4\pi^2}$. We have 
+chosen $\rho = 1$ and $\mu = 2.5 \cdot 10^{-2}$ or $ \mu = 2.5 \cdot 10^{-4}$.
+We have made five refinements starting from a grid of $4 \times 4$ cells.
+We have obtained the following convergence orders:
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 0.823 & 0.890 & 0.902\\
+	v_x & 0.928 & 2.436 & 2.379\\
+	v_y & 0.940 & 2.422 & 2.565\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 80$ for the Kovasznay 
+	problem.}
+	\label{tab:kov_lre}
+	
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.000 & 0.907 & 0.865\\
+	v_x & 1.030 & 1.835 & 1.822\\
+	v_y & 0.997 & 1.960 & 1.958\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 8000$ for the Kovasznay 
+	problem.}
+	\label{tab:kov_hre}
+\end{table}
+
+\begin{figure}[t]
+	\centering
+	\subfloat[][Kovasznay, Upwind, $Re = 80$]{
+		\input{img/l2error_test_navierstokes_kovasznay}}
+	\subfloat[][Kovasznay, Upwind, $Re = 8000$]{
+		\input{img/l2error_test_navierstokes_kovasznay_hre}}\\
+	\subfloat[][Kovasznay, MinMod, $Re = 80$]{
+		\input{img/l2error_test_navierstokes_kovasznay_mm}}
+	\subfloat[][Kovasznay, MinMod, $Re = 8000$]{
+		\input{img/l2error_test_navierstokes_kovasznay_mm_hre}}\\
+	\subfloat[][Kovasznay, VanLeer, $Re = 80$]{
+		\input{img/l2error_test_navierstokes_kovasznay_vl}}
+	\subfloat[][Kovasznay, VanLeer, $Re = 8000$]{
+		\input{img/l2error_test_navierstokes_kovasznay_vl_hre}}
+    \caption{Errors for the Kovasznay problem.}
+    \label{fig:kov_err}
+\end{figure}
+
+\subsection{Sin-Cos problem}
+The Sin-Cos problem is solved over a domain $\Omega = [0,1] \times [0,1]$:
+\begin{align*}
+\nabla \cdot (\rho \mathbf{v}) =& \; 0 \quad \text{in} \quad \Omega\\
+\nabla \cdot (\rho \mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu 
+(\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p =& \; \mathbf{f} \quad \text{in} \quad \Omega\\
+\mathbf{v} =& \; \mathbf{v}_{ex} \quad \text{on} \quad \partial \Omega\\
+p =& \; p_{ex} \quad \text{on the lower let cell}
+\end{align*}
+with the the source term:
+\begin{align*}
+&f_1 = -2 \mu cos(x) sin(y)\\
+&f_2 =  2 \mu cos(y) sin(x)
+\end{align*}
+such that the exact solution is:
+\begin{align*}
+&v_{x,ex} = -cos(x) sin(x)\\
+&v_{y,ex} = sin(x) cos(y)\\
+&p_{ex} = -\frac{1}{4} (cos(2x)+sin(2y)
+\end{align*}
+We have chosen $\rho = 1$ and $\mu = 1$ or $ \mu = 10^{-3}$.
+We have made five refinements starting from a grid of $4 \times 4$ cells.
+We have obtained the following convergence orders:
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.008 & 1.569 & 1.626\\
+	v_x & 1.143 & 1.962 & 1.977\\
+	v_y & 1.058 & 1.928 & 1.945\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1$ for the Sin-Cos problem.}
+	\label{tab:sin_lre}
+	
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.148 & 1.659 & 1.058\\
+	v_x & 1.071 & 1.441 & 1.437\\
+	v_y & 1.068 & 1.533 & 1.560\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1000$ for the Sin-Cos problem.}
+	\label{tab:sin_hre}
+\end{table}
+
+\begin{figure}[t]
+	\centering
+	\subfloat[][SinCos, Upwind, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_sincos}}
+	\subfloat[][SinCos, Upwind, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_sincos_hre}}\\
+	\subfloat[][SinCos, MinMod, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_sincos_mm}}
+	\subfloat[][SinCos, MinMod, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_sincos_mm_hre}}\\
+	\subfloat[][SinCos, VanLeer, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_sincos_vl}}
+	\subfloat[][SinCos, VanLeer, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_sincos_vl_hre}}
+	\caption{Errors for the Sin-Cos problem.}
+	\label{fig:sin_err}
+\end{figure}
+
+\subsection{Angeli problem}
+The Angeli problem is solved over a domain $\Omega = [0,1] \times [0,1]$ and in 
+a time interval $[0, T] = [0, 2 \cdot 10^{-12}]$:
+\begin{align*}
+\frac{\partial \rho}{\partial t} + \nabla \cdot (\rho \mathbf{v}) 
+=& \; 0 \quad \text{in} \quad \Omega \times (0, T)\\
+\frac{\partial (\rho \mathbf{v})}{\partial t} + \nabla \cdot (\rho \mathbf{v} 
+\mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu 
+(\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p =& \; 0 \quad \text{in} \quad \Omega \times (0, T)\\
+\mathbf{v} =& \; \mathbf{v}_{ex} \quad \text{on} \quad \partial \Omega \times 
+(0, T)\\
+p =& \; p_{ex} \quad \text{on} \quad \partial \Omega \times (0, T)\\
+\mathbf{v} =& \; \mathbf{v}_{ex} \quad \text{in} \quad \Omega, \quad 
+\text{at} \quad t=0\\
+p =& \; p_{ex} \quad \text{in} \quad \Omega, \quad 
+\text{at} \quad t=0
+\end{align*}
+The exact solution is:
+\begin{align*}
+&v_{x,ex} = -2 \pi e^{-5 \mu \pi^2 t} cos(\pi x) sin(2 \pi y)\\
+&v_{y,ex} = \pi e^{-5 \mu \pi^2 t} sin(\pi x) cos(2 \pi y)\\
+&p_{ex} = -\frac{1}{4} e^{-10 \mu \pi^2 t} \pi^2 (4 cos(2 \pi x) + cos(4 \pi y)
+\end{align*}
+We have chosen $\rho = 1$ and $\mu = 1$ or $ \mu = 10^{-3}$.
+We have made four refinements starting from a grid of $4 \times 4$ cells.
+We have obtained the following convergence orders:
+\begin{table}[h]
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 0.964 & 1.037 & 0.996\\
+	v_x & 1.977 & 1.977 & 1.977\\
+	v_y & 1.975 & 1.975 & 1.975\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re=1$ for the Angeli problem.}
+	\label{tab:ang_lre}
+	
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{MinMod} & \text{VanLeer} \\ 
+	\midrule
+	p & 1.001 & 1.931 & 1.936\\
+	v_x & 1.977 & 1.977 & 1.977\\
+	v_y & 1.975 & 1.975 & 1.975\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{Convergence order with $Re = 1000$ for the Angeli problem.}
+	\label{tab:ang_hre}
+\end{table}
+
+\begin{figure}[t]
+	\centering
+	\subfloat[][Angeli, Upwind, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_angeli}}
+	\subfloat[][Angeli, Upwind, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_angeli_hre}}\\
+	\subfloat[][Angeli, MinMod, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_angeli_mm}}
+	\subfloat[][Angeli, MinMod, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_angeli_mm_hre}}\\
+	\subfloat[][Angeli, VanLeer, $Re = 1$]{
+		\input{img/l2error_test_navierstokes_angeli_vl}}
+	\subfloat[][Angeli, VanLeer, $Re = 1000$]{
+		\input{img/l2error_test_navierstokes_angeli_vl_hre}}
+	\caption{Errors for the Angeli problem.}
+	\label{fig:ang_err}
+\end{figure}
+
+\section{Conclusions}
+In the 1D problem for low $Re$ (Table \ref{tab:1d_lre}) the results of the 
+three 
+methods are very similar, the convergence order for the pressure is always 1 
+while the convergence order for the velocity is always 2. It could be that 
+since $Re$ is low the diffusive term dominates over the convective term so that 
+also the upwind method has an order of two for the velocity. At higher 
+$Re$ we can see differences among the methods (Table \ref{tab:1d_hre}), with 
+the TVD 
+that behaves better then the upwind obtaining a  higher convergence order. In 
+particular the VanLeer seems to be 
+better then MinMod because it has a full second order for both the pressure and 
+the velocity. Looking at Figure \ref{fig:1d_err} we can see the global trends 
+of the errors and we can notice that the absolute values are much using the TVD 
+methods at high $Re$, while they are similar at low $Re$.
+
+The steady channel test shows identical results for all the methods (Tables 
+\ref{tab:cha_lre} and \ref{tab:cha_hre}). Due to the 
+fact that the velocity in the $x$ direction does not depend on $x$ and that the 
+velocity in the $y$ direction is zero, we have that the result is independent 
+of the method used because they are all exact. The second order convergence is 
+determined by other terms of the equations.
+
+In the Kovasznay test the MinMod and VanLeer produce almost the same result 
+(Table \ref{tab:kov_lre}). Already at low $Re$ they have a second order for the 
+velocities while the upwind has only a first order. For The pressure all the 
+three methods have present a first order. At high $Re$ the conclusions are 
+analogous.
+
+In the Sin-Cos problem we observe a better behaviour of the TVD methods 
+already both at low $Re$ and at high $Re$ (Tables \ref{tab:sin_lre} and 
+\ref{tab:sin_hre}) with an order two for the 
+velocities and between one and two for the pressure. The VanLeer at high $Re$ 
+shows an order of one for the pressure, but, looking at Figure 
+\ref{fig:sin_err}, we can see that the global trend is the same of the 
+velocities and the same of the MinMod. Notice that the absolute values are 
+lower the in the upwind case.
+
+Eventually in the Angeli test we obtain always second order for the velocities 
+but now we obtain clearly a second order also for the pressure with the TVD 
+methods at high $Re$ (Table \ref{tab:ang_hre}).
+
+In general if we employ a TVD method we obtain always higher or equal 
+convergence rates than if we employ the upwind method. With the TVD we obtain 
+always a second order for the velocities, while with the upwind sometimes we 
+have it at low $Re$, but then it is lost at high $Re$ (only in the Angeli test 
+it is maintained). For the pressure we have always a first order with the 
+upwind method, while with the TVD we generally can obtain a higher order at 
+least high $Re$, as it is happens in all the cases but in the Kovasznay's one.
+Regarding the absolute values of the error, we have obtained lower ones using 
+the TVD methods, since the error is reduced more as we refine the grid because 
+of the higher convergence orders. Between the MinMod and the VanLeer it is hard 
+so see if one is better than the other, the results are always very similar.
+\end{document}

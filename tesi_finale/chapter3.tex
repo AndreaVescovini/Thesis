@@ -1,0 +1,559 @@
+\chapter{Numerical model} \label{chap:discretization} %discretized equations?
+In this Chapter we describe the methods that are used to discretize the model. 
+For the spatial discretization we use the finite volumes methods, which allow 
+to solve efficiently flow problems guaranteeing the mass conservation. See 
+\cite{fv:leveque} for a broad description.
+In the free-flow region we discretize the equations using the staggered grid 
+concept, while in the porous-medium we use a cell-centred framework with a Two 
+Point Flux Approximation (TPFA).
+
+For the temporal discretization we use implicit finite differences methods, 
+like Backward Euler (BE) and the Backward Differencing Formula 2 (BDF2).
+%
+\section{Staggered grid concept}
+The staggered grid concept is characterized by the distinction between the 
+degrees of freedom related to scalar primary variables and those related to 
+vectorial primary variables. It is useful for the discretization through finite 
+volumes of saddle point problems, like the Navier-Stokes or RANS equations. 
+Indeed, in these kind of problems, if we locate all the primary variables, i.e. 
+pressure, velocity and possibly the turbulent kinetic energy and its 
+dissipation rate, at the same positions in the grid, spurious mode in the 
+solution may arise, leading to wrong results. A possible fix to this issue 
+is thus to store the primary variables in a \emph{staggered} fashion, putting 
+the degrees of freedom related to scalar variables at the centre of the cells 
+and those related to vectorial variables on the faces, aligned to the faces 
+normal direction. Therefore we obtain different control volumes for the 
+variables, as we can see in Figure~\ref{fig:staggrid} for the case of the 
+Navier-Stokes equations in a two-dimensional domain.
+\begin{figure}[t]
+	\centering
+%	\includegraphics[width=\textwidth]{staggered_grid_mia_ij.png}
+	\includegraphics[width=\textwidth]{staggered_grid_mia.pdf}
+	\caption[Staggered grid control volumes]{An example of a staggered grid 
+	with the pressure degrees of freedom (dofs) stored at the centres of the 
+	cells and the velocity dofs stored on the faces. The different control 
+	volumes are highlighted. The indices in capital letters $\dots,I,I+1,\dots$ 
+	and $\dots,J,J+1,\dots$ refer to cells, thus to the position of 
+	cell-centred variables, while the indices in lower case letters 
+	$\dots,i,i+1,\dots$ and $\dots,j,j+1,\dots$ refer to faces, thus to the 
+	position of staggered variables.}
+	\label{fig:staggrid}
+\end{figure}
+
+This approach is known also as Marker and Cell (MAC), as it was called in its 
+first appearance in a paper by \textcite{stagg:orig}, within a finite 
+differences framework. A more recent description can be found in 
+\cite{main:vermal}.
+
+Another advantage of this discretization method is that on the boundary we have 
+the degrees of freedom of the normal component of the velocity, so it is easier 
+to impose boundary and interface conditions.
+
+For the sake of simplicity we consider now a bi-dimensional domain and 
+$\mathbf{v} = [u, v]^{\mathrm{T}}$.
+%
+\subsection{Cell-centred equations}
+\subsubsection{Continuity equation}
+The continuity equation \eqref{eq:ransmass} can be discretized straight forward 
+because it does not involve the density. We integrate over the ``grey'' control 
+volume $V_p = [i-1,i] \times [j-1,j]$, according to Figure~\ref{fig:staggrid}, 
+and we apply the Gauss's divergence theorem:
+\begin{equation}
+\int_{V_p} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_p} \mathbf{v} \cdot 
+\mathbf{n} \; dA = 0.
+\end{equation}
+The integral over the boundary $\partial V_p$ can be split over the four edges, 
+that we identify with $e_p$ (east), $n_p$ (north), $w_p$ (west), $s_p$ (south):
+\begin{equation}
+\int_{\partial V_p} \mathbf{v} \cdot \mathbf{n} \; dA = \int_{e_p} u \; dA
++ \int_{n_p} v \; dA - \int_{w_p} u \; dA - \int_{s_p} v \; dA.
+\end{equation}
+At this point we discretize the equation approximating the values of the 
+velocity with the value at the centre of the edges, for example:
+\begin{equation}
+\int_{e_p} u \; dA \simeq u_{i,J} |{e_p}|,
+\end{equation}
+thus obtaining
+\begin{equation}
+	u_{i,J} |e_p| + v_{I,j}|n_p| - u_{i-1,J}|w_p| - v_{I,j-1}|s_p| = 0
+\end{equation}
+\subsubsection{Turbulence model equations}
+The equations for the turbulent kinetic energy \eqref{eq:komegak} and the 
+specific dissipation rate $\omega$ are treated analogously to the continuity 
+equation, but they involve more terms.
+\subsection{Staggered equations}
+The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
+control volumes. Let us consider the equation for the component $u$:
+\begin{equation}
+\frac{\partial{(\varrho u)}}{\partial t} + \nabla \cdot (\varrho u 
+\mathbf{v}) - \nabla \cdot (\mu_\text{eff} \nabla u) + 
+\frac{\partial}{\partial x} \big(p + \varrho k\big) = 0.
+\end{equation}
+Notice that, since we are considering a two-dimensional model, we have 
+substituted the factor $2/3$ with a $1$ in front of $\varrho k$, because it 
+came from the requirement \eqref{eq:tracciatau}.
+
+We integrate it over the ``red'' control volume $V_u=[I, I+1]\times[j-1,j]$, 
+according to Figure~\ref{fig:staggrid}, and apply the Gauss's divergence 
+theorem:
+\begin{multline} \label{eq:stagmomeq}
+\int_{V_u} \bigg[ \frac{\partial{(\varrho u})}{\partial t} + \nabla 
+\cdot (\varrho u \mathbf{v} ) - \nabla \cdot (\mu_\text{eff} \nabla u) + 
+\frac{\partial}{\partial x}\big( p + \varrho k \big) \bigg ]\; dV 
+=\\
+=\frac{d}{dt} \int_{V_u} \varrho u\; dV + \int_{\partial V_u} \varrho u 
+(\mathbf{v} \cdot \mathbf{n}) \; dA -\\
+- \int_{\partial V_u} \mu_\text{eff} 
+(\nabla u \cdot \mathbf{n}) \; dA + \int_{\partial V_u} (p + \varrho k) n_x \; 
+dA = 0,
+\end{multline}
+where $n_x$ is the component in the $x$ direction of the outward unit 
+normal $\mathbf{n}$. Let us identify again the four edges of $\partial V_u$ 
+with $e_u$ (east), $n_u$ (north), $w_u$ (west), $s_u$ (south), so that
+\begin{equation}
+	\partial V_u = e_u \cap n_u \cap w_u \cap s_u.
+\end{equation}
+In the equation \eqref{eq:stagmomeq} there are four terms of different kinds, 
+let us consider each of them separately, starting from the simplest one:
+\begin{itemize}
+	\item in the storage term we approximate the velocity with the value at the 
+	centre of the control volume:
+	\begin{equation}
+	\frac{d}{dt} \int_{V_u} \varrho u\; dV \simeq \frac{d}{dt} \big( \varrho 
+	u_{i,J} \big)|V_u|;
+	\end{equation}
+	%
+	\item in the pressure term the contributions from the edges $n_u$ and $s_u$ 
+	is null because $n_x=0$ on them, so 
+	\begin{equation}
+	\int_{\partial V_u} (p + \varrho k)n_x \; dA = \int_{e_u} (p+\varrho k) \; 
+	dA - \int_{w_u} (p+\varrho k) \; dA.
+	\end{equation}
+	Then we approximate $p$ and $k$ with the values at the centre of the edges:
+	\begin{equation}
+	\int_{e_u} (p+\varrho k) \; dA \simeq (p_{I+1,J} +\varrho k_{I+1,J}) |e_u|,
+	\end{equation}
+	\begin{equation}
+	\int_{w_u} (p+\varrho k) \; dA \simeq (p_{I,J} +\varrho k_{I,J}) |w_u|.
+	\end{equation}
+	%
+	\item in the diffusive term we have both a frontal momentum flux 
+	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
+	contribution from the edges $n_u$ and $s_u$:
+	\begin{multline}
+	\int_{\partial V_u} \mu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA =     
+	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA
+	- \int_{w_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \;+\\
+	+\int_{n_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA
+	- \int_{s_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA
+	\end{multline}
+	We develop the contributions from $e_u$ and $n_u$, the other two are 
+	analogous.\\	
+	For the frontal momentum flux we approximate the viscosity with 
+	the value at the centre of the edge, while we approximate the derivative of 
+	the velocity with a centred finite difference:
+	\begin{equation}
+	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \simeq 
+	\mu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{\Delta x} |e_u|,
+	\end{equation}
+	where $\Delta x$ is the distance between the coordinate of $i$ and the one 
+	of $i+1$ along the $x$-axis. For the lateral momentum flux we split the 
+	edge $n_u$ into the two halves related to the two cells 
+	$[i-1,i]\times[j-1,j]$ and $[i,i+1]\times[j-1,j]$:
+	\begin{equation}
+	n_u = [I,i]\times \{j\} \cup [i,I+1] \times \{j\}.
+	\end{equation}
+	We employ again a centred finite difference to approximate of the 
+	derivative of the velocity, while, for the approximation of the viscosity, 
+	we compute an average between the two cells sharing the face:
+	\begin{equation}
+	\int_{n_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA = 
+	\int_{\{I,j\}}^{\{i,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	+\int_{\{i,j\}}^{\{I+1,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
+	dA
+	\end{equation}
+	\begin{equation*}
+	\int_{\{I,j\}}^{\{i,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	\simeq \frac{1}{2}\big(\mu_{\text{eff},\{I,J\}}+\mu_{\text{eff},\{I,J+1\}} 
+	\big) \frac{u_{i,J+1}-u_{i,J}}{\Delta y} \frac{|n|}{2} 
+	\end{equation*}
+	\begin{equation*}
+	\int_{\{i,j\}}^{\{I+1,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
+	dA \simeq \frac{1}{2}\big( \mu_{\text{eff},\{I+1,J\}}+ 
+	\mu_{\text{eff},\{I+1,J+1\}} \big) \frac{u_{i,J+1}-u_{i,J}}{\Delta y} 
+	\frac{|n|}{2},
+	\end{equation*}
+	where $\Delta y$ is the distance between the coordinate of $J$ and the one 
+	of $J+1$ along the $y$-axis.
+	%
+	\item in the convective term we have again both a frontal momentum flux 
+	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
+	contribution from the edges $n_u$ and $s_u$:
+	\begin{multline}
+	\int_{\partial V_u} \varrho u (\mathbf{v} \cdot \mathbf{n}) \; dA = 
+	\int_{e_u} \varrho u u \; dA - \int_{w_u} \varrho u u \; dA \; +\\
+	+ \int_{n_u} \varrho u v \; dA  -\int_{s_u} \varrho u v \; dA.
+	\end{multline}
+	For the discretization we have to distinguish between the 
+	\emph{transporting} velocity, coming from $\mathbf{v} \cdot \mathbf{n}$, 
+	and the \emph{transported} field, coming from $\varrho u$, that in this 
+	case of incompressible flow is only the velocity because the density is 
+	constant. For the former we average between the values sharing the edge, 
+	while for the latter we have to consider an approximation that takes into 
+	account the flow direction, as it will be explained in detail in 
+	Subsections~\ref{subsec:diffscheme} and \ref{subsec:tvd}. For the moment we 
+	simply denote this approximation with a superscript $^*$.
+	We develop only the contributions from $e_u$ and $n_u$, the other two are 
+	analogous.\\
+	For the frontal momentum flux we approximate the transporting velocity with 
+	an average between the values of the two staggered cells sharing the 
+	staggered edge:
+	\begin{equation}
+		\int_{e_u} \varrho u u \; dA \simeq \varrho u^* \frac{u_{i,J} + 
+		u_{i+1,J}}{2}|e_u|.
+	\end{equation}
+	For the lateral momentum flux we approximate the transporting velocity with 
+	an average between the values a the two ends of the edge:
+	\begin{equation}
+	\int_{n_u} \varrho u v \; dA \simeq \varrho u^* \frac{v_{I,j} 
+	+v_{I+1,j}}{2} |n_u|.
+	\end{equation}
+	
+\end{itemize}
+
+The equation for the component $v$ of the velocity is analogous with the only 
+addition of the gravity term:
+\begin{equation}
+\frac{\partial{(\varrho v)}}{\partial t} + \nabla \cdot (\varrho v 
+\mathbf{v}) - \nabla \cdot (\mu_\text{eff} \nabla v) + 
+\frac{\partial}{\partial y} \big(p + \varrho k\big) - \varrho g= 0,
+\end{equation}
+with $g = \SI{-9.81}{m/s}$. The gravity term is discretized straight-forward:
+\begin{equation}
+\int_{V_v} \varrho g \; dV = \varrho g |V_v|,
+\end{equation}
+where $V_v = [i-1, i] \times [J, J+1]$ is the ``blue'' control volume in 
+Figure~\ref{fig:staggrid}. 
+
+%
+\subsection{Differencing schemes} \label{subsec:diffscheme} %Linear 
+%differencing schemes ?
+How to choose the scheme for the approximation of the transported field?
+It holds in general for every equation involving a convective term.
+These are easy but sometimes may produce oscillations, they make use of a 
+bigger stencil.
+\begin{itemize}
+\item Centred Differencing (CD) scheme:
+\begin{equation} \label{eq:cd}
+\phi^* = \frac{\phi^U + \phi^D}{2}
+\end{equation}
+\item Linear Upwind Differencing (LUD) scheme:
+\begin{equation} \label{eq:lud}
+\phi^* = \frac{3\phi^U - \phi^{UU}}{2}
+\end{equation}
+\item Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
+\cite{fv:leonard}:
+\begin{equation} \label{eq:quick}
+	\phi^* = \frac{3\phi^D + 6 \phi^U - \phi^{UU}}{8}
+\end{equation}
+\end{itemize}
+A complete description can be found for example in \cite{main:vermal}.
+\subsection{TVD methods} \label{subsec:tvd}
+Total Variation Diminishing (TVD) methods have been developed originally for 
+scalar conservation laws of the type:
+\begin{align}
+	\label{eq:conslaw} &\frac{d\phi}{dt} + \frac{d}{dx}\big(f(\phi)\big) = 0, 
+%\quad t>0 \quad x 
+%	\in 
+%	\mathbb{R}\\[1ex]
+%	\label{eq:conslawic} &\phi(x, 0) = \phi_0(x), \quad x \in \mathbb{R}
+\end{align}
+
+\begin{defn}
+	The \emph{total variation} of the numerical solution of the problem 
+	\eqref{eq:conslaw} is defined as:
+	\begin{equation}
+		TV(\phi) = \sum_{i=1}^{N_\text{dof}-1} |\phi_{i+1} - \phi_i|,
+	\end{equation}
+	where $i$ represents the index of the nodes of the discretized domain, so 
+	it is the sum of the jumps between all the couples of adjacent nodes.
+\end{defn}
+\begin{defn}
+	A method is called \emph{TVD} if the total variation of the solution does 
+	not increase with time, i.e. 
+	\begin{equation}\label{eq:tvdcondition}
+	TV(\phi ^{n+1}) \leq TV(\phi^n) \quad \forall n>0,
+	\end{equation}
+	where $\phi^n$ is the numerical solution at the time-step $t^n$.
+\end{defn}
+
+Their aim of TVD methods is to provide a solution with a second order accuracy 
+and without any overshoot or undershoot, these kind of methods are called also 
+\emph{high resolution methods}. Starting from this second feature, the 
+property 
+that we are interested in is monotonicity:
+\begin{defn}
+	A scheme is called \emph{monotonicity preserving} if it does not create new 
+	local extrema, local minima are non-decreasing and local maxima are 
+	non-increasing.
+\end{defn}
+In \cite{tvd:monotonicity} it has been proved that a TVD scheme is 
+monotonicity 
+preserving, so imposing \eqref{eq:tvdcondition} we should avoid the 
+development 
+of solutions containing overshoots and undershoots, as it can happen using 
+methods like QUICK.
+
+According to \cite{tvd:sweeby} and \cite{main:darwish} we can achieve our 
+target adding to the first order upwind approximation a second order 
+non-linear 
+anti-diffusive flux: 
+\begin{equation} \label{eq:tvdformula}
+\phi_e = \phi^U + \frac{1}{2}\psi(r)(\phi^D - \phi^U), \quad r = 
+\frac{\phi^U - \phi^{UU}}{\phi^D - \phi^U}.
+\end{equation}
+The flux includes a function $\psi(r)$ called \emph{flux limiter} that should 
+dampen the second order contribution in regions where it could produces 
+oscillations. It is chosen non-negative in order to preserve the sign of the 
+flux and it depends on the variable $r$ that is defined as the ratio between 
+two consecutive gradients. The non linearity can not be avoided, indeed it was 
+proved by Godunov that any monotonicity preserving linear scheme can be at 
+most 
+first order accurate (see \cite{tvd:godunov}).
+
+Exploiting the approximation \eqref{eq:tvdformula} to solve the problem 
+\eqref{eq:conslaw} and imposing the TVD condition on the solution we obtain 
+the 
+following bounds for the flux limiter:
+\begin{align}
+\psi(r) = 0 \quad &\text{if} \quad r < 0\\
+\psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 \leq r \leq 1\\
+\psi(r) \leq 2 \quad &\text{if} \quad r > 2
+\end{align}
+Notice that when $r<0$ we are near to a local maximum or minimum, because it 
+means that the difference between the upstream and downstream nodes has the 
+opposite sign of that one between the far upstream and upstream nodes. In this 
+situation we set $\psi = 0$ i.e. we use the first order upwind.
+It is also convenient if $\psi(r)$ has the following symmetry property:
+\begin{equation}
+\frac{\psi(r)}{r} = \psi\bigg(\frac{1}{r}\bigg)
+\end{equation}
+which ensures that backward- and forward-facing gradients are treated in the 
+same way.
+
+Following \cite{tvd:sweeby} and \cite{tvd:vanleer}, any second order scheme 
+can 
+be obtained as a convex combination of the CD scheme \eqref{eq:cd} and LUD 
+scheme \eqref{eq:lud}, moreover $\psi(r)$ should be at least Lipschitz 
+continuous. Thus, adding these requirements to the previous ones, we obtain 
+the 
+following bounds for the flux limiter function of a TVD method:
+\begin{align}
+\psi(r) = 0 \quad &\text{if} \quad r < 0 \notag \\
+\label{tvd:bounds} r \leq \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 
+\leq r \leq 1\\
+1 \leq \psi(r) \leq \min \{r, 2 \} \quad &\text{if} \quad r > 2 \notag
+\end{align}
+% A livello teorico potrei aggiungese la dimostrazione di monotonicity->TVD, 
+%l'applicazione di TVD per ottenere i bounds e l'applicazione dei bounds 
+%all'approssimazione col flux limiter (come in sweby o in darwish). Potrei 
+%mettere qualcosa nell'appendice.
+\subsubsection{Flux limters}
+Starting from the bounds \eqref{tvd:bounds} it is easy to create a 
+flux limiter function, indeed in literature many possible choices can be 
+found. 
+We list here some of the most popular functions that have been implemented in 
+\DUMUX and in Figure~\ref{fig:fluxlimiters} we can see their graph in the 
+Sweby's diagram:
+\begin{itemize}
+	\item Van Leer \cite{tvd:vanleer}
+	\begin{equation} \label{eq:vl}
+	\psi(r) = \frac{r+|r|}{1+r}.
+	\end{equation}
+	It is a smooth function that asymptotically reaches 2 for $r \rightarrow 
+	\infty$.
+%
+	\item Van Alabada \cite{tvd:vanalabada}
+	\begin{equation}
+	\psi(r)=
+	\begin{cases}
+	\dfrac{r^2+r}{r^2+1} \quad &\text{if $r\geq 0$}\\[2ex]
+	0 \quad &\text{if $r<0$}
+	\end{cases}
+	\end{equation}
+	It is a smooth function that instead goes to 1 as $r \rightarrow \infty$.
+%
+	\item Min-Mod \cite{tvd:roe}
+	\begin{equation}
+	\psi(r) = \max \{0, \min \{ r,1\} \}
+	\end{equation}
+	It is a piecewise linear function that stays on the lower boundary of the 
+	TVD region. Using this limiter we add to the upwind value an increment 
+	equal to the smallest variation between $\phi^{UU}-\phi^U$ and $\phi^D - 
+	\phi^U$.
+%
+	\item Superbee \cite{tvd:roe}
+	\begin{equation}
+	\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}
+	\end{equation}
+	It is a piecewise linear function that stays on the upper boundary of the 
+	TVD region.
+%
+	\item UMIST \cite{tvd:lien}
+	\begin{equation}
+	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{3r+1}{4},\frac{r+3}{4}, 
+	2\bigg\} \bigg\}
+	\end{equation}
+	It is a piecewise linear function that was designed as a symmetrical TVD 
+	version of QUICK.
+%
+	\item MC (Monotinized Central) limiter \cite{tvd:mclimiter}
+	\begin{equation}
+	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{r+1}{2}, 2\bigg\} \bigg\}
+	\end{equation}
+	It is also known as MUSCL (Monotonic Upstream-Centred Scheme for 
+	Conservation Laws) limiter.
+%	
+%	\item WAHYD \cite{nonunif:hou}
+%	\begin{equation}
+%	\psi(r)=
+%	\begin{cases}
+%	\dfrac{r + |r|}{r + 1} & \text{if $r \leq 1$} \\[2ex]
+%	\min \bigg\{ \dfrac{r + 2 r^2}{2 + r^2}, 2 \bigg\} & \text{if $r>1$}
+%	\end{cases}
+%	\end{equation}
+%	It is a hybrid scheme, for $r\leq 1$ it is the Van Leer scheme 
+%	\eqref{eq:vl}, while for $r>1$ it is closer to the upper bound of the TVD 
+%	region.
+\end{itemize}
+
+\begin{figure}
+	\centering
+	\input{../img/flux_limiters}
+	\caption[Flux limiter functions]{The Sweby's diagram with the flux limiters 
+	presented in this 
+	section as functions of $r$. In grey the area the is allowed in order to 
+	have a TVD method.}
+	\label{fig:fluxlimiters}
+\end{figure}
+
+It is not easy to compare the different flux limiters in order to find the 
+best 
+one, generally the Van Alabada and the Min-Mod can be a bit less accurate 
+since 
+$\psi \rightarrow 1$ as $r \rightarrow \infty$, while a scheme like the 
+Superbee can produce sharper gradients, but sometimes the convergence can be a 
+bit more difficult (it is said to be too compressive). The UMIST instead has a 
+more complex function, so its evaluation can be more expensive.
+%
+\subsubsection{Non-uniform grids}
+%We have to be careful when we want to use non uniform grids.
+%\subsection{Summary}
+\section{Cell-centred concept}
+In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
+scalar equation, with the 
+pressure as a primary variable, indeed, due to the incompressibility of the 
+fluid, the time derivative is not present:
+\begin{align}
+\label{eq:cellcentred}	\nabla \cdot \mathbf{v} = 0&\\
+\label{eq:forch2}	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} 
+	|\mathbf{v}|\mathbf{v} + \frac{1}{\mu} \mathbf{K}(\nabla p - \varrho 
+	\mathbf{g} ) = \mathbf{0}&
+\end{align}
+We employ a cell-centred finite volumes method, so the degrees of freedom of 
+the pressure are located at the centre of each cell, as we can see in 
+Figure~\ref{fig:cellcentred}, and the cells of the grid correspond to the 
+control volumes.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{cellcentred.pdf}
+	\caption[Cell-centred grid]{Location of the degrees od freedom in within a 
+	cell-centred approach.}
+	\label{fig:cellcentred}
+\end{figure}
+
+Let us integrate the equation \eqref{eq:cellcentred} over a control volume 
+$V_L$ (see Figure~\ref{fig:cctpfa}) and apply the Gauss's divergence theorem:
+\begin{equation}
+\int_{V_L} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_L} \mathbf{v} \cdot 
+\mathbf{n} \; dA.
+\end{equation}
+The Forchheimer's law \eqref{eq:forch2} is non-linear, so we use the Newton's 
+method in order to compute the velocity, i.e. the flux over the boundary 
+$\partial 
+V_L$:
+\begin{align}
+	\mathbf{J}_f(\mathbf{v}^k) \delta \mathbf{v}^{k+1} =& 
+	-\mathbf{f}(\mathbf{v}^k), \quad \text{$\forall k\geq 0$ until 
+	convergence}\\
+	\mathbf{v}^{k+1} =& \mathbf{v}^k + \delta \mathbf{v}^{k+1}
+\end{align}
+where
+\begin{equation} \label{eq:resforch}
+	\mathbf{f}(\mathbf{v}) = \mathbf{v} + C_F \sqrt{\mathbf{K}} 
+	\frac{\varrho}{\mu} 
+	|\mathbf{v}|\mathbf{v} + \frac{1}{\mu} \mathbf{K}(\nabla p - \varrho 
+	\mathbf{g} )
+\end{equation}
+and $\mathbf{J}_f(\mathbf{v})$ is its Jacobian matrix:
+\begin{equation} \label{eq:jacforch}
+\mathbf{J}_f(\mathbf{v}) = \mathbb{1} + 
+C_F\sqrt{\mathbf{K}}\frac{\varrho}{\mu}\big(|\mathbf{v}|\mathbb{1} + 
+\frac{1}{|\mathbf{v}|}{\mathbf{v}\mathbf{v}^\mathrm{T}}\big).
+\end{equation}
+We use as initial guess $\mathbf{v}^0$ the velocity computed with the Darcy's 
+law \eqref{eq:darcy}.
+
+The evaluation of \eqref{eq:resforch} and \eqref{eq:jacforch} over $\partial 
+V_L$ is performed with a Two Point Flux Approximation (TPFA) method, which 
+consists in exploiting the values of the two cells sharing the face; it is a 
+simple but robust method, commonly used in commercial software.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.6\textwidth]{cctpfa3.pdf}
+	\caption{Two cells $V_L$ and $V_R$ sharing the edge $\sigma$.}
+	\label{fig:cctpfa}
+\end{figure}
+Let us consider for instance the face $\sigma = \partial V_L \cup \partial 
+V_R$, according to Figure~\ref{fig:cctpfa}, and let the permeability tensor be 
+diagonal so that it act as a scalar. We approximate the derivative of the 
+pressure $\partial p /\partial 
+x$ with a centred finite difference:
+\begin{equation}
+\frac{\partial p}{\partial x} \simeq \frac{p_R-p_L}{x_R -x_L}.
+\end{equation}
+We approximate the permeability $\mathbf{K}$ with its value at 
+$\mathbf{x}_\sigma$, while 
+for the viscosity $\mu$ (and eventually the density $\varrho$) we employ the 
+upwind value.
+
+In case of discontinuous permeabilities at the edge $\sigma$, an harmonic 
+average weighted on the distances between the cell centres and the edge is 
+performed:
+\begin{equation}
+\frac{|x_R - x_L|}{\mathrm{K}} \simeq 
+\frac{|x_\sigma - x_L|}{\mathrm{K}_L}+\frac{|x_R - x_\sigma|}{\mathrm{K}_R}.
+\end{equation}
+
+These formulas for the TPFA approximation are the simplified version for a 
+Cartesian grid, while in the general case of an unstructured grid the method is 
+derived exploiting a decomposition of the vector
+\begin{equation}
+\mathbf{d}_{L,\sigma}=\mathbf{x}_\sigma - \mathbf{x}_L,
+\end{equation}
+based the co-normal vector $\mathbf{Kn}_L$ (see \cite{main:tpfa}). Moreover it 
+can be shown that this approximation is consistent only if the grid is 
+K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$. 
+%\section{Coupling conditions}
+% Disegno di cosa succede all'interfaccia
+% Not sure about this section...
+\section{Time discretization}
+For the temporal discretization we employ fully implicit, unconditionally 
+stable methods as the Backward Euler (BE) and the Backward Differencing Formula 
+2 (BDF2) also for non constant time steps. A monolithic approach is used, the 
+Jacobian matrix is computed 
+numerically then the UMFPACK solver is used. The time-step size depends of the 
+convergence of the Newton's method at the previous time iteration.
+\section{Summary}
+Fully implicit coupling, monolithic approach, UMFPACK, cenni alle coupling 
+conditions and boundary conditions, primary variables.

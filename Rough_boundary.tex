@@ -1,0 +1,303 @@
+\documentclass[11pt, a4paper]{article}
+\usepackage[british]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{booktabs}
+\usepackage{subfig}
+\usepackage{bbold}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{xspace}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+%\usetikzlibrary{plotmarks}
+%\usetikzlibrary{arrows.meta}
+%\usepgfplotslibrary{patchplots}
+%\usepackage{grffile}
+\usepackage[section]{placeins}
+\usepackage{tikz}
+\usepackage{pgfgantt}
+\usepackage{pdflscape}
+\usepackage{siunitx}
+\pgfplotsset{plot coordinates/math parser=false}
+
+\newlength{\figwidth}
+\setlength{\figwidth}{\textwidth}
+
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+
+\graphicspath{{img/}}
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+
+\title{\textbf{Channel flow with rough boundary}}
+\author{Andrea Vescovini}
+\date{\today}
+
+\begin{document}
+	\maketitle
+
+\section{Introduction}
+We want to test the behaviour of the TVD methods compared to the first order 
+upwind method in the simulation of a channel flow with a wall boundary 
+that is rough (i.e. not flat). Such a situation enhances the turbulence of the 
+flow and the creation of turbulent eddies (\cite{pope}), so the benefit of 
+using a higher order scheme should be noticeable. Moreover this is a situation 
+that can be found in coupled problems with a free-flow and a porous-medium, 
+because the interface between the two domains is usually rough 
+(\cite{fetzer}).\\
+
+\section{Test problem}
+We solve the unsteady incompressible Navier-Stokes equations 
+\eqref{eq:mass_bal} - \eqref{eq:mom_bal} over the channel domain $\Omega$. We 
+impose a 
+Dirichlet condition for the velocity \eqref{bc:in} at the inflow boundary 
+$\Gamma_{in}$, no-slip conditions for the velocity \eqref{bc:w} at  the wall 
+boundaries $\Gamma_w$, a zero-gradient conditions for the velocity 
+\eqref{bc:outv} and a Dirichlet condition for the pressure \eqref{bc:outp} at 
+the outflow boundary $\Gamma_{out}$. The problem is solved in the time interval 
+$[0,T]$, starting from the initial conditions \eqref{ci:v}-\eqref{ci:p}. We 
+choose $\varrho = \SI{1}{kg/m^3}$, $p_{ext} = \SI{1.1e5}{Pa}$ and $u_{in} = 
+\SI{1}{m/s}$.
+
+\begin{align}
+\label{eq:mass_bal} \nabla \cdot
+\mathbf{v} = 0 \quad &\text{in} \; \; \Omega \times [0, T]\\
+\label{eq:mom_bal} \frac{\partial{(\varrho \mathbf{v}})}{\partial t} + \nabla 
+\cdot (\varrho \mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\mu (\nabla 
+\mathbf{v} + \nabla \mathbf{v}^\mathrm{T})) + 
+\nabla p = 0 \quad &\text{in} \; \; \Omega \times [0, T]\\
+\label{bc:in} \mathbf{v} = [u_{in}, 0]^\mathrm{T} \quad &\text{on} \; \;
+\Gamma_{in} \times [0, T]\\
+\label{bc:w} \mathbf{v} = [0, 0]^\mathrm{T} \quad &\text{on} \; \; \Gamma_w 
+\times [0, T]\\
+\label{bc:outv} (\nabla \mathbf{v}) \mathbf{n} = [0, 0]^\mathrm{T}
+\quad &\text{on} \; \; \Gamma_{out} \times [0,T]\\
+\label{bc:outp} p = p_{ext} \quad &\text{on} \;\; \Gamma_{out} \times 
+[0,T]\\
+\label{ci:v} \mathbf{v} = [0, 0]^\mathrm{T} \quad &\text{in} \; \; \Omega, \; 
+t=0\\
+\label{ci:p} p = p_{ext} \quad &\text{in} \; \; \Omega, \; t=0
+\end{align}
+
+\subsection{First case}
+First we set $\mu = \SI{5e-4}{\pascal\second}$, so that $Re = 2000$. The domain 
+$\Omega$ 
+is depicted in Figure \ref{fig:line_comp} and it is discretized using a mesh 
+of \num{95x50} elements for its rectangular bounding box so that inside each 
+small cavity there are \num{5x5} elements.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width = \textwidth]{rough_domain.png}
+	\caption{The domain $\Omega$ with a rough boundary made of small cavities.}
+	\label{fig:rough_domain}
+\end{figure}
+
+The problem is solved over the time interval $[0, T] = [0, \SI{10}{s}]$, the 
+initial 
+$\Delta t$ is equal to \SI{0.005}{s}, then it is adapted according to the 
+convergence 
+of the Newton method at the previous time-step, with a maximum length of 
+\SI{0.1}{s}.
+A reference solution is computed over a mesh of \num{570x300} elements, 
+employing the upwind scheme.
+
+In Figure \ref{fig:line_comp} the magnitude of the velocity along a section of 
+the channel at $x=\SI{8.75}{m}$ at the last time step is reported. From the 
+plot we 
+can see that the 
+solution obtained using the TVD methods matches the reference solution, while 
+the upwind one is slightly shifted towards the upper part of the channel. In 
+Table \ref{tab:err} it is reported the $L^2$ error along the section between 
+the different methods and the better behaviour of the TVD methods is confirmed.
+From the plot we can also observe that even if the cavities are small there is 
+a recirculation of the fluid inside them. 
+
+\begin{figure}[h]
+	\centering
+	\input{img/line_comparison}
+	\caption{Velocity magnitude at $x=\SI{8.75}{m}$ and $t=\SI{10}{s}$ at $Re = 
+	2000$}
+	\label{fig:line_comp}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{rough_channel_vl}
+	\caption{Velocity magnitude at $t=\SI{10}{s}$, $Re=2000$, Van Leer method.}
+	\label{fig:cha_vl}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{rough_channel_end}
+	\caption{Velocity magnitude at $t=\SI{10}{s}$, $Re=2000$, reference 
+	solution.}
+	\label{fig:cha_end}
+\end{figure}
+
+\begin{table}[h]
+	\scriptsize
+	\centering
+	\[
+	\begin{array}{cccccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada} & \text{MinMod} & 
+	\text{Superbee} & \text{McLimiter} \\ 
+	\midrule
+	1.708 \times 10^{-4} & 9.556 \times 10^{-6} & 1.119 \times 10^{-5} & 1.537 
+	\times 10^{-5} & 8.335 \times 10^{-6} & 8.659 \times 10^{-6}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{$L^2$-errors along a section at $x=8.75$m and $t=10$ at $Re = 
+	2000$}
+	\label{tab:err}
+\end{table}
+
+The Upwind method has of an order of magnitude grater then the other methods. 
+The Superbee shows the best result, however during the simulation it required 
+more Newton steps to converge at each time iterations, resulting in a higher 
+computational time.
+
+\FloatBarrier
+\subsection{Second case}
+Next we solve the same problem over the domain $\Omega$ depicted in Figure 
+\ref{fig:line_comp_highstep}, with square cavities that are deeper then those 
+in the previous case. The domain has been extended and so a greater number of 
+elements in the vertical direction is used, but the cell size is the same of 
+that one in the previous case.
+\begin{figure}[h]
+	\centering
+	\includegraphics[width = \textwidth]{rough_domain_highstep.png}
+	\caption{The domain $\Omega$ with a rough boundary made of deep cavities.}
+	\label{fig:rough_domain_highstep}
+\end{figure}
+
+In Figure \ref{fig:line_comp_highstep} the magnitude of the velocity along a 
+section of the channel at $x=\SI{8.75}{m}$ at the last time step is reported. 
+We 
+observe a small difference between the upwind the the TVD methods like in the 
+previous case, but now there is also a great difference inside the cavity 
+($y<\SI{0.5}{m}$). The upwind method has a low of numerical diffusion and the 
+variations in the velocity profile related to the recirculation in the cavity 
+are smoothed down. The TVD methods do not match exactly the reference solution 
+but the result is more accurate. Moreover we have to remember that this portion 
+of the domain is of crucial importance in coupled problem because the velocity 
+at the interface is responsible for the exchange processes that occur.
+\begin{figure}[h]
+	\centering
+	\input{img/line_comparison_highstep}
+	\caption{Velocity magnitude at $ x = \SI{8.75}{m}$ at $Re = 2000$ with deep 
+	cavities}
+	\label{fig:line_comp_highstep}
+\end{figure}
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[width=\textwidth]{rough_channel_high_diff}
+	\caption{Absolute value of the difference between the magnitude of the 
+	velocities obtained with the Upwind and Van Leer methods. $Re = 2000$,
+	deep cavities.}
+	\label{fig:cha_diff}
+\end{figure}
+
+\begin{table}[h]
+	\scriptsize
+	\centering
+	\[
+	\begin{array}{cccccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada} & \text{MinMod} & 
+	\text{Superbee} & \text{McLimiter} \\ 
+	\midrule
+	3.180 \times 10^{-4} & 5.862 \times 10^{-5} & 6.900 \times 10^{-5} & 8.579 
+	\times 10^{-5} & 7.883 \times 10^{-5} & 5.584 \times 10^{-5}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{$L^2$-errors along a section at $x=\SI{8.75}{m}$ at $Re = 2000$ 
+	with deep cavities}
+	\label{tab:err_high}
+\end{table}
+
+\FloatBarrier
+\subsection{Third case}
+
+In this third case we solve the same problem over the domain $\Omega$ with 
+small cavities (Figure \ref{fig:rough_domain}), but at $Re=1$, choosing an 
+higher 
+viscosity $\mu=\SI{1}{\pascal\second}$. At this regime we observe from Figure 
+\ref{fig:line_comp_lre} and Table \ref{tab:err_lre} that the results are the 
+same for all the methods. Moreover we observe from the velocity profile that 
+there is not the usual recirculation in the cavities.
+\begin{figure}[h]
+	\centering
+	\input{img/line_comparison_lre}
+	\caption{Velocity magnitude at $ x = \SI{8.75}{m}$ at $Re = 1$}
+	\label{fig:line_comp_lre}
+\end{figure}
+
+\begin{table}[h]
+	\scriptsize
+	\centering
+	\[
+	\begin{array}{cccccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada} & \text{MinMod} & 
+	\text{Superbee} & \text{McLimiter} \\ 
+	\midrule
+	3.431 \times 10^{-6} & 2.917 \times 10^{-6} & 2.937 \times 10^{-6} & 2.956 
+	\times 10^{-6} & 2.899 \times 10^{-6} & 2.902 \times 10^{-6}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{$L^2$-errors along a section at $x=\SI{8.75}{m}$ at $Re=1$}
+	\label{tab:err_lre}
+\end{table}
+
+\FloatBarrier
+
+\section{RANS test}
+We would like to perform the test over the domain $\Omega$ at higher $Re$, 
+employing a RANS model to take into account the effect of turbulence that would 
+be lost with the Navier-Stokes model.\\
+The available turbulence models in \DUMUX are:
+\begin{itemize}
+	\item Algebraic models that exploit the mixing length concept: Prandtl, Van 
+	Driest, Baldwin-Lomax. They compute the turbulent viscosity $\nu_t$ without 
+	any additional PDE, so they are a cheap choice, but they have been 
+	developed in order to solve simple situations with flat walls, but our case 
+	such a simple one.
+	\item The Spalart-Allmaras one equation model that uses one PDE to compute 
+	the evolution of a variable $\tilde{\nu}$ that is proportional to the 
+	turbulent viscosity $\nu_t$.
+	\item Two equations models: $k$-$\varepsilon$, low-$Re$ $k$-$\varepsilon$, 
+	$k$-$\omega$. The $k$-$\varepsilon$ model exploits a wall law in order for 
+	the approximation of the velocities near the boundaries. Since our lower 
+	boundary is not flat, the straight forwards application of the wall law 
+	could produce wrong results. It is better to rely on the low-$Re$ 
+	$k$-$\varepsilon$ and $k$-$\omega$ models that solve the evolution 
+	equations in the whole domain.
+\end{itemize}
+%
+The equations needed by the RANS model are independent of the TVD 
+discretization that we have adopted for the momentum equation because they are 
+discretized using a cell-centred grid.
+
+\section{Conclusions}
+\begin{thebibliography}{99}\label{sec:bib}
+	
+	\bibitem{fetzer} T. Fetzer. \emph{Coupled Free and Porous-Medium Flow 
+	Processes Affected by Turbulence and Roughness}. PhD thesis, Universit\"at 
+	Stuttgart, 2018.
+	
+	\bibitem{pope} S. B. Pope. \emph{Turbulent Flows}. Cambridge University 
+	Press, 2006.
+	
+\end{thebibliography}
+
+\end{document}

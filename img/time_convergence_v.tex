@@ -1,0 +1,77 @@
+% This file was created by matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+\definecolor{mycolor2}{rgb}{0.85000,0.32500,0.09800}%
+\definecolor{mycolor3}{rgb}{0.92900,0.69400,0.12500}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\timehalfwidth,
+height=0.75\timehalfheight,
+at={(0\timehalfwidth,0\timehalfheight)},
+scale only axis,
+xmode=log,
+xmin=1,
+xmax=100,
+xminorticks=true,
+xlabel style={font=\color{white!15!black}\scriptsize},
+xlabel={\# timesteps},
+ymode=log,
+ymin=1e-5,
+ymax=1e-1,
+yminorticks=true,
+ylabel style={font=\color{white!15!black}\scriptsize},
+ylabel={$L^\infty$-error},
+axis background/.style={fill=white},
+legend style={at={(0.03,0.03)}, anchor=south west, legend cell align=left, 
+align=left, draw=white!15!black, font=\tiny}
+]
+\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}]
+  table[row sep=crcr]{%
+1	5.516e-2\\
+2	3.043e-2\\
+4	1.607e-2\\
+8	8.216e-3\\
+16	4.12e-3\\
+32	2.03e-3\\
+64	9.712e-4\\
+};
+\addlegendentry{BE ($\num{40x40}$)}
+
+\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}]
+  table[row sep=crcr]{%
+1	5.516e-2\\
+2	1.645e-2\\
+4	4.8e-3\\
+8	1.21e-3\\
+16	2.85e-4\\
+32	1.3e-4\\
+64	1.278e-4\\
+};
+\addlegendentry{BDF2 ($\num{40x40}$)}
+
+\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}]
+  table[row sep=crcr]{%
+1	5.42e-2\\
+2	1.647e-2\\
+4	4.83e-3\\
+8	1.231e-3\\
+16	3.024e-4\\
+32	7.061e-5\\
+64	3.6e-5\\
+};
+\addlegendentry{BDF2 ($\num{80x80}$)}
+
+\addplot [color=white!70!black, forget plot]
+  table[row sep=crcr]{%
+1	0.1\\
+100	0.001\\
+};
+\addplot [color=white!70!black, forget plot]
+  table[row sep=crcr]{%
+1	0.1\\
+100	0.00001\\
+};
+\end{axis}
+\end{tikzpicture}%

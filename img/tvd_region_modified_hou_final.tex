@@ -1,0 +1,71 @@
+% This file was created by matlab2tikz.
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\tvdwidth,
+height=\tvdheight,
+at={(0\tvdwidth,0\tvdheight)},
+scale only axis,
+xmin=0,
+xmax=4,
+xlabel style={font=\color{white!15!black}},
+xlabel={$r$},
+ymin=0,
+ymax=2.5,
+ylabel style={font=\color{white!15!black}, rotate=-90},
+ylabel={$\psi$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+
+\addplot[area legend, line width=1.0pt, draw=black, fill=white!80!black, fill opacity=0.5, forget plot]
+table[row sep=crcr] {%
+x	y\\
+0	0\\
+1	1\\
+0.444444444444444	1\\
+}--cycle;
+
+\addplot[area legend, line width=1.0pt, draw=black, fill=white!80!black, fill opacity=0.5, forget plot]
+table[row sep=crcr] {%
+x	y\\
+1	1\\
+5.5	1\\
+5.5	1.8\\
+1.8	1.8\\
+}--cycle;
+\addplot [color=black, dashed, line width=1.0pt, forget plot]
+  table[row sep=crcr]{%
+0	1.8\\
+1.8	1.8\\
+};
+\addplot [color=black, dashed, line width=1.0pt, forget plot]
+  table[row sep=crcr]{%
+0.444444444444444	1\\
+1.11111111111111	2.5\\
+};
+\end{axis}
+
+\begin{axis}[%
+width=1.227\tvdwidth,
+height=1.35\tvdheight,
+at={(-0.16\tvdwidth,-0.135\tvdheight)},
+scale only axis,
+xmin=0,
+xmax=1,
+ymin=0,
+ymax=1,
+axis line style={draw=none},
+ticks=none,
+axis x line*=bottom,
+axis y line*=left,
+legend style={legend cell align=left, align=left, draw=white!15!black}
+]
+\node[below right, align=left, draw=none,]
+at (rel axis cs:0.046,0.7) {\small$R_{U,D}$};
+\node[below right, align=left, draw=none]
+at (rel axis cs:0.35,1.02) {\small $\dfrac{R_{FU,U}}{R_{FU,U}-1}r$};
+\end{axis}
+\end{tikzpicture}%
