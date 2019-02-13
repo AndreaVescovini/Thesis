@@ -1,1 +1,15 @@
 /*.pdf
+*.aux
+*.toc
+/*.txt
+*.snm
+*.nav
+*.gz
+/*.log
+*.out
+*.bbl
+*.lot
+*.lof
+*.xml
+*.bcf
+*.blg

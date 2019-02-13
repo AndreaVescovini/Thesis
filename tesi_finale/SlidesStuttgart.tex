@@ -116,8 +116,8 @@ and Melanie Lipp}}
 \begin{frame}{Introduction}
 	\begin{itemize}
 		\item Coupled free-flow and porous-medium flow systems are common in 
-		many applications: soil evaporation, PEM fuel cells, industrial drying 
-		processes, \dots
+		many applications: PEM fuel cells, industrial drying processes, soil 
+		evaporation, \dots
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.75\textwidth]{intropicture.png}
@@ -327,16 +327,22 @@ u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{TVD region - Sweby's diagram}
-\begin{minipage}[t]{0.68\textwidth}
+\begin{minipage}[t]{0.63\textwidth}
 \begin{figure}
 	\centering
 	\hspace{-1.24cm}
 	\input{../img/Tvd_region_slides}
 \end{figure}
 \end{minipage}
-\begin{minipage}[t]{0.30\textwidth}
-	\vspace{2cm}
+\begin{minipage}[t]{0.35\textwidth}
+	\vspace{1cm}
 %	\hspace{1cm}
+\begin{equation*}
+	r \leq \psi \leq \min \{2r, 1\}, \; r\leq1
+\end{equation*}
+\begin{equation*}
+	1 \leq \psi \leq \min \{r, 2\}, \; r>1
+\end{equation*}
 	Symmetry property:
 	\begin{equation*}
 	\psi\bigg(\frac{1}{r}\bigg) = \frac{\psi(r)}{r}
@@ -602,7 +608,7 @@ solution the one obtained with a mesh
 \begin{figure}
 	\centering
 	\subfloat[\scriptsize $u$ profile at $y=h$, 
-	$d=1$]{\hspace{-0.5cm}\input{../img/cavities_vel1}}
+	$d=\SI{1}{m}$]{\hspace{-0.5cm}\input{../img/cavities_vel1}}
 	\subfloat[\scriptsize Peak velocity above the second 
 	cavity]{\input{../img/cavities_peaks}}
 \end{figure}
@@ -636,6 +642,7 @@ porous medium between the two cavities.
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_first_cavity.png}
+	\caption{\tiny $\mathrm{K}=\SI{3.1e-7}{m^2}$, $Re=\num{6e5}$}
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -643,6 +650,7 @@ porous medium between the two cavities.
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_second_cavity.png}
+	\caption{\tiny $\mathrm{K}=\SI{3.1e-7}{m^2}$, $Re=\num{6e5}$}
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -740,6 +748,30 @@ such that the exact solution is:
 &\mathbf{v}_\text{ex} = [-cos(x) sin(x), \; sin(x) cos(y)]^\mathrm{T}\\
 &p_\text{ex} = -\frac{1}{4} (cos(2x)+cos(2y))
 \end{align*}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{\hyperlink{spaceconv}{Spatial convergence - steady SinCos 
+problem}}
+\begin{figure}
+	\centering
+	\input{../img/l2error_test_navierstokes_sincos_vl_hre_slides}
+	\caption{\tiny Van Leer, $Re=1000$}
+\end{figure}
+\vspace{-0.3cm}
+\begin{table}\footnotesize
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
+	\midrule
+	p & 1.008 & 1.569 & 1.626\\
+	u & 1.143 & 1.962 & 1.977\\
+	v & 1.058 & 1.928 & 1.945\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption{\tiny Convergence orders with $Re = 1$}
+\end{table}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[label=timeconvSupp]{\hyperlink{timeconv}{SinCos unsteady problem}}
