@@ -462,7 +462,7 @@ Starting from the momentum equation of the Navier-Stokes model \eqref{eq:nsmom}
 and from the decomposition in mean value plus fluctuation \eqref{eq:decomp}, we 
 derive an equation for $k$:
 \begin{equation}
-	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla 
+	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla \cdot
 	\bigg[ \bigg(\nu + \frac{\nu_t}{\sigma_k}\bigg) \nabla k\bigg] 
 	-2\nu_t \mathbf{S} \cdot \mathbf{S} + \varepsilon = 0,
 \end{equation}
@@ -472,7 +472,8 @@ terms difficult to model and to measure, so an empirical equation built in
 analogy with the one for $k$ is used:
 \begin{equation} \label{eq:epsilon}
 		\frac{\partial \varepsilon}{\partial t} + \nabla \cdot (\varepsilon 
-		\mathbf{v}) - \bigg[ \bigg(\nu + \frac{\nu_t}{\sigma_\varepsilon} 
+		\mathbf{v}) - \nabla \cdot \bigg[ \bigg(\nu + 
+		\frac{\nu_t}{\sigma_\varepsilon} 
 		\bigg) \nabla \varepsilon \bigg] - C_{\varepsilon_1} 
 		\frac{\varepsilon}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} + 
 		C_{\varepsilon_2}\frac{\varepsilon^2}{k} = 0
@@ -505,7 +506,7 @@ times by \textcite{turbo:komega}.
 The equation for the turbulent kinetic energy is analogous to the one used in 
 the $k\text{-}\varepsilon$ model:
 \begin{equation} \label{eq:komegak}
-	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla 
+	\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla \cdot 
 \bigg[\bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] -P + \beta^* k 
 \omega = 0,
 \end{equation}
@@ -517,8 +518,10 @@ The equation for $\omega$ is empirical and driven by physical considerations as
 it was the equation \eqref{eq:epsilon} for $\varepsilon$:
 \begin{equation} \label{eq:komegaomega}
 	\frac{\partial \omega}{\partial t} + \nabla (\omega \mathbf{v}) - 
-	\nabla \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla \omega 
-	\bigg] - \alpha \frac{\omega}{k} P -\frac{\sigma_d}{\omega} \nabla k \cdot 
+	\nabla \cdot \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla 
+	\omega 
+	\bigg] - \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
+	-\frac{\sigma_d}{\omega} \nabla k \cdot 
 	\nabla \omega+ \beta \omega^2 = 0
 \end{equation}
 The term

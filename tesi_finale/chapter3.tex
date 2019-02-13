@@ -4,8 +4,8 @@ For the spatial discretization we use the finite volumes methods, which allow
 to solve efficiently flow problems guaranteeing the mass conservation. See 
 \cite{fv:leveque} for a broad description.
 In the free-flow region we discretize the equations using the staggered grid 
-concept, while in the porous-medium we use a cell-centred framework with a Two 
-Point Flux Approximation (TPFA).
+concept, while in the porous-medium we employ a cell-centred approach with a 
+Two Point Flux Approximation (TPFA).
 
 For the temporal discretization we use implicit finite differences methods, 
 like Backward Euler (BE) and the Backward Differencing Formula 2 (BDF2).
@@ -13,17 +13,16 @@ like Backward Euler (BE) and the Backward Differencing Formula 2 (BDF2).
 \section{Staggered grid concept}
 The staggered grid concept is characterized by the distinction between the 
 degrees of freedom related to scalar primary variables and those related to 
-vectorial primary variables. It is useful for the discretization through finite 
-volumes of saddle point problems, like the Navier-Stokes or RANS equations. 
-Indeed, in these kind of problems, if we locate all the primary variables, i.e. 
+vectorial primary variables. In saddle point problems, like the incompressible 
+Navier-Stokes or RANS equations, if we locate all the primary variables, i.e. 
 pressure, velocity and possibly the turbulent kinetic energy and its 
-dissipation rate, at the same positions in the grid, spurious mode in the 
+dissipation rate, at the same positions in the grid, spurious modes in the 
 solution may arise, leading to wrong results. A possible fix to this issue 
-is thus to store the primary variables in a \emph{staggered} fashion, putting 
+is thus to store the variables in a \emph{staggered} fashion, putting 
 the degrees of freedom related to scalar variables at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
-normal direction. Therefore we obtain different control volumes for the 
-variables, as we can see in Figure~\ref{fig:staggrid} for the case of the 
+normal direction. Therefore we obtain different control volumes, as we can see 
+in Figure~\ref{fig:staggrid} for the case of the 
 Navier-Stokes equations in a two-dimensional domain.
 \begin{figure}[t]
 	\centering
@@ -32,10 +31,12 @@ Navier-Stokes equations in a two-dimensional domain.
 	\caption[Staggered grid control volumes]{An example of a staggered grid 
 	with the pressure degrees of freedom (dofs) stored at the centres of the 
 	cells and the velocity dofs stored on the faces. The different control 
-	volumes are highlighted. The indices in capital letters $\dots,I,I+1,\dots$ 
-	and $\dots,J,J+1,\dots$ refer to cells, thus to the position of 
+	volumes are highlighted. The indices in capital letters 
+	$\dots,I-1,I,I+1,\dots$ 
+	and $\dots,J-1,J,J+1,\dots$ refer to cells, thus to the position of 
 	cell-centred variables, while the indices in lower case letters 
-	$\dots,i,i+1,\dots$ and $\dots,j,j+1,\dots$ refer to faces, thus to the 
+	$\dots,i-1,i,i+1,\dots$ and $\dots,j-1,j,j+1,\dots$ refer to faces, thus to 
+	the 
 	position of staggered variables.}
 	\label{fig:staggrid}
 \end{figure}
@@ -55,8 +56,10 @@ $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 \subsection{Cell-centred equations}
 \subsubsection{Continuity equation}
 The continuity equation \eqref{eq:ransmass} can be discretized straight forward 
-because it does not involve the density. We integrate over the ``grey'' control 
-volume $V_p = [i-1,i] \times [j-1,j]$, according to Figure~\ref{fig:staggrid}, 
+because, since we are dealing with incompressible fluids, it does not involve 
+the density. We integrate over the ``grey'' control 
+volume $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$, according to 
+Figure~\ref{fig:staggrid}, 
 and we apply the Gauss's divergence theorem:
 \begin{equation}
 \int_{V_p} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_p} \mathbf{v} \cdot 
@@ -71,16 +74,110 @@ that we identify with $e_p$ (east), $n_p$ (north), $w_p$ (west), $s_p$ (south):
 At this point we discretize the equation approximating the values of the 
 velocity with the value at the centre of the edges, for example:
 \begin{equation}
-\int_{e_p} u \; dA \simeq u_{i,J} |{e_p}|,
+\int_{e_p} u \; dA \approx u_{i,J} |e_p|,
 \end{equation}
-thus obtaining
+where $|e_p|$ denotes the measure of the face $e_p$. Thus we obtain
 \begin{equation}
 	u_{i,J} |e_p| + v_{I,j}|n_p| - u_{i-1,J}|w_p| - v_{I,j-1}|s_p| = 0
 \end{equation}
 \subsubsection{Turbulence model equations}
 The equations for the turbulent kinetic energy \eqref{eq:komegak} and the 
-specific dissipation rate $\omega$ are treated analogously to the continuity 
-equation, but they involve more terms.
+specific dissipation rate \eqref{eq:komegaomega} are treated analogously to the 
+continuity equation, but they involve more terms. Let us integrate them over 
+the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
+\begin{itemize}
+	\item the storage terms are approximated with the values at the centre of 
+	the cell:
+	\begin{equation}
+	\int_{V_p} \frac{\partial k}{\partial t} \; dV \approx \frac{\partial 
+	k_{I,J}}{\partial t}|V_p|, \quad \int_{V_p} \frac{\partial \omega}{\partial 
+	t} \; dV \approx \frac{\partial \omega_{I,J}}{\partial t}|V_p|.
+	\end{equation}
+	\item in the convective terms the we apply the Gauss's divergence theorem:
+	\begin{equation}
+		\int_{V_p} \nabla \cdot (k \mathbf{v}) \; dV = \int_{\partial V_p} k 
+		(\mathbf{v} 
+		\cdot \mathbf{n}) \; dA,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \nabla \cdot (\omega \mathbf{v}) \; dV = \int_{\partial V_p} 
+	\omega 
+	(\mathbf{v} \cdot \mathbf{n}) \; dA,
+	\end{equation}
+	then, considering for example the edge $e_p$, we approximate the velocity 
+	with the value at the centre of the face, while for the transported 
+	quantities $k$ and $\omega$ we employ the upwind value with respect to the 
+	sign of the velocity, i.e. supposing that $u_{i,J}>0$ we have:
+	\begin{equation}
+		\int_{e_p} ku \; dA \approx k_{I,J}u_{i,J}|e_p|, \quad \int_{e_p} 
+		\omega u \; dA \approx \omega_{I,J}u_{i,J}|e_p|.
+	\end{equation}
+	Notice that this approach is not the only possible choice, as it will be 
+	explained with more details in Subsections~\ref{subsec:diffscheme} and 
+	\ref{subsec:tvd}.
+	\item in the diffusive terms we apply the Gauss's divergence theorem:
+	\begin{equation}
+		\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + 
+		\sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] \; dV = \int_{\partial 
+		V_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k \cdot 
+		\mathbf{n} \; dA,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + \sigma\frac{k}{\omega}\bigg) 
+	\nabla \omega\bigg] \; dV = \int_{\partial V_p} \bigg(\nu + \sigma 
+	\frac{k}{\omega}\bigg) \nabla \omega \cdot \mathbf{n} \; dA.
+	\end{equation}
+	Then, considering for example the edge $e_p$, we approximate the 
+	derivatives of $k$ and $\omega$ with centred finite differences, while the 
+	coefficients involving the viscosity are approximated by a weighted average 
+	between the values at the centre of the cells sharing the edge, thus 
+	assuming a linear trend:
+	\begin{equation}
+	\int_{e_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \frac{\partial 
+	k}{\partial x} \; dA \approx \bigg(\nu + \sigma^* 
+	\frac{k}{\omega}\bigg)_\text{avg} \frac{k_{I+1,J}-k_{I,J}}{x_{I+1}-x_I} 
+	|e_p|,
+	\end{equation}
+	\begin{equation}
+	\int_{e_p} \bigg(\nu + \sigma\frac{k}{\omega}\bigg) \frac{\partial 
+	\omega}{\partial x} \; dA \approx \bigg(\nu + \sigma 
+	\frac{k}{\omega}\bigg)_\text{avg} 
+	\frac{\omega_{I+1,J}-\omega_{I,J}}{x_{I+1} - x_I} |e_p|,
+	\end{equation}
+	\begin{equation}
+	(\ast)_\text{avg} = \frac{x_{I+1} - x_i}{x_{I+1} - x_I}(\ast)_{I,J} + 
+	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
+	\end{equation}
+	\item in the source terms the entries of $\mathbf{S}$, $\nabla k$ and 
+	$\nabla \omega$ are approximated through centred finite differences:
+	\begin{equation}
+		\frac{\partial u}{\partial x} \approx \frac{u_i-u_{i-1}}{x_i-x_{i-1}}, 
+		\quad \frac{\partial v}{\partial y} \approx 
+		\frac{v_j-v_{j-1}}{y_j-y_{j-1}}
+	\end{equation}
+	\begin{equation}
+		\frac{\partial k}{\partial x} \approx \frac{k_{I+1,J} - 
+		k_{I-1,J}}{x_{I+1} - x_{I-1}}, 
+		\quad \frac{\partial k}{\partial y} \approx 
+		\frac{k_{I,J+1}-k_{i,J-1}}{y_{J+1}-y_{J-1}},
+	\end{equation}
+	\begin{equation}
+		\frac{\partial \omega}{\partial x} \approx \frac{\omega_{I+1,J} - 
+		\omega_{I-1,J}}{x_{I+1} - x_{I-1}}, \quad \frac{\partial 
+		\omega}{\partial y} \approx 
+		\frac{\omega_{I,J+1}-\omega_{i,J-1}}{y_{J+1}-y_{J-1}}.
+	\end{equation}
+	\item the sink terms are approximated with the values at the centres of the 
+	cells:
+	\begin{equation}
+		\int_{V_p} \beta^* k \omega \; dV \approx 
+		\beta^*k_{I,K}\omega_{I,J}|V_p|,
+	\end{equation}
+	\begin{equation}
+		\int_{V_p} \beta \omega^2 \; dV \approx \beta \omega_{I,J}^2 |V_p|.
+	\end{equation}
+\end{itemize}
+%
 \subsection{Staggered equations}
 The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
 control volumes. Let us consider the equation for the component $u$:
@@ -93,7 +190,8 @@ Notice that, since we are considering a two-dimensional model, we have
 substituted the factor $2/3$ with a $1$ in front of $\varrho k$, because it 
 came from the requirement \eqref{eq:tracciatau}.
 
-We integrate it over the ``red'' control volume $V_u=[I, I+1]\times[j-1,j]$, 
+We integrate it over the ``red'' control volume $V_u=[x_I, 
+x_{I+1}]\times[y_{j-1},y_j]$, 
 according to Figure~\ref{fig:staggrid}, and apply the Gauss's divergence 
 theorem:
 \begin{multline} \label{eq:stagmomeq}
@@ -119,7 +217,7 @@ let us consider each of them separately, starting from the simplest one:
 	\item in the storage term we approximate the velocity with the value at the 
 	centre of the control volume:
 	\begin{equation}
-	\frac{d}{dt} \int_{V_u} \varrho u\; dV \simeq \frac{d}{dt} \big( \varrho 
+	\frac{d}{dt} \int_{V_u} \varrho u\; dV \approx \frac{d}{dt} \big( \varrho 
 	u_{i,J} \big)|V_u|;
 	\end{equation}
 	%
@@ -131,10 +229,10 @@ let us consider each of them separately, starting from the simplest one:
 	\end{equation}
 	Then we approximate $p$ and $k$ with the values at the centre of the edges:
 	\begin{equation}
-	\int_{e_u} (p+\varrho k) \; dA \simeq (p_{I+1,J} +\varrho k_{I+1,J}) |e_u|,
+	\int_{e_u} (p+\varrho k) \; dA \approx (p_{I+1,J} +\varrho k_{I+1,J}) |e_u|,
 	\end{equation}
 	\begin{equation}
-	\int_{w_u} (p+\varrho k) \; dA \simeq (p_{I,J} +\varrho k_{I,J}) |w_u|.
+	\int_{w_u} (p+\varrho k) \; dA \approx (p_{I,J} +\varrho k_{I,J}) |w_u|.
 	\end{equation}
 	%
 	\item in the diffusive term we have both a frontal momentum flux 
@@ -153,38 +251,35 @@ let us consider each of them separately, starting from the simplest one:
 	the value at the centre of the edge, while we approximate the derivative of 
 	the velocity with a centred finite difference:
 	\begin{equation}
-	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \simeq 
-	\mu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{\Delta x} |e_u|,
+	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \approx 
+	\mu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{x_{i+1}-x_i} |e_u|.
 	\end{equation}
-	where $\Delta x$ is the distance between the coordinate of $i$ and the one 
-	of $i+1$ along the $x$-axis. For the lateral momentum flux we split the 
-	edge $n_u$ into the two halves related to the two cells 
-	$[i-1,i]\times[j-1,j]$ and $[i,i+1]\times[j-1,j]$:
+	For the lateral momentum flux we split the 	edge $n_u$ into the two halves 
+	related to the two cells $[x_{i-1},x_i]\times[y_{j-1},y_j]$ and 
+	$[x_i,x_{i+1}]\times[y_{j-1},y_j]$:
 	\begin{equation}
-	n_u = [I,i]\times \{j\} \cup [i,I+1] \times \{j\}.
+	n_u = [x_I,x_i]\times \{y_j\} \cup [x_i,x_{I+1}] \times \{y_j\}.
 	\end{equation}
 	We employ again a centred finite difference to approximate of the 
 	derivative of the velocity, while, for the approximation of the viscosity, 
 	we compute an average between the two cells sharing the face:
 	\begin{equation}
 	\int_{n_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA = 
-	\int_{\{I,j\}}^{\{i,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
-	+\int_{\{i,j\}}^{\{I+1,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
-	dA
+	\int_{x_{I,j}}^{x_{i,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	+\int_{x_{i,j}}^{x_{I+1,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
+	dA,
 	\end{equation}
 	\begin{equation*}
-	\int_{\{I,j\}}^{\{i,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
-	\simeq \frac{1}{2}\big(\mu_{\text{eff},\{I,J\}}+\mu_{\text{eff},\{I,J+1\}} 
-	\big) \frac{u_{i,J+1}-u_{i,J}}{\Delta y} \frac{|n|}{2} 
+	\int_{x_{I,j}}^{x_{i,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	\approx \frac{1}{2}\big(\mu_{\text{eff},\{I,J\}}+\mu_{\text{eff},\{I,J+1\}} 
+	\big) \frac{u_{i,J+1}-u_{i,J}}{y_{J+1}-y_J} \frac{|n_u|}{2},
 	\end{equation*}
 	\begin{equation*}
-	\int_{\{i,j\}}^{\{I+1,j\}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
-	dA \simeq \frac{1}{2}\big( \mu_{\text{eff},\{I+1,J\}}+ 
-	\mu_{\text{eff},\{I+1,J+1\}} \big) \frac{u_{i,J+1}-u_{i,J}}{\Delta y} 
-	\frac{|n|}{2},
+	\int_{x_{i,j}}^{x_{I+1,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
+	dA \approx \frac{1}{2}\big( \mu_{\text{eff},\{I+1,J\}}+ 
+	\mu_{\text{eff},\{I+1,J+1\}} \big) \frac{u_{i,J+1}-u_{i,J}}{y_{J+1}-y_J} 
+	\frac{|n_u|}{2}.
 	\end{equation*}
-	where $\Delta y$ is the distance between the coordinate of $J$ and the one 
-	of $J+1$ along the $y$-axis.
 	%
 	\item in the convective term we have again both a frontal momentum flux 
 	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
@@ -209,16 +304,15 @@ let us consider each of them separately, starting from the simplest one:
 	an average between the values of the two staggered cells sharing the 
 	staggered edge:
 	\begin{equation}
-		\int_{e_u} \varrho u u \; dA \simeq \varrho u^* \frac{u_{i,J} + 
+		\int_{e_u} \varrho u u \; dA \approx \varrho u^* \frac{u_{i,J} + 
 		u_{i+1,J}}{2}|e_u|.
 	\end{equation}
 	For the lateral momentum flux we approximate the transporting velocity with 
 	an average between the values a the two ends of the edge:
 	\begin{equation}
-	\int_{n_u} \varrho u v \; dA \simeq \varrho u^* \frac{v_{I,j} 
+	\int_{n_u} \varrho u v \; dA \approx \varrho u^* \frac{v_{I,j} 
 	+v_{I+1,j}}{2} |n_u|.
 	\end{equation}
-	
 \end{itemize}
 
 The equation for the component $v$ of the velocity is analogous with the only 
@@ -232,7 +326,8 @@ with $g = \SI{-9.81}{m/s}$. The gravity term is discretized straight-forward:
 \begin{equation}
 \int_{V_v} \varrho g \; dV = \varrho g |V_v|,
 \end{equation}
-where $V_v = [i-1, i] \times [J, J+1]$ is the ``blue'' control volume in 
+where $V_v = [x_{i-1}, xi] \times [y_J, y_{J+1}]$ is the ``blue'' control 
+volume in 
 Figure~\ref{fig:staggrid}. 
 
 %
@@ -520,7 +615,7 @@ diagonal so that it act as a scalar. We approximate the derivative of the
 pressure $\partial p /\partial 
 x$ with a centred finite difference:
 \begin{equation}
-\frac{\partial p}{\partial x} \simeq \frac{p_R-p_L}{x_R -x_L}.
+\frac{\partial p}{\partial x} \approx \frac{p_R-p_L}{x_R -x_L}.
 \end{equation}
 We approximate the permeability $\mathbf{K}$ with its value at 
 $\mathbf{x}_\sigma$, while 
@@ -531,7 +626,7 @@ In case of discontinuous permeabilities at the edge $\sigma$, an harmonic
 average weighted on the distances between the cell centres and the edge is 
 performed:
 \begin{equation}
-\frac{|x_R - x_L|}{\mathrm{K}} \simeq 
+\frac{|x_R - x_L|}{\mathrm{K}} \approx 
 \frac{|x_\sigma - x_L|}{\mathrm{K}_L}+\frac{|x_R - x_\sigma|}{\mathrm{K}_R}.
 \end{equation}
 
