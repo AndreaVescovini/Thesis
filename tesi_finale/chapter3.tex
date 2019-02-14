@@ -89,9 +89,13 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\item the storage terms are approximated with the values at the centre of 
 	the cell:
 	\begin{equation}
-	\int_{V_p} \frac{\partial k}{\partial t} \; dV \approx \frac{\partial 
-	k_{I,J}}{\partial t}|V_p|, \quad \int_{V_p} \frac{\partial \omega}{\partial 
-	t} \; dV \approx \frac{\partial \omega_{I,J}}{\partial t}|V_p|.
+	\int_{V_p} \frac{\partial k}{\partial t} \; dV = \frac{d}{dt} \int_{V_p}k 
+	\; dV \approx \frac{dk_{I,J}}{dt}|V_p|,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \frac{\partial 
+	\omega}{\partial t} \; dV = \frac{d}{dt} \int_{V_p} \omega \; dV \approx 
+	\frac{\partial \omega_{I,J}}{\partial t}|V_p|.
 	\end{equation}
 	\item in the convective terms the we apply the Gauss's divergence theorem:
 	\begin{equation}
@@ -149,11 +153,15 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
 	\end{equation}
 	\item in the source terms the entries of $\mathbf{S}$, $\nabla k$ and 
-	$\nabla \omega$ are approximated through centred finite differences:
+	$\nabla \omega$ are approximated at the centre of the cells with centred 
+	finite differences:
 	\begin{equation}
-		\frac{\partial u}{\partial x} \approx \frac{u_i-u_{i-1}}{x_i-x_{i-1}}, 
-		\quad \frac{\partial v}{\partial y} \approx 
-		\frac{v_j-v_{j-1}}{y_j-y_{j-1}}
+		\frac{\partial u}{\partial x} \approx 
+		\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
+	\end{equation}
+	\begin{equation}
+		\frac{\partial v}{\partial y} = 
+		\frac{v_{I,j+1}+v_{I,j}-v_{I,j-1}-v_{I,j-2}}{2(y_{J+1}-y_{J-1})}
 	\end{equation}
 	\begin{equation}
 		\frac{\partial k}{\partial x} \approx \frac{k_{I+1,J} - 
@@ -180,11 +188,13 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 %
 \subsection{Staggered equations}
 The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
-control volumes. Let us consider the equation for the component $u$:
+control volumes. Let us consider the equation for the component $u$ of the 
+velocity:
 \begin{equation}
-\frac{\partial{(\varrho u)}}{\partial t} + \nabla \cdot (\varrho u 
-\mathbf{v}) - \nabla \cdot (\mu_\text{eff} \nabla u) + 
-\frac{\partial}{\partial x} \big(p + \varrho k\big) = 0.
+\frac{\partial u}{\partial t} + \nabla \cdot ( u \mathbf{v}) - \nabla \cdot 
+(\nu_\text{eff} \nabla u) + \frac{1}{\varrho} \frac{\partial}{\partial x} 
+\big(p 
++ \varrho k\big) = 0.
 \end{equation}
 Notice that, since we are considering a two-dimensional model, we have 
 substituted the factor $2/3$ with a $1$ in front of $\varrho k$, because it 
@@ -195,14 +205,14 @@ x_{I+1}]\times[y_{j-1},y_j]$,
 according to Figure~\ref{fig:staggrid}, and apply the Gauss's divergence 
 theorem:
 \begin{multline} \label{eq:stagmomeq}
-\int_{V_u} \bigg[ \frac{\partial{(\varrho u})}{\partial t} + \nabla 
-\cdot (\varrho u \mathbf{v} ) - \nabla \cdot (\mu_\text{eff} \nabla u) + 
-\frac{\partial}{\partial x}\big( p + \varrho k \big) \bigg ]\; dV 
+\int_{V_u} \bigg[ \frac{\partial u}{\partial t} + \nabla \cdot ( u \mathbf{v} ) 
+- \nabla \cdot (\nu_\text{eff} \nabla u) + \frac{1}{\varrho} 
+\frac{\partial}{\partial x} \big( p + \varrho k \big) \bigg ]\; dV 
 =\\
-=\frac{d}{dt} \int_{V_u} \varrho u\; dV + \int_{\partial V_u} \varrho u 
-(\mathbf{v} \cdot \mathbf{n}) \; dA -\\
-- \int_{\partial V_u} \mu_\text{eff} 
-(\nabla u \cdot \mathbf{n}) \; dA + \int_{\partial V_u} (p + \varrho k) n_x \; 
+=\frac{d}{dt} \int_{V_u} u\; dV + \int_{\partial V_u} u (\mathbf{v} \cdot 
+\mathbf{n}) \; dA \;-\\
+- \int_{\partial V_u} \nu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA + 
+\frac{1}{\varrho}\int_{\partial V_u} (p + \varrho k) n_x \; 
 dA = 0,
 \end{multline}
 where $n_x$ is the component in the $x$ direction of the outward unit 
@@ -217,12 +227,11 @@ let us consider each of them separately, starting from the simplest one:
 	\item in the storage term we approximate the velocity with the value at the 
 	centre of the control volume:
 	\begin{equation}
-	\frac{d}{dt} \int_{V_u} \varrho u\; dV \approx \frac{d}{dt} \big( \varrho 
-	u_{i,J} \big)|V_u|;
+	\frac{d}{dt} \int_{V_u}  u\; dV \approx \frac{du_{i,J}}{dt}|V_u|;
 	\end{equation}
 	%
 	\item in the pressure term the contributions from the edges $n_u$ and $s_u$ 
-	is null because $n_x=0$ on them, so 
+	are null because $n_x=0$ on them, so 
 	\begin{equation}
 	\int_{\partial V_u} (p + \varrho k)n_x \; dA = \int_{e_u} (p+\varrho k) \; 
 	dA - \int_{w_u} (p+\varrho k) \; dA.
@@ -239,11 +248,11 @@ let us consider each of them separately, starting from the simplest one:
 	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
 	contribution from the edges $n_u$ and $s_u$:
 	\begin{multline}
-	\int_{\partial V_u} \mu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA =     
-	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA
-	- \int_{w_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \;+\\
-	+\int_{n_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA
-	- \int_{s_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA
+	\int_{\partial V_u} \nu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA =     
+	\int_{e_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA
+	- \int_{w_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA \;+\\
+	+\int_{n_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA
+	- \int_{s_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA
 	\end{multline}
 	We develop the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\	
@@ -251,8 +260,8 @@ let us consider each of them separately, starting from the simplest one:
 	the value at the centre of the edge, while we approximate the derivative of 
 	the velocity with a centred finite difference:
 	\begin{equation}
-	\int_{e_u} \mu_\text{eff} \frac{\partial u}{\partial x} \; dA \approx 
-	\mu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{x_{i+1}-x_i} |e_u|.
+	\int_{e_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA \approx 
+	\nu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{x_{i+1}-x_i} |e_u|.
 	\end{equation}
 	For the lateral momentum flux we split the 	edge $n_u$ into the two halves 
 	related to the two cells $[x_{i-1},x_i]\times[y_{j-1},y_j]$ and 
@@ -262,22 +271,22 @@ let us consider each of them separately, starting from the simplest one:
 	\end{equation}
 	We employ again a centred finite difference to approximate of the 
 	derivative of the velocity, while, for the approximation of the viscosity, 
-	we compute an average between the two cells sharing the face:
+	we compute an average between the two cells sharing the edge:
 	\begin{equation}
-	\int_{n_u} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA = 
-	\int_{x_{I,j}}^{x_{i,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
-	+\int_{x_{i,j}}^{x_{I+1,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
+	\int_{n_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA = 
+	\int_{x_{I,j}}^{x_{i,j}} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	+\int_{x_{i,j}}^{x_{I+1,j}} \nu_\text{eff} \frac{\partial u}{\partial y} \; 
 	dA,
 	\end{equation}
 	\begin{equation*}
-	\int_{x_{I,j}}^{x_{i,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; dA 
-	\approx \frac{1}{2}\big(\mu_{\text{eff},\{I,J\}}+\mu_{\text{eff},\{I,J+1\}} 
+	\int_{x_{I,j}}^{x_{i,j}} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA 
+	\approx \frac{1}{2}\big(\nu_{\text{eff},\{I,J\}}+\nu_{\text{eff},\{I,J+1\}} 
 	\big) \frac{u_{i,J+1}-u_{i,J}}{y_{J+1}-y_J} \frac{|n_u|}{2},
 	\end{equation*}
 	\begin{equation*}
-	\int_{x_{i,j}}^{x_{I+1,j}} \mu_\text{eff} \frac{\partial u}{\partial y} \; 
-	dA \approx \frac{1}{2}\big( \mu_{\text{eff},\{I+1,J\}}+ 
-	\mu_{\text{eff},\{I+1,J+1\}} \big) \frac{u_{i,J+1}-u_{i,J}}{y_{J+1}-y_J} 
+	\int_{x_{i,j}}^{x_{I+1,j}} \nu_\text{eff} \frac{\partial u}{\partial y} \; 
+	dA \approx \frac{1}{2}\big( \nu_{\text{eff},\{I+1,J\}}+ 
+	\nu_{\text{eff},\{I+1,J+1\}} \big) \frac{u_{i,J+1}-u_{i,J}}{y_{J+1}-y_J} 
 	\frac{|n_u|}{2}.
 	\end{equation*}
 	%
@@ -285,9 +294,9 @@ let us consider each of them separately, starting from the simplest one:
 	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
 	contribution from the edges $n_u$ and $s_u$:
 	\begin{multline}
-	\int_{\partial V_u} \varrho u (\mathbf{v} \cdot \mathbf{n}) \; dA = 
-	\int_{e_u} \varrho u u \; dA - \int_{w_u} \varrho u u \; dA \; +\\
-	+ \int_{n_u} \varrho u v \; dA  -\int_{s_u} \varrho u v \; dA.
+	\int_{\partial V_u} u (\mathbf{v} \cdot \mathbf{n}) \; dA = \int_{e_u} u u 
+	\; dA - \int_{w_u} u u \; dA \; +\\
+	+ \int_{n_u} u v \; dA  -\int_{s_u} u v \; dA.
 	\end{multline}
 	For the discretization we have to distinguish between the 
 	\emph{transporting} velocity, coming from $\mathbf{v} \cdot \mathbf{n}$, 
@@ -304,27 +313,27 @@ let us consider each of them separately, starting from the simplest one:
 	an average between the values of the two staggered cells sharing the 
 	staggered edge:
 	\begin{equation}
-		\int_{e_u} \varrho u u \; dA \approx \varrho u^* \frac{u_{i,J} + 
+		\int_{e_u} u u \; dA \approx u^* \frac{u_{i,J} + 
 		u_{i+1,J}}{2}|e_u|.
 	\end{equation}
 	For the lateral momentum flux we approximate the transporting velocity with 
 	an average between the values a the two ends of the edge:
 	\begin{equation}
-	\int_{n_u} \varrho u v \; dA \approx \varrho u^* \frac{v_{I,j} 
+	\int_{n_u} u v \; dA \approx u^* \frac{v_{I,j} 
 	+v_{I+1,j}}{2} |n_u|.
 	\end{equation}
 \end{itemize}
 
-The equation for the component $v$ of the velocity is analogous with the only 
-addition of the gravity term:
+The equation for the component $v$ of the velocity is analogous to the one we 
+have described above, with the only addition of the gravity term:
 \begin{equation}
-\frac{\partial{(\varrho v)}}{\partial t} + \nabla \cdot (\varrho v 
-\mathbf{v}) - \nabla \cdot (\mu_\text{eff} \nabla v) + 
-\frac{\partial}{\partial y} \big(p + \varrho k\big) - \varrho g= 0,
+\frac{\partial v}{\partial t} + \nabla \cdot (v \mathbf{v}) - \nabla \cdot 
+(\nu_\text{eff} \nabla v) + \frac{1}{\varrho}\frac{\partial}{\partial y} \big(p 
++ \varrho k\big) - g= 0,
 \end{equation}
 with $g = \SI{-9.81}{m/s}$. The gravity term is discretized straight-forward:
 \begin{equation}
-\int_{V_v} \varrho g \; dV = \varrho g |V_v|,
+\int_{V_v} g \; dV = g |V_v|,
 \end{equation}
 where $V_v = [x_{i-1}, xi] \times [y_J, y_{J+1}]$ is the ``blue'' control 
 volume in 

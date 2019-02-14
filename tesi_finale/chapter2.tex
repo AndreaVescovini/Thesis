@@ -70,9 +70,9 @@ Using these assumptions from the balance equations
 equations:
 \begin{align}
 \label{eq:nsmass} \nabla \cdot \mathbf{v} = 0&\\
-\label{eq:nsmom} \frac{\partial{(\varrho \mathbf{v}})}{\partial t} + \nabla 
-\cdot (\varrho \mathbf{v} \mathbf{v}^\mathrm{T}) - \nabla \cdot (\mu \nabla 
-\mathbf{v}) + \nabla p  - \varrho\mathbf{g} = \mathbf{0}&
+\label{eq:nsmom} \frac{\partial \mathbf{v}}{\partial t} + \nabla 
+\cdot (\mathbf{v} \mathbf{v}^\mathrm{T}) - \nabla \cdot (\nu \nabla 
+\mathbf{v}) + \frac{1}{\varrho}\nabla p  -\mathbf{g} = \mathbf{0}&
 \end{align}
 All the computations needed to obtain these equations can be found in any book 
 of fluid mechanics, for example in \cite{main:vermal}. The continuity equations 
@@ -221,14 +221,14 @@ equation that let resolve the eddies until a certain threshold.
 The first move towards the RANS equations is to decompose each instantaneous 
 quantity in the sum of a mean value and a fluctuation: 
 \begin{equation} \label{eq:decomp}
-\mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}'.
+\mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}', \quad p = \bar{p} + p'
 \end{equation}
 According to \cite{main:vermal} the mean value can be obtained with a time 
 average over a long time interval 
 for steady flows, while it is obtained with an ensemble average for unsteady 
 flows, so that by definition
 \begin{equation}
-	\overline{\mathbf{v}'} = \mathbf{0}.
+	\overline{\mathbf{v}'} = \mathbf{0}, \quad \overline{p'}=0.
 \end{equation}
 We want equations for the mean 
 velocity $\bar{\mathbf{v}}$ and the mean pressure $\bar{p}$, so we apply the 
@@ -236,14 +236,11 @@ average operation to the Navier-Stokes equations
 \eqref{eq:nsmass}-\eqref{eq:nsmom} and we obtain:
 \begin{align}
 \label{eq:ransmass} \nabla \cdot \bar{\mathbf{v}} = 0&\\
-\label{eq:ransmom} \frac{\partial{(\varrho \bar{\mathbf{v}})}}{\partial t} 
-+ 
-\nabla 
-\cdot (\varrho \bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) + \nabla 
-\cdot 
-(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}})- \nabla \cdot (\mu 
-\nabla 
-\bar{\mathbf{v}}) + \nabla \bar{p} - \varrho\mathbf{g} = \mathbf{0}&
+\label{eq:ransmom} \frac{\partial \bar{\mathbf{v}}}{\partial t} + \nabla \cdot 
+( 
+\bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) + \nabla \cdot 
+(\overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}})- \nabla \cdot (\nu \nabla 
+\bar{\mathbf{v}}) +\frac{1}{\varrho} \nabla \bar{p} - \mathbf{g} = \mathbf{0}&
 \end{align}
 For what concerns the continuity equation, the average commutes with the 
 divergence operator, so we obtain that also the mean velocity has to fulfil the 
@@ -352,8 +349,8 @@ stress tensor:
 The first term has the same form of $\tau$ if we consider the mean velocity 
 field, 
 the only difference is that the dynamic viscosity $\mu$ is substituted by a 
-turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term involves 
-the is needed to model correctly also the isotropic part of $\tau_R$, indeed:
+turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term is needed 
+to model correctly also the isotropic part of $\tau_R$, indeed:
 \begin{equation} \label{eq:tracciatau}
 tr(\tau_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
 -\varrho \sum_{i=1}^{dim} \overline{(v_i')^2} = -2\varrho k,
@@ -370,17 +367,14 @@ while exploiting equation \eqref{eq:ransmass} we get
 With this hypothesis $\mu_t$ and $k$ are the only unknowns left and the 
 momentum equation \eqref{eq:ransmom} becomes:
 \begin{equation} \label{eq:ransmom2}
-\frac{\partial{(\varrho \bar{\mathbf{v}})}}{\partial t} 
-+ 
-\nabla 
-\cdot (\varrho \bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) - \nabla \cdot 
-(\mu_\text{eff} \nabla \bar{\mathbf{v}}) + \nabla (\bar{p} + \frac{2}{3}\varrho 
-k) 
--\varrho\mathbf{g} = \mathbf{0},
+\frac{\partial \bar{\mathbf{v}}}{\partial t} + \nabla 
+\cdot ( \bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) - \nabla \cdot 
+(\nu_\text{eff} \nabla \bar{\mathbf{v}}) + \frac{1}{\varrho}\nabla (\bar{p} + 
+\frac{2}{3}\varrho k) - \mathbf{g} = \mathbf{0},
 \end{equation}
-where we have introduced an effective viscosity
+where we have introduced an effective kinematic viscosity
 \begin{equation}
-	\mu_\text{eff} = \mu + \mu_t.
+	\nu_\text{eff} = \nu + \nu_t, \quad \nu_t = \frac{\mu_t}{\varrho}.
 \end{equation}
 Since for incompressible fluids we have erased the thermodynamic relation 
 between $\varrho$ and $p$, we can consider as unknown a generalized pressure 
@@ -388,7 +382,7 @@ $p_\text{gen}$ such that:
 \begin{equation}
 p_\text{gen} = \bar{p} + \frac{2}{3}\varrho k,
 \end{equation}
-reducing the unknowns to $\mu_t$ alone, for which we can employ different 
+reducing the unknowns to $\nu_t$ alone, for which we can employ different 
 turbulence models to estimate it.
 
 The idea of the Boussinesq hypothesis \eqref{eq:bouss} comes partially from an 
@@ -420,7 +414,7 @@ respect to that in the orthogonal direction. Let us assume that $u$ is the
 main component of the velocity and that the flow is bounded by a wall at $y=0$. 
 From dimensional considerations it can be assumed that
 \begin{equation}
-\nu_t = \frac{\mu_t}{\varrho} = l_\text{mix}v_\text{mix},
+\nu_t = = l_\text{mix}v_\text{mix},
 \end{equation}
 where $l_\text{mix}$ and $v_\text{mix}$ are a characteristic length scale and a 
 velocity 
@@ -492,10 +486,12 @@ the wall. This can be done easily for flat walls and it brings also
 computational advantages because we can avoid to have very small cells near the 
 wall that solve until the viscous sublayer.
 
-Many variants of this model have been developed, for example the 
-\emph{low-$Re$} $k\text{-}\varepsilon$ model that adds extra terms in order to 
-model correctly the behaviour near the wall. See \cite{main:vermal} for more 
-information.
+During the years many variants of this model have been developed, for example 
+the \emph{RNG}~$k\text{-}\varepsilon$ model, which is derived with a different 
+procedure in order to improve the equation for
+$\varepsilon$, or the \emph{low-$Re$}~$k\text{-}\varepsilon$ model, that 
+adds extra terms in order to model correctly the behaviour near the wall. See 
+\cite{main:vermal} for more information.
 %
 \subsubsection{$k\text{-}\omega$ model}
 The $k\text{-}\omega$ model is another two-equations model that uses a specific 
@@ -742,9 +738,10 @@ different model concepts in the two subdomains. Since we are dealing with
 single-phase, single-component isothermal flows, we only have to impose the 
 mechanical equilibrium, for which we need:
 \begin{itemize}
-	\item the continuity of normal mass fluxes:
+	\item the continuity of normal mass fluxes, that in our incompressible case 
+	reduces to the continuity of the normal component of the velocity:
 	\begin{equation}
-		[\varrho \mathbf{v} \cdot \mathbf{n}]_\text{ff} = - [\varrho \mathbf{v} 
+		[\mathbf{v} \cdot \mathbf{n}]_\text{ff} = - [\mathbf{v} 
 		\cdot \mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
 	\end{equation}
 	where the subscripts $_\text{ff}$ and $_\text{pm}$ denote that the 
