@@ -136,10 +136,6 @@ and Melanie Lipp}}
 \section{Governing equations}
 \subsection*{Free-flow}
 \begin{frame}{Free-flow}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
 Navier-Stokes equations for an incompressible fluid:
 \begin{align*}
 \nabla \cdot \mathbf{v} = 0&\\
@@ -159,13 +155,13 @@ RANS equations with Boussinesq approximation:
 \begin{equation*}
 	p_\text{gen} = \bar{p}+\frac{2}{3}\varrho k
 \end{equation*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=ko]{\hyperlink{koSupp}{$k\text{-}\omega$ turbulence model}}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}[label=ko]{\hyperlink{koSupp}{$k\text{-}\omega$ turbulence model}}
 \begin{equation*}
 \nu_t = \frac{k}{\tilde{\omega}}, 
 \end{equation*}
@@ -188,14 +184,14 @@ P = \min \{ 2 \nu_t \mathbf{S} \cdot \mathbf{S}, 20 \beta^* k \omega \} \quad
 \tilde{\omega} = \max \Bigg\{ \omega, C_\text{lim} \sqrt{ 
 2\frac{\mathbf{S}\cdot\mathbf{S}}{\beta^*}} \Bigg\}
 \end{equation*}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Porous-medium flow}
 \begin{frame}{Porous-medium flow - REV scale approach}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_pm.pdf}};
-\end{tikzpicture}
 Continuity equation for incompressible fluids:
 \begin{equation*}
 \nabla \cdot \mathbf{v} = 0
@@ -213,14 +209,14 @@ Momentum equation:
 	\end{equation*}
 	It models a quadratic drag and it holds at higher $Re$ than the Darcy's law.
 \end{itemize}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_pm.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Coupling conditions}
 \begin{frame}{Coupling conditions}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_int2.pdf}};
-\end{tikzpicture}
 At the interface $\Gamma_\text{int}$ we apply:
 \begin{itemize}
 	\item Continuity of normal velocity:
@@ -243,15 +239,15 @@ At the interface $\Gamma_\text{int}$ we apply:
 	\quad \forall i \in \{1, \dots, dim - 1\}
 	\end{equation*}
 \end{itemize}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_int2.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical model}
 \subsection*{Free-flow}
 \begin{frame}{Staggered grid discretization}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
 \begin{itemize}
 	\item Scalar variables are stored at the centre of the 
 	cells
@@ -265,13 +261,13 @@ At the interface $\Gamma_\text{int}$ we apply:
 	height=0.65\textheight]{staggered_grid_mia.pdf}
 %	\includegraphics[height=0.7\textheight]{staggered_grid_mia.png}
 \end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Convective term}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Convective term}
 \vspace{-0.5cm}
 \begin{equation*}
 	\int_V \nabla \cdot \underbrace{(\mathbf{v} 
@@ -296,6 +292,10 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 	\vspace*{1cm}
 	Supposing $u_\text{avg} > 0$
 \end{minipage}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Differencing schemes}
@@ -328,23 +328,19 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
 \vspace{-0.5cm}
-	\begin{align*}
-		u_t + u_x = 0 \quad &\forall x \in (0, 1), \; \forall t \in (0, 0.5)\\
-		u(x, 0) = 0 \quad &\forall x \in (0, 1)\\
-		u(0, t) = 1 \quad &\forall t \in (0, 0.5)
-	\end{align*}
-	\vspace{-1cm}
-	\begin{figure}
-		\centering
-		\input{../img/1Dconslaw}
-	\end{figure}
+\begin{align*}
+	u_t + u_x = 0 \quad &\forall x \in (0, 1), \; \forall t \in (0, 0.5)\\
+	u(x, 0) = 0 \quad &\forall x \in (0, 1)\\
+	u(0, t) = 1 \quad &\forall t \in (0, 0.5)
+\end{align*}
+\vspace{-1cm}
+\begin{figure}
+	\centering
+	\input{../img/1Dconslaw}
+\end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Total Variation Diminishing (TVD) methods}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
 \begin{itemize}
 	\item Second order accuracy
 	\item Oscillation free: they are \emph{monotonicity preserving} thanks to 
@@ -358,20 +354,19 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 	TV(u) = 
 	\sum_{i=1}^{N_\text{dof}-1} |u_{i+1} - u_i|
 \end{equation*}
-
 \vspace{0.3cm}
 A non-linear anti-diffusive flux is added to the upwind contribution:
 \begin{equation*}
 u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D 
 - u^U}
 \end{equation*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{TVD region - Sweby's diagram}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{TVD region - Sweby's diagram}
 \begin{minipage}[t]{0.63\textwidth}
 \begin{figure}
 	\centering
@@ -393,13 +388,13 @@ u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D
 	\psi\bigg(\frac{1}{r}\bigg) = \frac{\psi(r)}{r}
 	\end{equation*}
 \end{minipage}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Flux limiter functions}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Flux limiter functions}
 %There are several possibilities for the flux limiter function $\psi$:
 	\begin{itemize}
 	\item Van Leer: $\psi(r) = \frac{r+|r|}{1+r}$
@@ -419,6 +414,10 @@ u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D
 	\centering
 $\psi(r) = 0$ for $r<0$
 \end{block}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Flux limiter functions}
@@ -447,10 +446,6 @@ $\psi(r) = 0$ for $r<0$
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Non-uniform grids - [Li et al., 2008]}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
 \noindent
 Reconstruct with a linear approximation the value of $u$ at\\
 the position $FU^*$, as if the grid was uniform:
@@ -463,13 +458,13 @@ the position $FU^*$, as if the grid was uniform:
 r = \frac{u^U - u^{FU^*}}{u^D-u^U}, \quad u^{FU^*} \approx u^{FU} + 
 \frac{du^{FU}}{dx}r_{FU, FU^*}
 \end{equation*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
 Generalize the TVD formula in order to take into account\\
 also staggered cell 
 sizes:
@@ -486,13 +481,13 @@ sizes:
 		R_{U,D} 
 		= \frac{\Delta x_U + \Delta x_D}{\Delta x_U}
 \end{equation*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
 Imposing the TVD condition, a generalized TVD region\\is obtained:
 %\vspace{-0.15cm}
 \begin{figure}
@@ -500,13 +495,13 @@ Imposing the TVD condition, a generalized TVD region\\is obtained:
 	\hspace{-1.5cm}
 	\input{../img/tvd_region_modified_hou_final}
 \end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Temporal discretization}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
 	\includegraphics[width=1.33cm]{logo_ff.pdf}};
 \end{tikzpicture}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Temporal discretization}
 We employ fully implicit methods, unconditionally stable:
 \begin{itemize}
 	\item Backward Euler, first order accuracy:
@@ -522,14 +517,14 @@ We employ fully implicit methods, unconditionally stable:
 	\end{equation*}
 	Generalized for the case of non constant time-steps.
 \end{itemize}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection*{Porous-medium flow}
 \begin{frame}{Cell-centred discretization}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_pm.pdf}};
-\end{tikzpicture}
 \begin{minipage}[t]{0.49\textwidth}
 	\vspace{0.5cm}
 \begin{equation*}
@@ -552,13 +547,27 @@ We employ fully implicit methods, unconditionally stable:
 	\item Upwind approximation for the viscosity $\mu$
 	\item Harmonic average for $\mathbf{K}$ (TPFA)
 \end{itemize}
-
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+	\includegraphics[width=1.33cm]{logo_pm.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical results}
 \subsection*{Navier-Stokes}
 \begin{frame}[label=spaceconv]{\hyperlink{spaceconvSupp}{Spatial convergence - 
 steady SinCos problem}}
+\begin{figure}
+	\centering
+	\subfloat[{\tiny Velocity field [m/s]}]{%
+		\includegraphics[width=0.55\textwidth]{sincos_exact_v.png}}
+	\subfloat[{\tiny Pressure field [Pa]}]{%
+		\includegraphics[width=0.55\textwidth]{sincos_exact_p.png}}
+\end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+\begin{frame}{\hyperlink{spaceconvSupp}{Spatial convergence - 
+		steady SinCos problem}}
 \vspace{-0.8cm}
 \begin{figure}
 	\centering
@@ -831,7 +840,7 @@ $\Omega = (0,1)^2$, $\varrho = 1$. The the source term is:
 \end{equation*}
 such that the exact solution is:
 \begin{align*}
-&\mathbf{v}_\text{ex} = [-cos(x) sin(x), \; sin(x) cos(y)]^\mathrm{T}\\
+&\mathbf{v}_\text{ex} = [-cos(x) sin(y), \; sin(x) cos(y)]^\mathrm{T}\\
 &p_\text{ex} = -\frac{1}{4} (cos(2x)+cos(2y))
 \end{align*}
 \end{frame}
@@ -879,7 +888,7 @@ sin(x)]^\mathrm{T}
 \end{equation*}
 such that the exact solution is:
 \begin{align*}
-&\mathbf{v}_\text{ex} = sin(2t)[-cos(x) sin(x), \; sin(x) cos(y)]^\mathrm{T}\\
+&\mathbf{v}_\text{ex} = sin(2t)[-cos(x) sin(y), \; sin(x) cos(y)]^\mathrm{T}\\
 &p_\text{ex} = -\frac{1}{4} (cos(2x)+cos(2y))sin^2(2t)
 \end{align*}
 \end{frame}
