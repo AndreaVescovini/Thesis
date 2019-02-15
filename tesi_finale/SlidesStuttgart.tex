@@ -163,7 +163,7 @@ RANS equations with Boussinesq approximation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}[label=ko]{\hyperlink{koSupp}{$k\text{-}\omega$ turbulence model}}
 \begin{equation*}
-\nu_t = \frac{k}{\tilde{\omega}}, 
+\nu_t = \frac{k}{\tilde{\omega}}
 \end{equation*}
 Evolution equations for the turbulent kinetic energy $k$ and the specific 
 dissipation 
@@ -235,7 +235,7 @@ At the interface $\Gamma_\text{int}$ we apply:
 	momentum:
 	\begin{equation*}
 	\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_{BJ}} (\nabla \mathbf{v}) 
-	\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 0, 
+	\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 0 
 	\quad \forall i \in \{1, \dots, dim - 1\}
 	\end{equation*}
 \end{itemize}
@@ -249,10 +249,9 @@ At the interface $\Gamma_\text{int}$ we apply:
 \subsection*{Free-flow}
 \begin{frame}{Staggered grid discretization}
 \begin{itemize}
-	\item Scalar variables are stored at the centre of the 
-	cells
+	\item Scalar variables are stored at the centre of the cells.
 	\item Components of vectorial variables are stored on faces, aligned to the 
-	faces normal direction
+	faces normal direction.
 \end{itemize}
 %\vspace{0.15cm}
 \begin{figure}
@@ -305,17 +304,17 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 \end{tikzpicture}
 \begin{itemize}
 	\item Central Differencing (CD): second order, not stable as it does not 
-	include the flow direction
+	include the flow direction.
 	\begin{equation*}
 	u^* = \frac{u^D + u^U}{2}
 	\end{equation*}
-	\item Upwind: first order, stable but introduces considerable numerical 
-	diffusion
+	\item Upwind: first order, stable but it introduces considerable numerical 
+	diffusion.
 	\begin{equation*}
 		u^* = u^U
 	\end{equation*}
-	\item QUICK: third order, can introduce unphysical overshoots and 
-	undershoots
+	\item QUICK: third order, it can introduce unphysical overshoots and 
+	undershoots.
 	\begin{equation*}
 		u^* = \frac{3u^D + 6u^U - u^{FU}}{8}
 	\end{equation*}
@@ -342,7 +341,7 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Total Variation Diminishing (TVD) methods}
 \begin{itemize}
-	\item Second order accuracy
+	\item Second order accuracy.
 	\item Oscillation free: they are \emph{monotonicity preserving} thanks to 
 	the TVD condition:
 \end{itemize}
@@ -355,7 +354,9 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 	\sum_{i=1}^{N_\text{dof}-1} |u_{i+1} - u_i|
 \end{equation*}
 \vspace{0.3cm}
-A non-linear anti-diffusive flux is added to the upwind contribution:
+\begin{itemize}
+	\item A non-linear anti-diffusive flux is added to the upwind contribution:
+\end{itemize}
 \begin{equation*}
 u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D 
 - u^U}
@@ -383,6 +384,7 @@ u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D
 \begin{equation*}
 	1 \leq \psi \leq \min \{r, 2\}, \; r>1
 \end{equation*}
+\centering
 	Symmetry property:
 	\begin{equation*}
 	\psi\bigg(\frac{1}{r}\bigg) = \frac{\psi(r)}{r}
@@ -471,7 +473,6 @@ sizes:
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{cells_with_sizes.pdf}
-%	\includegraphics[width=\textwidth]{cells_with_sizes.png}
 \end{figure}
 \begin{equation*}
 	u^* = u^U + \frac{1}{R_{U,D}} \psi(r)(u^D-u^U)
@@ -543,9 +544,9 @@ We employ fully implicit methods, unconditionally stable:
 	\mathbf{v} = - \frac{1}{\mu}\mathbf{K} (\nabla p - \varrho \mathbf{g})
 \end{equation*}
 \begin{itemize}
-	\item Newton's method to compute the velocity
-	\item Upwind approximation for the viscosity $\mu$
-	\item Harmonic average for $\mathbf{K}$ (TPFA)
+	\item Newton's method to compute the velocity.
+	\item Upwind approximation for the viscosity $\mu$.
+	\item Harmonic average for $\mathbf{K}$ (TPFA).
 \end{itemize}
 \begin{tikzpicture}[remember picture,overlay]
 \node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
@@ -557,6 +558,9 @@ We employ fully implicit methods, unconditionally stable:
 \subsection*{Navier-Stokes}
 \begin{frame}[label=spaceconv]{\hyperlink{spaceconvSupp}{Spatial convergence - 
 steady SinCos problem}}
+\vspace{0.5cm}
+Rotating field around the position $(0,0)$.
+\vspace{-0.5cm}
 \begin{figure}
 	\centering
 	\subfloat[{\tiny Velocity field [m/s]}]{%
@@ -617,8 +621,7 @@ unsteady SinCos problem}}
 	\SI{1}{m/s}$, $\mu=\SI{5e-4}{\pascal\second}$.}
 \end{figure}
 $L^2$-errors of the magnitude of the velocity computed using as ``exact'' 
-solution the one obtained with a mesh 
-6 times finer:
+solution the one obtained with a grid 6 times finer:
 \begin{table}
 	\footnotesize
 	\centering
@@ -653,7 +656,7 @@ solution the one obtained with a mesh
 \end{figure}
 \vspace{0.5cm}
 \begin{itemize}
-	\item $Re_H = 36000$, based on the step height $H$
+	\item $Re_H = 36000$, based on the step height $H$.
 	\item Results comparison with the NASA CFL3D code, from 
 	{\small \url{https://turbmodels.larc.nasa.gov/backstep_val.html}}.
 \end{itemize}
@@ -688,8 +691,8 @@ solution the one obtained with a mesh
 	clip]{cavities_dist1_vel.png}
 \end{figure}
 \begin{itemize}
-	\item $Re = 60000$
-	\item $d$ ranging from $\SI{0.05}{m}$ to $\SI{2}{m}$
+	\item $Re = 60000$.
+	\item $d$ ranging from $\SI{0.05}{m}$ to $\SI{2}{m}$.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -713,8 +716,8 @@ porous-medium}}
 We use the same configuration of the previous case ($Re=60000$) but with a 
 porous medium between the two cavities.
 \begin{itemize}
-	\item Permeability ranging from $\SI{3.1e-12}{m^2}$ to $\SI{3.1e-6}{m^2}$
-	\item $\alpha_{BJ} = 2$, $C_F=0.55$
+	\item Permeability ranging from $\SI{3.1e-12}{m^2}$ to $\SI{3.1e-6}{m^2}$.
+	\item $\alpha_{BJ} = 2$, $C_F=0.55$.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -760,7 +763,7 @@ Free and porous-medium coupling:
 Outlook:
 \begin{itemize}
 	\item More complex scenarios (non-isothermal, multiphase, \dots)
-	\item High order with adapted grid with hanging nodes
+	\item High order on adapted grids with hanging nodes
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -819,8 +822,8 @@ $\sigma_d$ activates the cross-diffusion term:
 \end{equation*}
 Dimensionless coefficients:
 \begin{equation*}
-\beta^* = \frac{9}{100}, \quad \sigma^* = \frac{3}{5}, \quad \alpha = 
-\frac{13}{25}, \quad \beta = \frac{177}{2500}, \quad \sigma = \frac{1}{2}, 
+\beta^* = \frac{9}{100} \quad \sigma^* = \frac{3}{5} \quad \alpha = 
+\frac{13}{25} \quad \beta = \frac{177}{2500} \quad \sigma = \frac{1}{2} 
 \quad C_\text{lim} = \frac{7}{8}
 \end{equation*}
 \end{frame}
