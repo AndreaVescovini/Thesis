@@ -8,7 +8,24 @@
 %Here we see some differences.
 \section{RANS tests}
 \subsection{Backward facing step}
-%A good benchmark.
+The NASA LaRC CFD code CFL3D uses:
+\begin{itemize}
+	\item free-stream turbulence intensity = 0.061\%
+	\item free-stream turbulent viscosity (relative to laminar) = 0.009
+	\item in this case the simulations were \emph{quasi-steady}, i.e. the 
+	solution does not converge readily to a steady state result when a refined 
+	grid is used. However, when run-time accurately, the solution settles down 
+	and becomes reasonably steady (quasi-steady).
+	\item The code is for compressible flows at ``essentially incompressible" 
+	conditions of M=0.128. There may be a very small influence of 
+	compressibility.
+	\item non-dimensional CFD code
+	\item first order turbulence advection in the turbulence transport equations
+	\item Neglects two terms that are zero for incompressible flows
+	\item implicit time advancement (also second order)
+	\item Central differencing in Space? Non lo dice cosa usa, inoltre secondo 
+	me non usa una staggered grid.
+\end{itemize}
 \subsection{Cavities reciprocal influence}
 %An easy result.
 \section{Coupled test}
