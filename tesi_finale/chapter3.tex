@@ -97,6 +97,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\omega}{\partial t} \; dV = \frac{d}{dt} \int_{V_p} \omega \; dV \approx 
 	\frac{\partial \omega_{I,J}}{\partial t}|V_p|.
 	\end{equation}
+	%
 	\item in the convective terms the we apply the Gauss's divergence theorem:
 	\begin{equation}
 		\int_{V_p} \nabla \cdot (k \mathbf{v}) \; dV = \int_{\partial V_p} k 
@@ -119,6 +120,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	Notice that this approach is not the only possible choice, as it will be 
 	explained with more details in Subsections~\ref{subsec:diffscheme} and 
 	\ref{subsec:tvd}.
+	%
 	\item in the diffusive terms we apply the Gauss's divergence theorem:
 	\begin{equation}
 		\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + 
@@ -152,29 +154,40 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	(\ast)_\text{avg} = \frac{x_{I+1} - x_i}{x_{I+1} - x_I}(\ast)_{I,J} + 
 	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
 	\end{equation}
-	\item in the source terms the entries of $\mathbf{S}$, $\nabla k$ and 
-	$\nabla \omega$ are approximated at the centre of the cells with centred 
-	finite differences:
+	%
+	\item in the source terms all the quantities are approximated with their 
+	value at the centre of the cell. The derivatives appearing in the 
+	entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$ are computed with 
+	centred finite differences:
 	\begin{equation}
-		\frac{\partial u}{\partial x} \approx 
+		\frac{\partial u}{\partial x}\Big|_{I,J} \approx 
 		\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
 	\end{equation}
 	\begin{equation}
-		\frac{\partial v}{\partial y} = 
-		\frac{v_{I,j+1}+v_{I,j}-v_{I,j-1}-v_{I,j-2}}{2(y_{J+1}-y_{J-1})}
+	\frac{\partial v}{\partial y} \Big|_{I,J} \approx
+	\frac{v_{I,j+1}+v_{I,j}-v_{I,j-1}-v_{I,j-2}}{2(y_{J+1}-y_{J-1})},
 	\end{equation}
 	\begin{equation}
-		\frac{\partial k}{\partial x} \approx \frac{k_{I+1,J} - 
+		\frac{\partial u}{\partial y}\Big|_{I,J} \approx 
+		\frac{u_{i,J+1}+u_{i-1,J+1}-u_{i,J-1}-u_{i-1,J-1}}{2(y_{J+1}-y_{J-1})},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial v}{\partial x} \Big|_{I,J} \approx 
+	\frac{v_{I+1,j}+v_{I+1,j-1}-v_{I-1,j}-v_{I-1,j-1}}{2(x_{I+1}-x_{I-1})},
+	\end{equation}
+	\begin{equation}
+		\frac{\partial k}{\partial x}\Big|_{I,J} \approx \frac{k_{I+1,J} - 
 		k_{I-1,J}}{x_{I+1} - x_{I-1}}, 
-		\quad \frac{\partial k}{\partial y} \approx 
+		\quad \frac{\partial k}{\partial y}\Big|_{I,J} \approx 
 		\frac{k_{I,J+1}-k_{i,J-1}}{y_{J+1}-y_{J-1}},
 	\end{equation}
 	\begin{equation}
-		\frac{\partial \omega}{\partial x} \approx \frac{\omega_{I+1,J} - 
-		\omega_{I-1,J}}{x_{I+1} - x_{I-1}}, \quad \frac{\partial 
-		\omega}{\partial y} \approx 
+		\frac{\partial \omega}{\partial x}\Big|_{I,J} \approx 
+		\frac{\omega_{I+1,J} - \omega_{I-1,J}}{x_{I+1} - x_{I-1}}, \quad 
+		\frac{\partial \omega}{\partial y}\Big|_{I,J} \approx 
 		\frac{\omega_{I,J+1}-\omega_{i,J-1}}{y_{J+1}-y_{J-1}}.
 	\end{equation}
+	%
 	\item the sink terms are approximated with the values at the centres of the 
 	cells:
 	\begin{equation}
@@ -536,7 +549,7 @@ Sweby's diagram:
 	\input{../img/flux_limiters}
 	\caption[Flux limiter functions]{The Sweby's diagram with the flux limiters 
 	presented in this 
-	section as functions of $r$. In grey the area the is allowed in order to 
+	section as functions of $r$. In grey the area that is allowed in order to 
 	have a TVD method.}
 	\label{fig:fluxlimiters}
 \end{figure}
@@ -571,7 +584,7 @@ control volumes.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.4\textwidth]{cellcentred.pdf}
-	\caption[Cell-centred grid]{Location of the degrees od freedom in within a 
+	\caption[Cell-centred grid]{Location of the degrees of freedom within a 
 	cell-centred approach.}
 	\label{fig:cellcentred}
 \end{figure}
@@ -645,9 +658,10 @@ derived exploiting a decomposition of the vector
 \begin{equation}
 \mathbf{d}_{L,\sigma}=\mathbf{x}_\sigma - \mathbf{x}_L,
 \end{equation}
-based the co-normal vector $\mathbf{Kn}_L$ (see \cite{main:tpfa}). Moreover it 
+based the co-normal vector $\mathbf{Kn}_L$. Moreover it 
 can be shown that this approximation is consistent only if the grid is 
-K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$. 
+K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$ 
+(see \cite{tesi:wolff}).
 %\section{Coupling conditions}
 % Disegno di cosa succede all'interfaccia
 % Not sure about this section...
