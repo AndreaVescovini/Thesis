@@ -83,6 +83,47 @@ non-linear and represents the advection that the velocity enforces on itself,
 while the third one is a diffusive term that express the action of the 
 viscosity.
 %
+\subsubsection{Boundary conditions}
+When the equations \eqref{eq:nsmass} \eqref{eq:nsmom} are solved in a bounded 
+domain $\Omega_\text{ff}$, suitable conditions have to be provided at the 
+boundary $\partial \Omega_\text{ff}$, depending on the situation that we want 
+to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
+\begin{itemize}
+	\item on inflow boundaries Dirichlet conditions are imposed to the velocity:
+	\begin{equation}
+		\mathbf{v} = \mathbf{v}_\text{in},
+	\end{equation}
+	\item on solid walls homogeneous Dirichlet conditions are imposed to the 
+	velocity (also called no-slip conditions):
+	\begin{equation}
+		\mathbf{v} = \mathbf{0},
+	\end{equation}
+	\item on outflow boundaries Neumann conditions for the stress 
+	are set:
+	\begin{equation}
+		\sigma \mathbf{n} = -p\mathbf{n}+2\mu \mathbf{Sn} = \varrho\mathbf{d},
+	\end{equation}
+	where $\mathbf{n}$ is the outward unit vector normal to the surface. 
+	However outflow boundary conditions are usually located where the flow is 
+	almost unidirectional and the surface stresses are known, so, especially 
+	when using the finite volumes method, they are replaced by:
+	\begin{equation}
+	()\nabla \mathbf{v})\mathbf{n} = \mathbf{0}, \quad p = p_\text{out},
+	\end{equation}
+	thus fixing a a zero-gradient condition for the velocity and imposing a 
+	Dirichlet condition to the pressure (see \cite{main:vermal}).
+\end{itemize}
+Moreover it is usually useful to take advantage of symmetries in the flow 
+field, 
+when they are known because of the domain and of the other boundary conditions. 
+For example, in order to model a flow in a pipe, we can impose the following 
+symmetry conditions along the centre of the domain and consider only half of it:
+\begin{equation}
+\nabla p \cdot \mathbf{n} = 0, \quad \nabla v_t \cdot \mathbf{n} = 0, \quad
+v_n = 0,
+\end{equation}
+where $v_t$ an $v_n$ are the tangential and normal components of the velocity.
+%
 \subsubsection{Reynolds number}
 If we consider the non-dimensional form of equation \eqref{eq:nsmom}, scaling 
 the lengths by a reference quantity $L$ and the velocities by a reference 
@@ -482,10 +523,10 @@ The standard model sets the following constants:
 This model gives its best for confined flows and high Reynolds number, where 
 the Reynolds stresses are dominant. Near the wall this assumption fails, so it 
 is common to use a wall function such as the one given by the boundary layer 
-theory \eqref{eq:loglaw} in order to compute the velocities at the cell near 
+theory \eqref{eq:loglaw} in order to compute the velocities at the cells near 
 the wall. This can be done easily for flat walls and it brings also 
-computational advantages because we can avoid to have very small cells near the 
-wall that solve until the viscous sublayer.
+computational advantages, because we can avoid to have very small cells near 
+the wall that solve until the viscous sublayer.
 
 During the years many variants of this model have been developed, for example 
 the \emph{RNG}~$k\text{-}\varepsilon$ model, which is derived with a different 
@@ -514,7 +555,7 @@ with the production term $P$ that can be limited in the following way:
 The equation for $\omega$ is empirical and driven by physical considerations as 
 it was the equation \eqref{eq:epsilon} for $\varepsilon$:
 \begin{equation} \label{eq:komegaomega}
-	\frac{\partial \omega}{\partial t} + \nabla (\omega \mathbf{v}) - 
+	\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \mathbf{v}) - 
 	\nabla \cdot \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla 
 	\omega 
 	\bigg] - \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
@@ -564,14 +605,41 @@ the the root mean square (RMS) of the fluctuating vorticity, i.e.
 in this case $\omega^2$ is the double of the \emph{enstrophy}, which is a 
 quantity associated to the energy related to vorticity.
 
-%This model works also near the boundary... we can not fix $\omega$ at the 
-%boundary but we fix it a bit inside.
 This model has shown good results also near the boundaries, so it does not 
 require any wall correction. For our purposes it is the most appropriate choice 
 because we would like to have non-flat boundaries, so employing a 
 wall law would be cumbersome. Moreover the values near the boundary are 
 very important in our tests, because they influence the exchange processes 
 across the interface between free-flow and porous-medium flow.
+
+As boundary conditions the following impositions are made:
+\begin{itemize}
+	\item on inflow boundaries Dirichlet conditions are set both for $k$ and 
+	$\omega$. According to \cite{ko:ansys}, the following formulas can be used:
+	\begin{equation}
+		k = \frac{3}{2} (|\!|\mathbf{v}|\!|_\text{in} I)^2, \quad \omega = 		
+		\frac{100k^{1/2}}{7C_\mu^{1/4}L},
+	\end{equation}
+	where $\mathbf{v}_\text{in}$ is the inflow velocity and $I$ is a 
+	non-dimensional quantity called turbulence intensity that could be 
+	estimated as
+	\begin{equation}
+	I = \frac{0.16}{Re^{1/8}},
+	\end{equation}
+	$C_\mu=0.09$ and $L$ is a characteristic size of the domain,
+	\item on solid walls $k=0$, while for $\omega$, according to 
+	\cite{main:wilcox}, the following asymptotic behaviour is used:
+	\begin{equation}
+		\omega \rightarrow \frac{6 \nu}{\beta d^2} \quad \text{as} \quad d 
+		\rightarrow 0,
+	\end{equation}
+	where $d$ is the distance from the nearest wall,
+	\item on outflow and symmetry boundaries a zero-gradient condition is 
+	assumed:
+	\begin{equation}
+		\nabla k \cdot \mathbf{n} = 0, \quad \nabla \omega \cdot \mathbf{n} = 0.
+	\end{equation}
+\end{itemize}
 %
 \section{Porous-medium flow} \label{sec:pm}
 According to \cite{forch:nield} a porous-medium is ``a material consisting of a 
