@@ -364,10 +364,16 @@ bigger stencil.
 \begin{equation} \label{eq:cd}
 \phi^* = \frac{\phi^U + \phi^D}{2}
 \end{equation}
+%
+\item Upwind
+%
+\item Hybrid
+%
 \item Linear Upwind Differencing (LUD) scheme:
 \begin{equation} \label{eq:lud}
 \phi^* = \frac{3\phi^U - \phi^{UU}}{2}
 \end{equation}
+%
 \item Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
 \cite{fv:leonard}:
 \begin{equation} \label{eq:quick}
@@ -375,6 +381,7 @@ bigger stencil.
 \end{equation}
 \end{itemize}
 A complete description can be found for example in \cite{main:vermal}.
+%
 \subsection{TVD methods} \label{subsec:tvd}
 Total Variation Diminishing (TVD) methods have been developed originally for 
 scalar conservation laws of the type:

@@ -84,22 +84,23 @@ while the third one is a diffusive term that express the action of the
 viscosity.
 %
 \subsubsection{Boundary conditions}
-When the equations \eqref{eq:nsmass} \eqref{eq:nsmom} are solved in a bounded 
-domain $\Omega_\text{ff}$, suitable conditions have to be provided at the 
-boundary $\partial \Omega_\text{ff}$, depending on the situation that we want 
-to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
+When the equations \eqref{eq:nsmass} and \eqref{eq:nsmom} are solved in a 
+bounded domain $\Omega_\text{ff}$, suitable conditions have to be provided at 
+the boundary $\partial \Omega_\text{ff}$, depending on the situation that we 
+want to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
 \begin{itemize}
-	\item on inflow boundaries Dirichlet conditions are imposed to the velocity:
+	\item on inflow boundaries, Dirichlet conditions are imposed to the 
+	velocity:
 	\begin{equation}
 		\mathbf{v} = \mathbf{v}_\text{in},
 	\end{equation}
-	\item on solid walls homogeneous Dirichlet conditions are imposed to the 
+	\item on solid walls, homogeneous Dirichlet conditions are imposed to the 
 	velocity (also called no-slip conditions):
 	\begin{equation}
 		\mathbf{v} = \mathbf{0},
 	\end{equation}
-	\item on outflow boundaries Neumann conditions for the stress 
-	are set:
+	\item on outflow boundaries, natural boundary conditions are imposed, 
+	resulting in the following prescription for the stress :
 	\begin{equation}
 		\sigma \mathbf{n} = -p\mathbf{n}+2\mu \mathbf{Sn} = \varrho\mathbf{d},
 	\end{equation}
@@ -108,7 +109,7 @@ to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
 	almost unidirectional and the surface stresses are known, so, especially 
 	when using the finite volumes method, they are replaced by:
 	\begin{equation}
-	()\nabla \mathbf{v})\mathbf{n} = \mathbf{0}, \quad p = p_\text{out},
+	(\nabla \mathbf{v})\mathbf{n} = \mathbf{0}, \quad p = p_\text{out},
 	\end{equation}
 	thus fixing a a zero-gradient condition for the velocity and imposing a 
 	Dirichlet condition to the pressure (see \cite{main:vermal}).
