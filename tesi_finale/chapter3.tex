@@ -1,6 +1,6 @@
 \chapter{Numerical model} \label{chap:discretization} %discretized equations?
-In this Chapter we describe the methods that are used to discretize the model. 
-For the spatial discretization we use the finite volumes methods, which allow 
+In this chapter we describe the methods that are used to discretize the model. 
+For the spatial discretization we use the finite volumes method, which allows 
 to solve efficiently flow problems guaranteeing the mass conservation. See 
 \cite{fv:leveque} for a broad description.
 In the free-flow region we discretize the equations using the staggered grid 
@@ -55,9 +55,12 @@ $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 %
 \subsection{Cell-centred equations}
 \subsubsection{Continuity equation}
-The continuity equation \eqref{eq:ransmass} can be discretized straight forward 
-because, since we are dealing with incompressible fluids, it does not involve 
-the density. We integrate over the ``grey'' control 
+The continuity equation \eqref{eq:ransmass} is discretized using control 
+volumes that coincide with the cells of the grid, thus it is treated is a 
+cell-centred way. Since we are dealing with incompressible fluids, it does not 
+involve the density and this makes its approximation easier.
+%We will see in section ... how to deal with non constant desities
+We integrate over the ``grey'' control 
 volume $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$, according to 
 Figure~\ref{fig:staggrid}, 
 and we apply the Gauss's divergence theorem:
@@ -65,14 +68,14 @@ and we apply the Gauss's divergence theorem:
 \int_{V_p} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_p} \mathbf{v} \cdot 
 \mathbf{n} \; dA = 0.
 \end{equation}
-The integral over the boundary $\partial V_p$ can be split over the four edges, 
+The integral over the boundary $\partial V_p$ can be split over the four faces, 
 that we identify with $e_p$ (east), $n_p$ (north), $w_p$ (west), $s_p$ (south):
 \begin{equation}
 \int_{\partial V_p} \mathbf{v} \cdot \mathbf{n} \; dA = \int_{e_p} u \; dA
 + \int_{n_p} v \; dA - \int_{w_p} u \; dA - \int_{s_p} v \; dA.
 \end{equation}
 At this point we discretize the equation approximating the values of the 
-velocity with the value at the centre of the edges, for example:
+velocity with the values at the centre of the faces, for example:
 \begin{equation}
 \int_{e_p} u \; dA \approx u_{i,J} |e_p|,
 \end{equation}
@@ -98,7 +101,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\frac{\partial \omega_{I,J}}{\partial t}|V_p|.
 	\end{equation}
 	%
-	\item in the convective terms the we apply the Gauss's divergence theorem:
+	\item the Gauss's divergence theorem is applied to the convective terms:
 	\begin{equation}
 		\int_{V_p} \nabla \cdot (k \mathbf{v}) \; dV = \int_{\partial V_p} k 
 		(\mathbf{v} 
@@ -109,10 +112,10 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\omega 
 	(\mathbf{v} \cdot \mathbf{n}) \; dA,
 	\end{equation}
-	then, considering for example the edge $e_p$, we approximate the velocity 
-	with the value at the centre of the face, while for the transported 
-	quantities $k$ and $\omega$ we employ the upwind value with respect to the 
-	sign of the velocity, i.e. supposing that $u_{i,J}>0$ we have:
+	then the velocity is approximated with its value at the centre of the face, 
+	while for the transported quantities $k$ and $\omega$ we employ the 
+	upstream value with respect to the sign of the velocity, so considering for 
+	example the face $e_p$ and supposing that $u_{i,J}>0$ we have:
 	\begin{equation}
 		\int_{e_p} ku \; dA \approx k_{I,J}u_{i,J}|e_p|, \quad \int_{e_p} 
 		\omega u \; dA \approx \omega_{I,J}u_{i,J}|e_p|.
@@ -121,7 +124,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	explained with more details in Subsections~\ref{subsec:diffscheme} and 
 	\ref{subsec:tvd}.
 	%
-	\item in the diffusive terms we apply the Gauss's divergence theorem:
+	\item the Gauss's divergence theorem is applied to the diffusive terms:	
 	\begin{equation}
 		\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + 
 		\sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] \; dV = \int_{\partial 
@@ -133,10 +136,10 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\nabla \omega\bigg] \; dV = \int_{\partial V_p} \bigg(\nu + \sigma 
 	\frac{k}{\omega}\bigg) \nabla \omega \cdot \mathbf{n} \; dA.
 	\end{equation}
-	Then, considering for example the edge $e_p$, we approximate the 
-	derivatives of $k$ and $\omega$ with centred finite differences, while the 
+	Then, considering for example the face $e_p$, the derivatives of $k$ and 
+	$\omega$ are approximated with centred finite differences, while the 
 	coefficients involving the viscosity are approximated by a weighted average 
-	between the values at the centre of the cells sharing the edge, thus 
+	between the values at the centre of the cells sharing the face, thus 
 	assuming a linear trend:
 	\begin{equation}
 	\int_{e_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \frac{\partial 
@@ -150,15 +153,16 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\frac{k}{\omega}\bigg)_\text{avg} 
 	\frac{\omega_{I+1,J}-\omega_{I,J}}{x_{I+1} - x_I} |e_p|,
 	\end{equation}
+	where the subscript $_\text{avg}$ denotes the weighted average
 	\begin{equation}
 	(\ast)_\text{avg} = \frac{x_{I+1} - x_i}{x_{I+1} - x_I}(\ast)_{I,J} + 
 	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
 	\end{equation}
 	%
 	\item in the source terms all the quantities are approximated with their 
-	value at the centre of the cell. The derivatives appearing in the 
-	entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$ are computed with 
-	centred finite differences:
+	value at the centre of the cell. We report here only the derivatives 
+	appearing in the entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$, 
+	that are computed with centred finite differences:
 	\begin{equation}
 		\frac{\partial u}{\partial x}\Big|_{I,J} \approx 
 		\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
@@ -203,7 +207,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
 control volumes. Let us consider the equation for the component $u$ of the 
 velocity:
-\begin{equation}
+\begin{equation} \label{eq:stagu}
 \frac{\partial u}{\partial t} + \nabla \cdot ( u \mathbf{v}) - \nabla \cdot 
 (\nu_\text{eff} \nabla u) + \frac{1}{\varrho} \frac{\partial}{\partial x} 
 \big(p 
@@ -223,18 +227,17 @@ theorem:
 \frac{\partial}{\partial x} \big( p + \varrho k \big) \bigg ]\; dV 
 =\\
 =\frac{d}{dt} \int_{V_u} u\; dV + \int_{\partial V_u} u (\mathbf{v} \cdot 
-\mathbf{n}) \; dA \;-\\
-- \int_{\partial V_u} \nu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA + 
-\frac{1}{\varrho}\int_{\partial V_u} (p + \varrho k) n_x \; 
-dA = 0,
+\mathbf{n}) \; dA - \int_{\partial V_u} \nu_\text{eff} (\nabla u \cdot 
+\mathbf{n}) \; dA \; + \\
++\frac{1}{\varrho}\int_{\partial V_u} (p + \varrho k) n_x \; dA = 0,
 \end{multline}
 where $n_x$ is the component in the $x$ direction of the outward unit 
-normal $\mathbf{n}$. Let us identify again the four edges of $\partial V_u$ 
+normal $\mathbf{n}$. Let us identify again the four faces of $\partial V_u$ 
 with $e_u$ (east), $n_u$ (north), $w_u$ (west), $s_u$ (south), so that
 \begin{equation}
 	\partial V_u = e_u \cap n_u \cap w_u \cap s_u.
 \end{equation}
-In the equation \eqref{eq:stagmomeq} there are four terms of different kinds, 
+In the equation \eqref{eq:stagmomeq} there are four terms of different nature, 
 let us consider each of them separately, starting from the simplest one:
 \begin{itemize}
 	\item in the storage term we approximate the velocity with the value at the 
@@ -243,13 +246,13 @@ let us consider each of them separately, starting from the simplest one:
 	\frac{d}{dt} \int_{V_u}  u\; dV \approx \frac{du_{i,J}}{dt}|V_u|;
 	\end{equation}
 	%
-	\item in the pressure term the contributions from the edges $n_u$ and $s_u$ 
+	\item in the pressure term the contributions from the faces $n_u$ and $s_u$ 
 	are null because $n_x=0$ on them, so 
 	\begin{equation}
 	\int_{\partial V_u} (p + \varrho k)n_x \; dA = \int_{e_u} (p+\varrho k) \; 
 	dA - \int_{w_u} (p+\varrho k) \; dA.
 	\end{equation}
-	Then we approximate $p$ and $k$ with the values at the centre of the edges:
+	Then we approximate $p$ and $k$ with the values at the centre of the faces:
 	\begin{equation}
 	\int_{e_u} (p+\varrho k) \; dA \approx (p_{I+1,J} +\varrho k_{I+1,J}) |e_u|,
 	\end{equation}
@@ -258,8 +261,8 @@ let us consider each of them separately, starting from the simplest one:
 	\end{equation}
 	%
 	\item in the diffusive term we have both a frontal momentum flux 
-	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
-	contribution from the edges $n_u$ and $s_u$:
+	contribution from the faces $e_u$ and $w_u$ and a lateral momentum flux 
+	contribution from the faces $n_u$ and $s_u$:
 	\begin{multline}
 	\int_{\partial V_u} \nu_\text{eff} (\nabla u \cdot \mathbf{n}) \; dA =     
 	\int_{e_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA
@@ -270,21 +273,21 @@ let us consider each of them separately, starting from the simplest one:
 	We develop the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\	
 	For the frontal momentum flux we approximate the viscosity with 
-	the value at the centre of the edge, while we approximate the derivative of 
+	the value at the centre of the face, while we approximate the derivative of 
 	the velocity with a centred finite difference:
 	\begin{equation}
 	\int_{e_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA \approx 
 	\nu_{\text{eff},\{I+1,J\}} \frac{u_{i+1,J} - u_{i,J}}{x_{i+1}-x_i} |e_u|.
 	\end{equation}
-	For the lateral momentum flux we split the 	edge $n_u$ into the two halves 
+	For the lateral momentum flux we split the 	face $n_u$ into the two halves 
 	related to the two cells $[x_{i-1},x_i]\times[y_{j-1},y_j]$ and 
 	$[x_i,x_{i+1}]\times[y_{j-1},y_j]$:
 	\begin{equation}
 	n_u = [x_I,x_i]\times \{y_j\} \cup [x_i,x_{I+1}] \times \{y_j\}.
 	\end{equation}
-	We employ again a centred finite difference to approximate of the 
+	We employ again a centred finite difference to approximate the 
 	derivative of the velocity, while, for the approximation of the viscosity, 
-	we compute an average between the two cells sharing the edge:
+	we compute an average between the two cells sharing the face:
 	\begin{equation}
 	\int_{n_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA = 
 	\int_{x_{I,j}}^{x_{i,j}} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA 
@@ -304,18 +307,17 @@ let us consider each of them separately, starting from the simplest one:
 	\end{equation*}
 	%
 	\item in the convective term we have again both a frontal momentum flux 
-	contribution from the edges $e_u$ and $w_u$ and a lateral momentum flux 
-	contribution from the edges $n_u$ and $s_u$:
+	contribution from the faces $e_u$ and $w_u$ and a lateral momentum flux 
+	contribution from the faces $n_u$ and $s_u$:
 	\begin{multline}
 	\int_{\partial V_u} u (\mathbf{v} \cdot \mathbf{n}) \; dA = \int_{e_u} u u 
 	\; dA - \int_{w_u} u u \; dA \; +\\
 	+ \int_{n_u} u v \; dA  -\int_{s_u} u v \; dA.
 	\end{multline}
 	For the discretization we have to distinguish between the 
-	\emph{transporting} velocity, coming from $\mathbf{v} \cdot \mathbf{n}$, 
-	and the \emph{transported} field, coming from $\varrho u$, that in this 
-	case of incompressible flow is only the velocity because the density is 
-	constant. For the former we average between the values sharing the edge, 
+	\emph{transporting velocity}, coming from $\mathbf{v} \cdot \mathbf{n}$, 
+	and the \emph{transported field}, that in this case is the velocity itself. 
+	For the former we average between the values sharing the face, 
 	while for the latter we have to consider an approximation that takes into 
 	account the flow direction, as it will be explained in detail in 
 	Subsections~\ref{subsec:diffscheme} and \ref{subsec:tvd}. For the moment we 
@@ -323,22 +325,29 @@ let us consider each of them separately, starting from the simplest one:
 	We develop only the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\
 	For the frontal momentum flux we approximate the transporting velocity with 
-	an average between the values of the two staggered cells sharing the 
-	staggered edge:
+	an average between the values at the centre of the two staggered cells 
+	sharing the staggered face:
 	\begin{equation}
 		\int_{e_u} u u \; dA \approx u^* \frac{u_{i,J} + 
 		u_{i+1,J}}{2}|e_u|.
 	\end{equation}
 	For the lateral momentum flux we approximate the transporting velocity with 
-	an average between the values a the two ends of the edge:
+	an average between the values a the two ends of the face (see 
+	Figure~\ref{fig:lat_adv_flux}):
 	\begin{equation}
 	\int_{n_u} u v \; dA \approx u^* \frac{v_{I,j} 
 	+v_{I+1,j}}{2} |n_u|.
 	\end{equation}
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.6\textwidth]{lateral_adv_flux_black.pdf}
+		\caption{Degrees of freedom involved in the lateral part of the 
+		advective flux.}
+		\label{fig:lat_adv_flux}
+	\end{figure}
 \end{itemize}
-
-The equation for the component $v$ of the velocity is analogous to the one we 
-have described above, with the only addition of the gravity term:
+The equation for the component $v$ of the velocity is analogous to the one for 
+$u$ described above, with the only addition of the gravity term:
 \begin{equation}
 \frac{\partial v}{\partial t} + \nabla \cdot (v \mathbf{v}) - \nabla \cdot 
 (\nu_\text{eff} \nabla v) + \frac{1}{\varrho}\frac{\partial}{\partial y} \big(p 
@@ -355,32 +364,124 @@ Figure~\ref{fig:staggrid}.
 %
 \subsection{Differencing schemes} \label{subsec:diffscheme} %Linear 
 %differencing schemes ?
-How to choose the scheme for the approximation of the transported field?
-It holds in general for every equation involving a convective term.
-These are easy but sometimes may produce oscillations, they make use of a 
-bigger stencil.
-\begin{itemize}
-\item Centred Differencing (CD) scheme:
+The choice of the scheme for the approximation of a transported field is of 
+great importance for both the accuracy and the stability of the solution of the 
+problem. In general this decision has to be taken for every convective term, 
+indeed we have found it both in the discretization of the velocity 
+equation and of the turbulence model equations. As already mentioned, an 
+important property that the scheme should have is the \emph{transportativeness} 
+(see \cite{main:vermal}), i.e. it should take into account the direction of the 
+flow. From a physical point of view this comes from the fact that, when in a 
+flow convection is dominating over diffusion, a bias of the value on the face 
+towards the direction where the flow comes from must occur. From a mathematical 
+point of view instead we can introduce the following \emph{Péclet number}
+\begin{equation}
+	Pe = \frac{|u| h}{2\nu},
+\end{equation}
+where $h$ denotes the cell width. When the grid is too coarse or the viscosity 
+is too low $Pe\rightarrow\infty$, and this can lead to a lost of stability of 
+the numerical method (see for example \cite{main:quarteroni}).
+
+In the following we will list the most immediate options, referring to the 
+convective term of the equation~\eqref{eq:stagu} for the $x$-component of the 
+velocity. It is considered here the case of a uniform grid, with positive 
+transporting velocity according to 
+Figure~\ref{fig:superscripts}, but all the schemes can be generalized to the 
+case of non-uniform grids. Moreover the basic construction is one-dimensional, 
+so it can be used for every dimension also in a multi-dimensional problem. For 
+a complete description see for example in \cite{main:vermal}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{trecelle_black.pdf}
+	\caption[Location of the degrees of freedom used to approximate 
+	$u^*$]{Location of the degrees of freedom used to approximate $u^*$. The 
+	superscripts $^U$, $^{FU}$, $^D$ and $^{FD}$ stand respectively for 
+	upstream, far-upstream, downstream and far-downstream. They hold for the 
+	case of positive transporting velocity at the face where $u^*$ is.}
+	\label{fig:superscripts}
+\end{figure}
+\subsubsection{CD scheme}
+The Central Differencing (CD) scheme consists in using an average between the 
+two first neighbouring values:
 \begin{equation} \label{eq:cd}
-\phi^* = \frac{\phi^U + \phi^D}{2}
+	u^* = \frac{u^D + u^U}{2}.
 \end{equation}
+Employing Taylor expansions, it can be easily seen that this approximation is 
+of second order, but being symmetric it does not have the transportativeness 
+property. Indeed it can be shown that when $Pe > 1$ it is not stable.
 %
-\item Upwind
-%
-\item Hybrid
-%
-\item Linear Upwind Differencing (LUD) scheme:
-\begin{equation} \label{eq:lud}
-\phi^* = \frac{3\phi^U - \phi^{UU}}{2}
+\subsubsection{Upwind scheme}
+In opposition to the CD scheme, the upwind scheme consists in using only the 
+upstream value:
+\begin{equation}
+	u^* = u^U
 \end{equation}
+It is a simple, widely used and robust scheme as it has the transportativeness 
+property, but its accuracy is only of first order, indeed it introduces in the 
+solution an important amount of numerical diffusion that smooths the gradients. 
 %
-\item Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
-\cite{fv:leonard}:
+\subsubsection{Hybrid scheme}
+The hybrid scheme (\cite{diff:hybrid}) consists in evaluating if $Pe<1$ or 
+$Pe>1$ at each face and then employing the CD or the upwind respectively. It 
+exploits the good properties of the two schemes mentioned above, so it is 
+highly stable and accurate when the diffusion is dominant, however the overall 
+accuracy in terms of Taylor expansions reduces to first order.
+%
+\subsubsection{QUICK scheme}
+The Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
+(\cite{fv:leonard}) is an higher-order method that involves an extended stencil 
+of degrees of freedom. It can be obtained evaluating the quadratic interpolator 
+of $u^D$, $u^U$ and 
+$u^{FU}$ at the position where $u^*$ is:
 \begin{equation} \label{eq:quick}
-	\phi^* = \frac{3\phi^D + 6 \phi^U - \phi^{UU}}{8}
+	u^* = \frac{3u^D + 6u^U - u^{FU}}{8}.
 \end{equation}
-\end{itemize}
-A complete description can be found for example in \cite{main:vermal}.
+Its accuracy is of third order, but it may produce unphysical overshoots or 
+undershoots in the solution when there are strong gradients. This behaviour is 
+not desirable, in particular in the case where the simulation involves 
+quantities such as the turbulent kinetic energy $k$ that have to be positive. 
+%
+\subsubsection{LUD scheme}
+The Linear Upwind Differencing (LUD) scheme is an extension of the upwind 
+scheme that has a second order accuracy, however it can produce too unphysical 
+oscillations. It can be obtained evaluating the linear interpolator of $u^U$ 
+and 
+$u^{FU}$ at the position where $u^*$ is:
+\begin{equation} \label{eq:lud}
+u^* = \frac{3u^U - u^{FU}}{2}
+\end{equation}
+%
+\subsubsection{An example}
+We can see the behaviour of the CD, Upwind and QUICK methods when they are 
+applied to a one-dimensional scalar conservation law:
+\begin{align}
+	\label{eq:1dconslaw} \frac{\partial \phi}{\partial t} + \frac{\partial 
+	\phi}{\partial x} = 0, 
+	\quad &\forall x \in (0, 1), \; \forall t > 0\\
+	\phi(0, t) = 1, \quad &\forall t>0\\
+	\label{eq:1dconslawend}\phi(x, 0) = 0, \quad &\forall x \in (0,1)
+\end{align}
+In this case there is no diffusion but only the linear transport of a step from 
+left to right. The equation~\eqref{eq:1dconslaw} can be discretized with finite 
+volumes storing the degrees of freedom at the ends of each cells, as it is in 
+the staggered grid concept. Then the differencing schemes presented above can 
+be applied to the discretization of the transport term, while for the temporal 
+discretization we can use the Backward Euler method (see 
+Subsection~\ref{subsec:time}).
+\begin{figure}[t]
+	\centering
+	\input{../img/1Dconslaw_report}
+	\caption[Solution of a one-dimensional scalar conservation law]{Solution of 
+	the problem \eqref{eq:1dconslaw}--\eqref{eq:1dconslawend} at the time 
+	$t=0.5$. The upwind method smooths the gradient, while the CD and QUICK 
+	methods produce oscillations.}
+	\label{fig:1dconslaw}
+\end{figure}
+
+In Figure~\ref{fig:1dconslaw} we can see the solution at $t=0.5$. The upwind 
+method is very diffusive near the step, but bounded within the extrema of the 
+exact solution. The CD and QUICK methods instead approximate better the steep 
+gradient, but produce oscillations for $x<0.5$.
 %
 \subsection{TVD methods} \label{subsec:tvd}
 Total Variation Diminishing (TVD) methods have been developed originally for 
@@ -551,7 +652,7 @@ Sweby's diagram:
 %	region.
 \end{itemize}
 
-\begin{figure}
+\begin{figure}[t]
 	\centering
 	\input{../img/flux_limiters}
 	\caption[Flux limiter functions]{The Sweby's diagram with the flux limiters 
@@ -635,7 +736,7 @@ simple but robust method, commonly used in commercial software.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{cctpfa3.pdf}
-	\caption{Two cells $V_L$ and $V_R$ sharing the edge $\sigma$.}
+	\caption{Two cells $V_L$ and $V_R$ sharing the face $\sigma$.}
 	\label{fig:cctpfa}
 \end{figure}
 Let us consider for instance the face $\sigma = \partial V_L \cup \partial 
@@ -651,8 +752,8 @@ $\mathbf{x}_\sigma$, while
 for the viscosity $\mu$ (and eventually the density $\varrho$) we employ the 
 upwind value.
 
-In case of discontinuous permeabilities at the edge $\sigma$, an harmonic 
-average weighted on the distances between the cell centres and the edge is 
+In case of discontinuous permeabilities at the face $\sigma$, an harmonic 
+average weighted on the distances between the cell centres and the face is 
 performed:
 \begin{equation}
 \frac{|x_R - x_L|}{\mathrm{K}} \approx 
@@ -672,7 +773,7 @@ K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$
 %\section{Coupling conditions}
 % Disegno di cosa succede all'interfaccia
 % Not sure about this section...
-\section{Time discretization}
+\section{Time discretization} \label{subsec:time}
 For the temporal discretization we employ fully implicit, unconditionally 
 stable methods as the Backward Euler (BE) and the Backward Differencing Formula 
 2 (BDF2) also for non constant time steps. A monolithic approach is used, the 
