@@ -897,12 +897,62 @@ K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$
 % Disegno di cosa succede all'interfaccia
 % Not sure about this section...
 \section{Time discretization} \label{subsec:time}
-For the temporal discretization we employ fully implicit, unconditionally 
-stable methods as the Backward Euler (BE) and the Backward Differencing Formula 
-2 (BDF2) also for non constant time steps. A monolithic approach is used, the 
-Jacobian matrix is computed 
-numerically then the UMFPACK solver is used. The time-step size depends of the 
-convergence of the Newton's method at the previous time iteration.
+The RANS equations have to be discretized also in time. Let us consider a 
+generic unknown $\phi$ that could be a component of the velocity, the turbulent 
+kinetic energy $k$ or its specific dissipation rate $\omega$. After the spatial 
+discretization we obtain equations of the following kind:
+\begin{equation} \label{eq:timegen}
+	\frac{\partial \phi}{\partial t} = f(\phi, t),
+\end{equation}
+where the function $f$ at the right-hand side contains all the terms except the 
+the time derivative. We introduce a discretization of the time 
+interval $[0, T]$ into $N_t$ uniform time-steps, such that $\Delta t = T/Nt$ is 
+the time-step size and $t^n=n\Delta t, \; n=0,\dots,N_t$. Let $\phi^n$ be the 
+numerical solution at $t^n$. In order to 
+discretize in time the equation \eqref{eq:timegen}, we have employed two 
+implicit schemes.
+
+\subsubsection{Backward Euler method}
+The Backward Euler (BE) method (or implicit Euler method) consists in 
+approximating the time derivative with a backward finite difference:
+\begin{equation}
+	\frac{\partial \phi}{\partial t} \approx \frac{	\phi^{n+1}-\phi^n}{\Delta 
+	t} = f(\phi^{n+1}, t^{n+1}).
+\end{equation}
+In terms of global truncation error, it converges with order 1 and it is 
+unconditionally stable, so no particular attention must be paid to the choice 
+of $\Delta t$ in order to guarantee the stability. Of course an initial 
+condition $\phi^0$ must be provided.
+%
+\subsubsection{BDF2 method}
+The Backward Differencing Formula 2 (BDF2) method consists in approximating the 
+time derivative with a backward finite difference of second order:
+\begin{equation}
+	\frac{\partial \phi}{\partial t} \approx 
+	\frac{3\phi^{n+1}-4\phi^n+\phi^{n-1}}{2\Delta t} = f(\phi^{n+1}, t^{n+1}).
+\end{equation}
+In terms of global truncation error, it converges with order 2 and it is 
+unconditionally stable too. It is a two-step method because it requires two 
+initial conditions; this is a problem at the very first time step because we 
+would need to know $\phi^{-1}$. This issue is usually solved performing one 
+iteration with a one-step method, the BE usually, and then starting with the 
+BDF2 from the second iteration. This trick does not affect the overall 
+convergence order because a single step of a first order one-step method 
+introduces a local truncation error second order.
+	
+The method can be generalized to case of non constant time-steps. Let us define 
+$\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
+\begin{multline}
+	\frac{\partial \phi}{\partial t} \approx \frac{\phi^{n+1}\Delta 
+	t^n(2\Delta t^{n+1}+\Delta t^n)-\phi^n(\Delta t^{n+1}+\Delta 
+	t^n)^2+\phi^{n-1}(\Delta t^{n+1})^2}{\Delta 
+	t^{n+1}\Delta t^n(\Delta t^n+\Delta t^{n+1})} =\\
+= f(\phi^{n+1}, t^{n+1})
+\end{multline}
+See \cite{main:matenum} for more detailed information about time discretization 
+methods.
 \section{Summary}
 Fully implicit coupling, monolithic approach, UMFPACK, cenni alle coupling 
-conditions and boundary conditions, primary variables.
+conditions and boundary conditions, primary variables. Jacobian numerically The 
+time-step size depends of the 
+convergence of the Newton's method at the previous time iteration.
