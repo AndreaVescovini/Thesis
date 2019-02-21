@@ -341,7 +341,8 @@ let us consider each of them separately, starting from the simplest one:
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.6\textwidth]{lateral_adv_flux_black.pdf}
-		\caption{Degrees of freedom involved in the lateral part of the 
+		\caption[Degrees of freedom involved in the lateral part of the 
+		advective flux]{Degrees of freedom involved in the lateral part of the 
 		advective flux.}
 		\label{fig:lat_adv_flux}
 	\end{figure}
@@ -484,107 +485,118 @@ exact solution. The CD and QUICK methods instead approximate better the steep
 gradient, but produce oscillations for $x<0.5$.
 %
 \subsection{TVD methods} \label{subsec:tvd}
-Total Variation Diminishing (TVD) methods have been developed originally for 
-scalar conservation laws of the type:
+Total Variation Diminishing (TVD) methods are part of a category of methods 
+called \emph{high resolution methods}, that address the problem of having a 
+solution without any oscillation and with an higher order accuracy, second 
+order in this case. They were originally developed for scalar conservation laws 
+of the type:
 \begin{align}
-	\label{eq:conslaw} &\frac{d\phi}{dt} + \frac{d}{dx}\big(f(\phi)\big) = 0, 
+	\label{eq:conslaw} &\frac{\partial \phi}{\partial t} + \frac{\partial f(x) 
+	}{\partial x} = 0. 
 %\quad t>0 \quad x 
 %	\in 
 %	\mathbb{R}\\[1ex]
 %	\label{eq:conslawic} &\phi(x, 0) = \phi_0(x), \quad x \in \mathbb{R}
 \end{align}
 
-\begin{defn}
-	The \emph{total variation} of the numerical solution of the problem 
-	\eqref{eq:conslaw} is defined as:
-	\begin{equation}
-		TV(\phi) = \sum_{i=1}^{N_\text{dof}-1} |\phi_{i+1} - \phi_i|,
-	\end{equation}
-	where $i$ represents the index of the nodes of the discretized domain, so 
-	it is the sum of the jumps between all the couples of adjacent nodes.
-\end{defn}
-\begin{defn}
-	A method is called \emph{TVD} if the total variation of the solution does 
-	not increase with time, i.e. 
-	\begin{equation}\label{eq:tvdcondition}
+For this kind of problem the \emph{total variation} of the numerical solution 
+can be defined as:
+\begin{equation}
+	TV(\phi) = \sum_{i=1}^{N_\text{dof}-1} |\phi_{i+1} - \phi_i|,
+\end{equation}
+where $\phi_i$ is the numerical solution at the node $i$ of the discretized 
+domain. Then a method is called \emph{TVD} if the total variation of the 
+solution does not increase with time, i.e. 
+\begin{equation}\label{eq:tvdcondition}
 	TV(\phi ^{n+1}) \leq TV(\phi^n) \quad \forall n>0,
-	\end{equation}
-	where $\phi^n$ is the numerical solution at the time-step $t^n$.
-\end{defn}
-
-Their aim of TVD methods is to provide a solution with a second order accuracy 
-and without any overshoot or undershoot, these kind of methods are called also 
-\emph{high resolution methods}. Starting from this second feature, the 
-property 
-that we are interested in is monotonicity:
-\begin{defn}
-	A scheme is called \emph{monotonicity preserving} if it does not create new 
-	local extrema, local minima are non-decreasing and local maxima are 
-	non-increasing.
-\end{defn}
-In \cite{tvd:monotonicity} it has been proved that a TVD scheme is 
-monotonicity 
-preserving, so imposing \eqref{eq:tvdcondition} we should avoid the 
-development 
-of solutions containing overshoots and undershoots, as it can happen using 
-methods like QUICK.
+\end{equation}
+where $\phi^n$ is the numerical solution at the time-step $t^n$. In 
+\cite{tvd:monotonicity} it has been proved that a TVD scheme is 
+\emph{monotonicity preserving}, i.e. it does not create new 
+local extrema, local minima are non-decreasing and local maxima are 
+non-increasing. This is the desirable property that we would like to have in 
+order avoid the development of solutions containing overshoots and undershoots, 
+as it can happen using the higher order methods presented in the previous 
+subsection.
 
 According to \cite{tvd:sweeby} and \cite{main:darwish} we can achieve our 
 target adding to the first order upwind approximation a second order 
 non-linear 
 anti-diffusive flux: 
 \begin{equation} \label{eq:tvdformula}
-\phi_e = \phi^U + \frac{1}{2}\psi(r)(\phi^D - \phi^U), \quad r = 
-\frac{\phi^U - \phi^{UU}}{\phi^D - \phi^U}.
+u^* = u^U + \frac{1}{2}\psi(r)(u^D - u^U), \quad r = 
+\frac{u^U - u^{FU}}{u^D - u^U}.
 \end{equation}
-The flux includes a function $\psi(r)$ called \emph{flux limiter} that should 
-dampen the second order contribution in regions where it could produces 
-oscillations. It is chosen non-negative in order to preserve the sign of the 
-flux and it depends on the variable $r$ that is defined as the ratio between 
-two consecutive gradients. The non linearity can not be avoided, indeed it was 
-proved by Godunov that any monotonicity preserving linear scheme can be at 
-most 
-first order accurate (see \cite{tvd:godunov}).
+The flux includes a function $\psi(r)$ called \emph{flux limiter}, that should 
+dampen the second order contribution in regions of the domain where it could 
+produces oscillations. It is chosen non-negative in order to preserve the sign 
+of the flux and it depends on the variable $r$, that is defined as the ratio 
+between two consecutive differences of the solution. The non-linearity can not 
+be avoided, indeed it was proved by \textcite{tvd:godunov} that any 
+monotonicity preserving linear scheme can be at most first order accurate.
 
-Exploiting the approximation \eqref{eq:tvdformula} to solve the problem 
-\eqref{eq:conslaw} and imposing the TVD condition on the solution we obtain 
-the 
-following bounds for the flux limiter:
+Exploiting the approximation \eqref{eq:tvdformula} to solve a problem like
+\eqref{eq:conslaw} and imposing the TVD condition \eqref{eq:tvdcondition} on 
+the solution, we obtain the following bounds for the flux limiter function:
 \begin{align}
-\psi(r) = 0 \quad &\text{if} \quad r < 0\\
+\notag \psi(r) = 0 \quad &\text{if} \quad r < 0\\
 \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 \leq r \leq 1\\
-\psi(r) \leq 2 \quad &\text{if} \quad r > 2
+\notag \psi(r) \leq 2 \quad &\text{if} \quad r > 2
 \end{align}
-Notice that when $r<0$ we are near to a local maximum or minimum, because it 
-means that the difference between the upstream and downstream nodes has the 
-opposite sign of that one between the far upstream and upstream nodes. In this 
-situation we set $\psi = 0$ i.e. we use the first order upwind.
-It is also convenient if $\psi(r)$ has the following symmetry property:
+Notice that when $r<0$ we are in presence of a local maximum or minimum, 
+because it means that the difference between the upstream and downstream nodes 
+has opposite sign of the difference between the far upstream and upstream 
+nodes. In this $\psi$ is set to zero, so only the first order upwind 
+contribution is employed in the approximation of $u^*$.
+It is also required to $\psi$ the following symmetry property:
 \begin{equation}
-\frac{\psi(r)}{r} = \psi\bigg(\frac{1}{r}\bigg)
+\frac{\psi(r)}{r} = \psi\bigg(\frac{1}{r}\bigg),
 \end{equation}
-which ensures that backward- and forward-facing gradients are treated in the 
+that ensures that backward- and forward-facing gradients are treated in the 
 same way.
 
-Following \cite{tvd:sweeby} and \cite{tvd:vanleer}, any second order scheme 
-can 
-be obtained as a convex combination of the CD scheme \eqref{eq:cd} and LUD 
-scheme \eqref{eq:lud}, moreover $\psi(r)$ should be at least Lipschitz 
-continuous. Thus, adding these requirements to the previous ones, we obtain 
-the 
-following bounds for the flux limiter function of a TVD method:
+In order to have a second order scheme, $\psi$ must be at least 
+Lipschitz-continuous. Moreover, following \cite{tvd:sweeby} and 
+\cite{tvd:vanleer}, any second order scheme 
+can be obtained as a convex combination of the CD scheme \eqref{eq:cd} and the 
+LUD scheme \eqref{eq:lud} in the following way:
+\begin{equation}
+	\psi(r) = \theta(r) \psi_{CD}(r) + (1-\theta(r))\psi_{LUD}(r) \quad \forall 
+	r >0,
+\end{equation}
+where $\theta(r)$ is a parameter such that $0 \leq \theta(r) \leq 1,\; \forall 
+r>0$, while $\psi_{CD}$ and $\psi_{LUD}$ are the linear flux limiter functions 
+that can be associated to the schemes CD and LUD rearranging the 
+approximations \eqref{eq:cd} and \eqref{eq:lud}:
+\begin{gather}
+	\psi_{CD}(r) = 1 \quad \forall r,\\
+	\psi_{LUD}(r) = r \quad \forall r.
+\end{gather}
+
+Thus, adding these requirements to the previous ones, we 
+obtain the following bounds for the flux limiter function of a TVD method:
 \begin{align}
 \psi(r) = 0 \quad &\text{if} \quad r < 0 \notag \\
 \label{tvd:bounds} r \leq \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 
 \leq r \leq 1\\
 1 \leq \psi(r) \leq \min \{r, 2 \} \quad &\text{if} \quad r > 2 \notag
 \end{align}
-% A livello teorico potrei aggiungese la dimostrazione di monotonicity->TVD, 
+In Figure~\ref{fig:tvdregion} they are reported in a $\psi-r$ diagram known 
+also as Sweby's diagram.
+\begin{figure}
+	\centering
+	\input{../img/Tvd_region}
+	\caption[The TVD region (Sweby's diagram)]{In grey the TVD region in which 
+	the flux 
+	limiter functions must fit. It is called also Sweby's diagram.}
+	\label{fig:tvdregion}
+\end{figure}
+% A livello teorico potrei aggiungere la dimostrazione di monotonicity->TVD, 
 %l'applicazione di TVD per ottenere i bounds e l'applicazione dei bounds 
 %all'approssimazione col flux limiter (come in sweby o in darwish). Potrei 
 %mettere qualcosa nell'appendice.
 \subsubsection{Flux limters}
-Starting from the bounds \eqref{tvd:bounds} it is easy to create a 
+Starting from the bounds \eqref{tvd:bounds}, it is easy to create a 
 flux limiter function, indeed in literature many possible choices can be 
 found. 
 We list here some of the most popular functions that have been implemented in 
@@ -612,16 +624,16 @@ Sweby's diagram:
 	\begin{equation}
 	\psi(r) = \max \{0, \min \{ r,1\} \}
 	\end{equation}
-	It is a piecewise linear function that stays on the lower boundary of the 
-	TVD region. Using this limiter we add to the upwind value an increment 
-	equal to the smallest variation between $\phi^{UU}-\phi^U$ and $\phi^D - 
-	\phi^U$.
+	It is a piecewise linear function that lies on the lower boundary of the 
+	TVD region. Intuitively, using this limiter we add to the upstream value  
+	half of	the smallest increment in absolute value between $u^U-u^{FU}$ and 
+	$u^D - u^U$.
 %
 	\item Superbee \cite{tvd:roe}
 	\begin{equation}
 	\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}
 	\end{equation}
-	It is a piecewise linear function that stays on the upper boundary of the 
+	It is a piecewise linear function that lies on the upper boundary of the 
 	TVD region.
 %
 	\item UMIST \cite{tvd:lien}
@@ -651,29 +663,35 @@ Sweby's diagram:
 %	\eqref{eq:vl}, while for $r>1$ it is closer to the upper bound of the TVD 
 %	region.
 \end{itemize}
-
 \begin{figure}[t]
 	\centering
 	\input{../img/flux_limiters}
 	\caption[Flux limiter functions]{The Sweby's diagram with the flux limiters 
-	presented in this 
-	section as functions of $r$. In grey the area that is allowed in order to 
-	have a TVD method.}
+	presented in this section as functions of $r$.}
 	\label{fig:fluxlimiters}
 \end{figure}
 
 It is not easy to compare the different flux limiters in order to find the 
-best 
-one, generally the Van Alabada and the Min-Mod can be a bit less accurate 
-since 
-$\psi \rightarrow 1$ as $r \rightarrow \infty$, while a scheme like the 
+best one. Generally the Van Alabada and the Min-Mod can be a bit less accurate 
+since $\psi \rightarrow 1$ as $r \rightarrow \infty$, while a scheme like the 
 Superbee can produce sharper gradients, but sometimes the convergence can be a 
 bit more difficult (it is said to be too compressive). The UMIST instead has a 
-more complex function, so its evaluation can be more expensive.
+more complex function, so its evaluation can be more expensive. However their 
+performances should be compared case by case.
 %
 \subsubsection{Non-uniform grids}
-%We have to be careful when we want to use non uniform grids.
-%\subsection{Summary}
+The theory of TVD methods presented above holds for structured grids. In order 
+to deal with Cartesian non-uniform grids, that for example employ a grading, we 
+have to consider the information about the distances between the degrees of 
+freedom involved in the approximation. The generalization however has to be 
+consistent, i.e. the approximation~\eqref{eq:tvdformula} has to be recovered in 
+case of uniform grid. In literature several slightly different approaches can 
+be found, see for example \cite{nonunif:bruner}, \cite{nonunif:darmou}, 
+\cite{nonunif:li}, \cite{nonunif:hou}, \cite{nonunif:zeng} and 
+\cite{nonunif:berger}. We describe here two of them.
+
+In \cite{nonunif:li}
+%
 \section{Cell-centred concept}
 In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
 scalar equation, with the 
@@ -736,7 +754,8 @@ simple but robust method, commonly used in commercial software.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.6\textwidth]{cctpfa3.pdf}
-	\caption{Two cells $V_L$ and $V_R$ sharing the face $\sigma$.}
+	\caption[Two cells $V_L$ and $V_R$ sharing the face $\sigma$]{Two cells 
+	$V_L$ and $V_R$ sharing the face $\sigma$.}
 	\label{fig:cctpfa}
 \end{figure}
 Let us consider for instance the face $\sigma = \partial V_L \cup \partial 
