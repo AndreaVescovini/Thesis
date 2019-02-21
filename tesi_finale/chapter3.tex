@@ -26,7 +26,6 @@ in Figure~\ref{fig:staggrid} for the case of the
 Navier-Stokes equations in a two-dimensional domain.
 \begin{figure}[t]
 	\centering
-%	\includegraphics[width=\textwidth]{staggered_grid_mia_ij.png}
 	\includegraphics[width=\textwidth]{staggered_grid_mia.pdf}
 	\caption[Staggered grid control volumes]{An example of a staggered grid 
 	with the pressure degrees of freedom (dofs) stored at the centres of the 
@@ -577,7 +576,8 @@ Thus, adding these requirements to the previous ones, we
 obtain the following bounds for the flux limiter function of a TVD method:
 \begin{align}
 \psi(r) = 0 \quad &\text{if} \quad r < 0 \notag \\
-\label{tvd:bounds} r \leq \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 
+\label{eq:tvdbounds} r \leq \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 
+0 
 \leq r \leq 1\\
 1 \leq \psi(r) \leq \min \{r, 2 \} \quad &\text{if} \quad r > 2 \notag
 \end{align}
@@ -586,7 +586,7 @@ also as Sweby's diagram.
 \begin{figure}
 	\centering
 	\input{../img/Tvd_region}
-	\caption[The TVD region (Sweby's diagram)]{In grey the TVD region in which 
+	\caption[TVD region (Sweby's diagram)]{In grey the TVD region in which 
 	the flux 
 	limiter functions must fit. It is called also Sweby's diagram.}
 	\label{fig:tvdregion}
@@ -596,7 +596,7 @@ also as Sweby's diagram.
 %all'approssimazione col flux limiter (come in sweby o in darwish). Potrei 
 %mettere qualcosa nell'appendice.
 \subsubsection{Flux limters}
-Starting from the bounds \eqref{tvd:bounds}, it is easy to create a 
+Starting from the bounds \eqref{eq:tvdbounds}, it is easy to create a 
 flux limiter function, indeed in literature many possible choices can be 
 found. 
 We list here some of the most popular functions that have been implemented in 
@@ -611,7 +611,7 @@ Sweby's diagram:
 	\infty$.
 %
 	\item Van Alabada \cite{tvd:vanalabada}
-	\begin{equation}
+	\begin{equation} \label{eq:vanalabada}
 	\psi(r)=
 	\begin{cases}
 	\dfrac{r^2+r}{r^2+1} \quad &\text{if $r\geq 0$}\\[2ex]
@@ -621,7 +621,7 @@ Sweby's diagram:
 	It is a smooth function that instead goes to 1 as $r \rightarrow \infty$.
 %
 	\item Min-Mod \cite{tvd:roe}
-	\begin{equation}
+	\begin{equation} \label{eq:minmod}
 	\psi(r) = \max \{0, \min \{ r,1\} \}
 	\end{equation}
 	It is a piecewise linear function that lies on the lower boundary of the 
@@ -630,14 +630,14 @@ Sweby's diagram:
 	$u^D - u^U$.
 %
 	\item Superbee \cite{tvd:roe}
-	\begin{equation}
+	\begin{equation} \label{eq:superbee}
 	\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}
 	\end{equation}
 	It is a piecewise linear function that lies on the upper boundary of the 
 	TVD region.
 %
 	\item UMIST \cite{tvd:lien}
-	\begin{equation}
+	\begin{equation} \label{eq:umist}
 	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{3r+1}{4},\frac{r+3}{4}, 
 	2\bigg\} \bigg\}
 	\end{equation}
@@ -645,7 +645,7 @@ Sweby's diagram:
 	version of QUICK.
 %
 	\item MC (Monotinized Central) limiter \cite{tvd:mclimiter}
-	\begin{equation}
+	\begin{equation} \label{eq:mclim}
 	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{r+1}{2}, 2\bigg\} \bigg\}
 	\end{equation}
 	It is also known as MUSCL (Monotonic Upstream-Centred Scheme for 
@@ -682,16 +682,105 @@ performances should be compared case by case.
 \subsubsection{Non-uniform grids}
 The theory of TVD methods presented above holds for structured grids. In order 
 to deal with Cartesian non-uniform grids, that for example employ a grading, we 
-have to consider the information about the distances between the degrees of 
-freedom involved in the approximation. The generalization however has to be 
-consistent, i.e. the approximation~\eqref{eq:tvdformula} has to be recovered in 
-case of uniform grid. In literature several slightly different approaches can 
-be found, see for example \cite{nonunif:bruner}, \cite{nonunif:darmou}, 
-\cite{nonunif:li}, \cite{nonunif:hou}, \cite{nonunif:zeng} and 
-\cite{nonunif:berger}. We describe here two of them.
+have to generalize it considering the information about the distances between 
+the degrees of freedom involved in the approximation. The generalization has 
+always to be consistent, i.e. the approximation~\eqref{eq:tvdformula} has to be 
+recovered in case of uniform grid. In literature several slightly different 
+approaches can be found, see for example \cite{nonunif:bruner}, 
+\cite{nonunif:darmou}, \cite{nonunif:li}, \cite{nonunif:berger}, 
+\cite{nonunif:hou} and \cite{nonunif:zeng}. We describe here some of them.
 
-In \cite{nonunif:li}
-%
+A first simple approach consists in modifying the value of $u^{FU}$ appearing 
+in the factor $r$ defined in \eqref{eq:tvdformula}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.75\textwidth]{non_uniform_cells_black.pdf}
+	\caption[Non-uniform staggered grid]{Non-uniform staggered grid. The 
+	distance between $u^{FU^*}$ and $u^U$ is the same that there is between 
+	$u^U$ and $u^D$.}
+	\label{fig:nonunifli}
+\end{figure}
+
+The idea is that if the grid is not uniform, the distances between $u^D$ and 
+$u^U$ and between $u^U$ and $u^{FU}$ might be different, as it is represented 
+in Figure~\ref{fig:nonunifli}. In this situation the formula 
+\eqref{eq:tvdformula} can not be used directly, because the degree of freedom 
+$u^{FU}$ is not at the position 
+$u^{FU^*}$, where it would be if the grid was uniform, with cell sizes equal to 
+the distance between $u^U$ and $u^D$, i.e. at the position upstream with 
+respect to $u^U$, at a distance equal to the one between $u^U$ and $u^D$, see 
+Figure~\ref{fig:nonunifli}. We want to use the ratio:
+\begin{equation*}
+r = \frac{u^U - u^{FU^*}}{u^D - u^U},
+\end{equation*}
+thus we need to build an approximation for $u^{FU^*}$.
+
+\textcite{nonunif:darmou} proposed the following scheme that 
+approximates the difference $u^D - u^{FU^*}$:
+\begin{equation}
+r = \frac{u^U - u^{FU^*}}{u^D - u^U} = \frac{(u^D - u^{FU^*})-(u^D - u^U)}{u^D 
+- u^U} = \frac{u^D - u^{FU^*}}{u^D - u^U} - 1,
+\end{equation}
+\begin{equation}
+u^D - u^{FU^*} \approx \frac{du^U}{dx} r_{ \scriptscriptstyle FU^*, D} = 2 
+\frac{du^U}{dx} r_{\scriptscriptstyle U, D},
+\end{equation}
+where $r_{ \scriptscriptstyle A, B} $ denotes the vector from the point $A$ to 
+$B$. \textcite{nonunif:li} showed that this method behaves well with parabolic 
+solutions, but not so well with exponential solutions. So they proposed an 
+improved approximation which introduces more upwind information:
+\begin{equation}
+r = \frac{u^U - u^{FU^*}}{u^D - u^U}, \quad u^{FU^*} \approx u^{FU} + 
+\frac{d u^{FU}}{dx} r_{\scriptscriptstyle FU, FU^*}.
+\end{equation}
+
+\textcite{nonunif:hou} introduced a different and more rigorous approach. The 
+idea in order to improve those described above was derived to consider not only 
+the distances between the degrees of freedom, but also the sizes of the cells 
+around them. Let us consider for example a non-uniform staggered grid as in 
+Figure~\ref{fig:hou}.
+\begin{figure*}[h]
+	\centering
+	\includegraphics[width=\textwidth]{cells_with_sizes.pdf}
+	\caption[Non-uniform staggered grid with cell sizes]{Non-uniform staggered 
+	grid with cell sizes.}
+	\label{fig:hou}
+\end{figure*}
+\\We generalize \eqref{eq:tvdformula} in the following way:
+\begin{equation}
+u^* = u^U + \frac{1}{\RUD} \psi(r) (u^D - u^U),
+\end{equation}
+\begin{equation}
+\RUD = \frac{\Delta \xU + \Delta \xD}{\Delta \xU}, \quad r = \frac{u^U - 
+u^{FU}}{x^U - x^{FU}} \cdot \frac{x^D - x^U}{u^D - u^U}.
+\end{equation}
+$\RUD$ takes into account the sizes of the upstream and downstream 
+staggered cells, while $r$ is modified into ratio between an approximation of 
+the gradients. Notice that if the grid is uniform $\RUD = 2$, as in the uniform 
+formula \eqref{eq:tvdformula}.
+
+Repeating the procedure described in the Subsection~\ref{subsec:tvd}, the TVD 
+condition \eqref{eq:tvdcondition} and the second order accuracy are imposed, 
+obtaining the following modified bounds for the flux limiter function $\psi$:
+\begin{align}
+\notag \psi(r) = 0 \quad &\text{if} \quad r < 0\\
+r \leq \psi(r) \leq \min \bigg \{\frac{\RFUU}{\RFUU - 1}, 1 \bigg \} \quad 
+&\text{if} \quad 0 \leq r \leq 1\\
+\notag 1 \leq \psi(r) \leq \min \{r,\RUD \} \quad &\text{if} \quad r > 2
+\end{align}
+In Figure~\ref{fig:tvdregionhou} we can see the modified TVD region; with 
+respect to Figure~\ref{fig:tvdregion}, the upper bounds are changed.
+\begin{figure}
+	\centering
+	\input{../img/tvd_region_modified_hou_final_report}
+	\caption[Modified TVD region]{In grey the modified TVD region for 
+	non-uniform grids in which the flux limiter functions must fit 
+	\cite{nonunif:hou}.}
+	\label{fig:tvdregionhou}
+\end{figure} 
+At last the flux limiter functions \eqref{eq:vl}--\eqref{eq:mclim} have to be 
+generalized in order to fit into these new bounds.
+
 \section{Cell-centred concept}
 In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
 scalar equation, with the 

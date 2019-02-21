@@ -56,10 +56,17 @@
 
 \newlength{\figwidth}\setlength{\figwidth}{0.9\textwidth}
 \newlength{\widthsette}\setlength{\widthsette}{0.7\textwidth}
-\newlength{\fullwidth}\setlength{\fullwidth}{\textwidth}
+%\newlength{\fullwidth}\setlength{\fullwidth}{\textwidth}
 
-\theoremstyle{definition}
-\newtheorem{defn}{Definition}
+\makeatletter
+\newcommand{\addemptysup}{\@ifnextchar^{}{^{}}}
+\makeatother
+
+\newcommand{\RUD}{R_{U,D}\addemptysup}
+\newcommand{\RFUU}{R_{FU,U}\addemptysup}
+\newcommand{\xU}{x_{U}\addemptysup}
+\newcommand{\xD}{x_{D}\addemptysup}
+\newcommand{\xFU}{x_{FU}\addemptysup}
 
 \includeonly{%
 	preliminariesBook,%
