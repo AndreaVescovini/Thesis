@@ -10,9 +10,11 @@ Two Point Flux Approximation (TPFA).
 For the temporal discretization we use implicit finite differences methods, 
 like Backward Euler (BE) and the Backward Differencing Formula 2 (BDF2).
 %
-\section{Staggered grid concept}
-The staggered grid concept is characterized by the distinction between the 
-degrees of freedom related to scalar primary variables and those related to 
+%\section{Staggered grid concept}
+\section{Free-flow}
+\subsection{Staggered grid discretization}
+The staggered grid discretization is characterized by the distinction between 
+the degrees of freedom related to scalar primary variables and those related to 
 vectorial primary variables. In saddle point problems, like the incompressible 
 Navier-Stokes or RANS equations, if we locate all the primary variables, i.e. 
 pressure, velocity and possibly the turbulent kinetic energy and its 
@@ -52,7 +54,7 @@ to impose boundary and interface conditions.
 For the sake of simplicity we consider now a bi-dimensional domain and 
 $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 %
-\subsection{Cell-centred equations}
+%\subsection{Cell-centred equations}
 \subsubsection{Continuity equation}
 The continuity equation \eqref{eq:ransmass} is discretized using control 
 volumes that coincide with the cells of the grid, thus it is treated is a 
@@ -202,7 +204,8 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	\end{equation}
 \end{itemize}
 %
-\subsection{Staggered equations}
+%\subsection{Staggered equations}
+\subsubsection{Momentum equation}
 The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
 control volumes. Let us consider the equation for the component $u$ of the 
 velocity:
@@ -795,12 +798,76 @@ respect to Figure~\ref{fig:tvdregion}, the upper bounds are changed.
 \end{figure} 
 At last the flux limiter functions \eqref{eq:vl}--\eqref{eq:mclim} have to be 
 generalized in order to fit into these new bounds.
+%
+\subsection{Time discretization} \label{subsec:time}
+The RANS equations have to be discretized in time. Let us consider a 
+generic unknown $\phi$ that could be a component of the velocity, the turbulent 
+kinetic energy $k$ or its specific dissipation rate $\omega$. After having 
+performed the spatial discretization, we obtain equations of the following kind:
+\begin{equation} \label{eq:timegen}
+\frac{\partial \phi}{\partial t} = f(\phi, t),
+\end{equation}
+where we have included in the function $f$ at the right-hand side all the terms 
+except the time derivative. We introduce a discretization of the time 
+interval $[0, T]$ into $N_t$ uniform time-steps, such that $\Delta t = T/Nt$ is 
+the time-step size and $t^n=n\Delta t, \; n=0,\dots,N_t$. Let $\phi^n$ be the 
+numerical solution at the time $t^n$. In order to 
+discretize in time the equation \eqref{eq:timegen}, we have employed two 
+implicit schemes, so that at every iteration $f$ will depend on $\phi$ and $t$ 
+at the current time-step and not at the previous one.
+%
+\subsubsection{Backward Euler method}
+The Backward Euler (BE) method (or implicit Euler method) consists in 
+approximating the time derivative with a backward finite difference:
+\begin{equation}
+\frac{\partial \phi}{\partial t} \approx \frac{	\phi^n-\phi^{n-1}}{\Delta 
+	t} = f(\phi^n, t^n).
+\end{equation}
+It is a first order method in terms of convergence and it is 
+unconditionally stable, so no particular attention must be paid to the choice 
+of $\Delta t$ in order to guarantee the stability. Of course an initial 
+condition $\phi^0$ must be provided.
+%
+\subsubsection{BDF2 method}
+The Backward Differencing Formula 2 (BDF2) method consists in approximating the 
+time derivative with a backward finite difference of second order:
+\begin{equation}
+\frac{\partial \phi}{\partial t} \approx 
+\frac{3\phi^n-4\phi^{n-1}+\phi^{n-2}}{2\Delta t} = f(\phi^n, t^n).
+\end{equation}
+It is of second order in terms of convergence and it is 
+unconditionally stable too. It is a two-step method because it requires two 
+initial conditions; this is a problem at the very first time step because we 
+would need to know $\phi^{-1}$. This issue is usually solved performing one 
+iteration with a one-step method, the BE usually, and then starting with the 
+BDF2 from the second iteration. This procedure does not affect the overall 
+convergence order, because a single step of a first order one-step method 
+introduces a local truncation error that is of second order.
 
-\section{Cell-centred concept}
+The method can be generalized to case of non constant time-steps. Let us define 
+$\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
+%\begin{multline}
+%	\frac{\partial \phi}{\partial t} \approx \frac{\phi^n\Delta 
+%	t^{n-1}(2\Delta t^n+\Delta t^{n-1})-\phi^{n-1}(\Delta t^n+\Delta 
+%	t^{n-1})^2+\phi^{n-2}(\Delta t^n)^2}{\Delta 
+%	t^n\Delta t^{n-1}(\Delta t^n+\Delta t^{n-1})} =\\
+%= f(\phi^n, t^n)
+%\end{multline}
+\begin{multline}
+\frac{\partial \phi}{\partial t} \approx \phi^n\bigg( \frac{1}{\Delta t^n + 
+	\Delta t^{n-1}} + \frac{1}{\Delta t^n}\bigg) - \phi^{n-1} \frac{\Delta t^n 
+	+ \Delta t^{n-1}}{\Delta t^n \Delta t^{n-1}} \;+ \\+ \phi^{n-2} 
+\frac{\Delta 
+	t^n}{\Delta t^{n-1} (\Delta t^n + \Delta t^{n-1})} = f(\phi^n,t^n)
+\end{multline}
+See \cite{main:matenum} for more detailed information about time discretization 
+methods.
+%
+%\section{Cell-centred concept}
+\section{Porous-medium flow}
 In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
-scalar equation, with the 
-pressure as a primary variable, indeed, due to the incompressibility of the 
-fluid, the time derivative is not present:
+scalar equation, with the pressure as a primary variable, indeed, due to the 
+incompressibility of the fluid, the time derivative is not present:
 \begin{align}
 \label{eq:cellcentred}	\nabla \cdot \mathbf{v} = 0&\\
 \label{eq:forch2}	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} 
@@ -893,66 +960,78 @@ based the co-normal vector $\mathbf{Kn}_L$. Moreover it
 can be shown that this approximation is consistent only if the grid is 
 K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$ 
 (see \cite{tesi:wolff}).
-%\section{Coupling conditions}
-% Disegno di cosa succede all'interfaccia
-% Not sure about this section...
-\section{Time discretization} \label{subsec:time}
-The RANS equations have to be discretized also in time. Let us consider a 
-generic unknown $\phi$ that could be a component of the velocity, the turbulent 
-kinetic energy $k$ or its specific dissipation rate $\omega$. After the spatial 
-discretization we obtain equations of the following kind:
-\begin{equation} \label{eq:timegen}
-	\frac{\partial \phi}{\partial t} = f(\phi, t),
-\end{equation}
-where the function $f$ at the right-hand side contains all the terms except the 
-the time derivative. We introduce a discretization of the time 
-interval $[0, T]$ into $N_t$ uniform time-steps, such that $\Delta t = T/Nt$ is 
-the time-step size and $t^n=n\Delta t, \; n=0,\dots,N_t$. Let $\phi^n$ be the 
-numerical solution at $t^n$. In order to 
-discretize in time the equation \eqref{eq:timegen}, we have employed two 
-implicit schemes.
-
-\subsubsection{Backward Euler method}
-The Backward Euler (BE) method (or implicit Euler method) consists in 
-approximating the time derivative with a backward finite difference:
-\begin{equation}
-	\frac{\partial \phi}{\partial t} \approx \frac{	\phi^{n+1}-\phi^n}{\Delta 
-	t} = f(\phi^{n+1}, t^{n+1}).
-\end{equation}
-In terms of global truncation error, it converges with order 1 and it is 
-unconditionally stable, so no particular attention must be paid to the choice 
-of $\Delta t$ in order to guarantee the stability. Of course an initial 
-condition $\phi^0$ must be provided.
 %
-\subsubsection{BDF2 method}
-The Backward Differencing Formula 2 (BDF2) method consists in approximating the 
-time derivative with a backward finite difference of second order:
+\section{Coupling conditions}
+The discretization of coupling conditions described in 
+Section~\ref{sec:coupling} requires attention because of the different concepts 
+employed in the two subdomains. For the sake of simplicity let us suppose to 
+have a two-dimensional domain split by an horizontal interface, so that $u$ and 
+$v$ are respectively the tangential and normal component of the velocity to the 
+interface, and that the porous-medium occupies the inferior subdomain. In 
+Figure~\ref{fig:coupledcells} the degrees of freedom of two cells touching 
+the interface are represented. The superscripts $^\text{if}$ and $^\text{c}$ 
+denote respectively the interface and the internal part of the cells. The 
+degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ will be 
+useful in the following computations, but are fictitious. Let us suppose also 
+that the permeability in the porous-medium is isotropic, so that we can 
+consider it a scalar.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.4\textwidth]{coupled_cells.pdf}
+	\caption[Cells at the coupling interface]{Cells at the coupling interface. 
+	The degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ 
+	are fictitious.}
+	\label{fig:coupledcells}
+\end{figure}
+
+For the continuity of mass fluxes \eqref{eq:contmass} we use the velocity of 
+the free-flow at the interface $v_\text{ff}^\text{if}$ to express the flux 
+across the boundary of the porous-medium.
+
+For the continuity of normal stresses \eqref{eq:coupnormalstress} the key point 
+is the approximation of $p_\text{pm}^\text{ff}$. This is done reverting 
+the Forchheimer's law \eqref{eq:forch2}, approximating the derivative of $p$ 
+with a finite difference:
 \begin{equation}
-	\frac{\partial \phi}{\partial t} \approx 
-	\frac{3\phi^{n+1}-4\phi^n+\phi^{n-1}}{2\Delta t} = f(\phi^{n+1}, t^{n+1}).
+	p_\text{pm}^\text{if} = 
+	p_\text{pm}^\text{c}+(y^\text{if}-y_\text{pm}^\text{c}) 
+	\Big[-\frac{\mu}{\mathrm{K}}\big(v_\text{ff}^\text{if} 
+	+C_F\sqrt{\mathrm{K}}+ 
+	\frac{\varrho}{\mu}|v_\text{ff}^\text{if}| 
+	v_\text{ff}^\text{if}\big)+\varrho
+	 g\Big].
 \end{equation}
-In terms of global truncation error, it converges with order 2 and it is 
-unconditionally stable too. It is a two-step method because it requires two 
-initial conditions; this is a problem at the very first time step because we 
-would need to know $\phi^{-1}$. This issue is usually solved performing one 
-iteration with a one-step method, the BE usually, and then starting with the 
-BDF2 from the second iteration. This trick does not affect the overall 
-convergence order because a single step of a first order one-step method 
-introduces a local truncation error second order.
-	
-The method can be generalized to case of non constant time-steps. Let us define 
-$\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
-\begin{multline}
-	\frac{\partial \phi}{\partial t} \approx \frac{\phi^{n+1}\Delta 
-	t^n(2\Delta t^{n+1}+\Delta t^n)-\phi^n(\Delta t^{n+1}+\Delta 
-	t^n)^2+\phi^{n-1}(\Delta t^{n+1})^2}{\Delta 
-	t^{n+1}\Delta t^n(\Delta t^n+\Delta t^{n+1})} =\\
-= f(\phi^{n+1}, t^{n+1})
-\end{multline}
-See \cite{main:matenum} for more detailed information about time discretization 
-methods.
+$\mathrm{K}$ and $\mu$ are evaluated at the centre of the porous-medium cell. 
+Then $p_\text{pm}^\text{if}$ is applied at the right-hand side of 
+\eqref{eq:coupnormalstress} and it is thus used as a flux across 
+$\Gamma_\text{int}$.
+
+The Beavers-Joseph-Saffman condition \eqref{eq:bjs} can be rewritten as
+\begin{equation}
+	u = \frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} \frac{\partial u}{\partial 
+	y} \quad \text{on $\Gamma_\text{int}$}.
+\end{equation}
+It is then discretized as
+\begin{equation} \label{eq:bjsdisc}
+	u_\text{ff}^\text{if} = \frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} 
+	\frac{u_\text{ff}^\text{c} - 
+	u^\text{if}_\text{ff}}{y_\text{ff}^\text{c}-y^\text{if}}
+\end{equation}
+and rearranging we obtain
+\begin{equation}
+	u_\text{ff}^\text{if} = 	
+	\frac{u^\text{c}_\text{ff} \beta_\text{BJS}}{1+\beta_\text{BJS}}, \quad 
+	\beta_\text{BJS} = \frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} 
+	\frac{1}{y_\text{ff}^\text{c}-y^\text{if}},
+\end{equation}
+which can be used as a Dirichlet condition for the tangential component of the 
+velocity.
 \section{Summary}
-Fully implicit coupling, monolithic approach, UMFPACK, cenni alle coupling 
-conditions and boundary conditions, primary variables. Jacobian numerically The 
-time-step size depends of the 
-convergence of the Newton's method at the previous time iteration.
+After that all the equations have been discretized, we obtain for every 
+time-step a non-linear algebraic system, which is solved monolithically using 
+the Newton's method. The entries of the Jacobian matrix are computed 
+numerically and then the resulting linear system is solved with a direct solver 
+using the library UMFPACK. The convergence criterium is based on the increment. 
+The time-step size is variable since at each new time iteration it is chosen 
+multiplying the previous time-step size by a factor depending on how fast the 
+convergence of the Newton's method at the previous time iteration was.

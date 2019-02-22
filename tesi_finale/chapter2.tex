@@ -790,7 +790,7 @@ permeability:
 	Re_\mathrm{K} = \frac{U \sqrt{\mathrm{K}}}{\nu}.
 \end{equation}
 %
-\section{Coupling conditions}
+\section{Coupling conditions} \label{sec:coupling}
 At the interface between the free-flow region and the porous-medium we have to 
 impose suitable conditions in order to couple the two subdomains. Let us denote 
 with $\Omega_\text{ff}$ the free-flow domain and with $\Omega_\text{pm}$ the 
@@ -810,7 +810,7 @@ mechanical equilibrium, for which we need:
 \begin{itemize}
 	\item the continuity of normal mass fluxes, that in our incompressible case 
 	reduces to the continuity of the normal component of the velocity:
-	\begin{equation}
+	\begin{equation} \label{eq:contmass}
 		[\mathbf{v} \cdot \mathbf{n}]_\text{ff} = - [\mathbf{v} 
 		\cdot \mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
 	\end{equation}
@@ -822,7 +822,7 @@ mechanical equilibrium, for which we need:
 		$\Gamma_\text{int}$},
 	\end{equation}
 	\item the continuity of normal stresses:
-	\begin{equation}
+	\begin{equation} \label{eq:coupnormalstress}
 		[(\varrho \mathbf{v} \mathbf{v}^\mathrm{T} - \mu_\text{eff} \nabla 
 		\mathbf{v} + p\mathbb{1}) 
 		\mathbf{n}]_\text{ff} = 
@@ -838,7 +838,7 @@ mechanical equilibrium, for which we need:
 		[\mathbf{v} \cdot \mathbf{t}_i]_\text{pm}, \quad \forall i \in \{1, 
 		\dots, dim - 1\},
 	\end{equation}
-	on $\Gamma_\text{int}$, where $\alpha_{BJ}$ is a non-dimensional 
+	on $\Gamma_\text{int}$, where $\alpha_\text{BJ}$ is a non-dimensional 
 	coefficient that depends on 
 	properties of the permeable material and $\mathbf{t}_i, \; 
 	i \in \{1, \dots, dim-1\}$ is a basis of the plane tangential to the 
@@ -855,8 +855,8 @@ mechanical equilibrium, for which we need:
 	so we neglect the velocity in the porous-medium since it is very small with 
 	respect to the one in the free-flow region, thus obtaining the 
 	Beavers-Joseph-Saffman (BJS) condition:
-	\begin{equation}
-		\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_{BJ}} (\nabla \mathbf{v}) 
+	\begin{equation} \label{eq:bjs}
+		\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_\text{BJ}} (\nabla \mathbf{v}) 
 		\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 0, 
 		\quad \forall i \in \{1, \dots, dim - 1\}.
 	\end{equation}
