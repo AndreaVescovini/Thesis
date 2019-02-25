@@ -26,6 +26,7 @@
 %\usepackage{pdflscape} % forse inutile
 \usepackage{subfig} % per posizionare tante figure
 \usepackage{bbold} % per \mathbb
+\usepackage{booktabs} % per i filetti delle tabelle
 %\usepackage[section]{placeins} % ridefinisce section inserendo un \FloatBarrier
 \usepackage{emptypage} % pagina tutta bianca a fine capitolo
 \usepackage{pdfpages} % per inserire pdf
@@ -54,7 +55,7 @@
 \newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
 \renewcommand*{\pagenumbering}[1]{} % per mettere un'unica numerazione
 
-\newlength{\figwidth}\setlength{\figwidth}{0.9\textwidth}
+\newlength{\figwidth}\setlength{\figwidth}{0.39\textwidth}
 \newlength{\widthsette}\setlength{\widthsette}{0.7\textwidth}
 %\newlength{\fullwidth}\setlength{\fullwidth}{\textwidth}
 
@@ -74,7 +75,8 @@
 	chapter2,%
 	chapter3,%
 	chapter4,%
-	chapter5%	
+	chapter5,%
+	appendice%
 }
 %\emergencystretch=1em % per gli overfull hbox nella bibliografia. Ci sta.
 \addbibresource{bibliotesi.bib}
@@ -91,6 +93,7 @@
 \include{chapter3}
 \include{chapter4}
 \include{chapter5}
+\include{appendice}
 \backmatter
 \nocite{*}
 \printbibliography[heading=bibintoc]

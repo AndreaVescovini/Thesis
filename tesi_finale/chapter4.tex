@@ -1,11 +1,134 @@
 \chapter{Numerical results} \label{chap:results}
-%We have made a lot of computations.
+In this chapter we present some numerical results. The convergence of higher 
+order methods applied to the Navier-Stokes equations is tested, first in space, 
+then in time. Then another spatial comparison test between the upwind method 
+and the TVD methods is performed using a channel flow. After that the results 
+from the backward facing step test using the RANS equations are shown and 
+compared to those from the CFL3D code \cite{web:nasa}. Next, a turbulent 
+channel flow with two small cavities is studied and at last a coupled free-flow 
+and porous-medium flow problem is analysed, varying the permeability of the 
+porous-medium.\\
+In all the tests the gravity has been neglected.
+%
 \section{Navier-Stokes tests}
-\subsection{Convergence of the TVD methods}
-%We have a better convergence.
-\subsection{Convergence with respect to time}
+\subsection{Space convergence} \label{subsec:conv}
+We want to test the spatial convergence order of the $L^2$-error of the 
+solution of the Navier-Stokes equations, comparing the results obtained with 
+the upwind method \eqref{eq:upwind} and the TVD methods described in 
+Subsection~\ref{subsec:tvd}.\\
+We consider a steady version of the 
+equations~\eqref{eq:nsmass}--\eqref{eq:nsmom}:
+\begin{align}
+	\label{eq:nssteadymass} \nabla \cdot \mathbf{v} -h = 0&\\
+	\label{eq:nssteadymom} \nabla \cdot (\mathbf{v} \mathbf{v}^\mathrm{T}) - 
+	\nabla \cdot (\nu \nabla \mathbf{v}) + \frac{1}{\varrho}\nabla p  
+	-\mathbf{f} = \mathbf{0}&
+\end{align}
+We neglect the gravity, but we take into account two possible source terms 
+$h$ and $\mathbf{f}$. Moreover, for the sake of simplicity, we consider here 
+all the quantities appearing in the equations to be non-dimensional.
+%
+\subsubsection{Sin-Cos test}
+Let us solve the equations~\eqref{eq:nssteadymass}--\eqref{eq:nssteadymom} over 
+a two-dimensional unit domain $\Omega=(0,1)^2$, with the following source terms:
+\begin{align}
+	h &= 0,\\
+	\mathbf{f} &= [-2\nu \cos(x) \sin(y), \; 2\nu \cos(y) \sin(x)]^\mathrm{T},
+\end{align}
+so that, choosing $\varrho=1$, the analytical solution, depicted in 
+Figure~\ref{fig:sincosexact}, is given by
+\begin{align}
+\label{eq:uexsin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\\
+	v_\text{ex}(x,y) &= \sin(x)\cos(y)\\
+\label{eq:pexsin}	p_\text{ex}(x,y) &= -\frac{\cos(2x)+\sin(2y)}{4}
+\end{align}
+Dirichlet boundary conditions for the velocity are applied on the whole 
+boundary $\partial \Omega$ using the exact solution. Because of this choice, 
+the pressure appears in the problem only in the momentum equation 
+\eqref{eq:nssteadymom}, under the sign of gradient. Thus in the numerical 
+solution it would be defined up to a constant, so we fix its value at one point 
+in the domain in order to match the exact solution \eqref{eq:pexsin}.
+\begin{figure}
+	\centering
+	\subfloat{\includegraphics[width=0.5\textwidth]{sincos_exact_v_report.png}}
+	\subfloat{\includegraphics[width=0.5\textwidth]{sincos_exact_p_report.png}}
+	\caption[Exact solution of the Sin-Cos test]{Exact solution of the Sin-Cos 
+	test \eqref{eq:uexsin}--\eqref{eq:pexsin}. On the left the magnitude of the 
+	velocity field, on the right the 
+	pressure field.}
+	\label{fig:sincosexact}
+\end{figure}
+
+The problem is solved over a sequence of five uniform grids, starting from 
+$\num{4x4}$ cells and each time halving their size. Both the cases of $\nu=1$ 
+and $\nu=\num{e-3}$ are considered, that correspond to $Re=1$ and $Re=\num{e3}$ 
+respectively. In Figure~\ref{fig:sin_err} the errors computed are reported 
+depending on the square root of the number of cells, while in 
+Tables~\ref{tab:sin_lre}--\ref{tab:sin_hre} we can compare directly the 
+convergence orders for the different differencing schemes.
+\begin{figure}
+	\centering
+	\subfloat[Upwind, $Re = 1$]{
+		\input{../img/l2error_test_navierstokes_sincos}}
+	\subfloat[Upwind, $Re = \num{e3}$]{
+		\input{../img/l2error_test_navierstokes_sincos_hre}}\\
+	\subfloat[Min-Mod, $Re = 1$]{
+		\input{../img/l2error_test_navierstokes_sincos_mm}}
+	\subfloat[Min-Mod, $Re = \num{e3}$]{
+		\input{../img/l2error_test_navierstokes_sincos_mm_hre}}\\
+	\subfloat[Van Leer, $Re = 1$]{
+		\input{../img/l2error_test_navierstokes_sincos_vl}}
+	\subfloat[Van Leer, $Re = \num{e3}$]{
+		\input{../img/l2error_test_navierstokes_sincos_vl_hre}}
+	\caption[$L^2$-errors for the Sin-Cos problem]{$L^2$-errors for the Sin-Cos 
+	problem depending on the square root of the number of cells in the grid. 
+	The grey lines are the reference lines for the first-order and second-order 
+	convergence.}
+	\label{fig:sin_err}
+\end{figure}
+\begin{table}
+	\centering
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
+	\midrule
+	p & 1.008 & 1.569 & 1.626\\
+	v_x & 1.143 & 1.962 & 1.977\\
+	v_y & 1.058 & 1.928 & 1.945\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[Convergence orders with $Re = 1$ for the Sin-Cos 
+	problem]{Convergence orders with $Re = 1$ for the Sin-Cos problem. They are 
+	computed considering the last two refinements of the grid.}
+	\label{tab:sin_lre}
+	\[
+	\begin{array}{c|ccc}
+	\toprule
+	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
+	\midrule
+	p & 1.148 & 1.659 & 1.058\\
+	v_x & 1.071 & 1.441 & 1.437\\
+	v_y & 1.068 & 1.533 & 1.560\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[Convergence orders with $Re = \num{e3}$ for the Sin-Cos 
+	problem]{Convergence orders with $Re = \num{e3}$ for the Sin-Cos problem. 
+	They are computed considering the last two refinements of the grid.}
+	\label{tab:sin_hre}
+\end{table}
+
+conclusioni
+
+Analogous tests with other analytical solutions are reported in the 
+Appendix~\ref{app:conv}.
+%
+\subsection{Time convergence}
+%
 \subsection{Rough channel test}
-%Here we see some differences.
+%
 \section{RANS tests}
 \subsection{Backward facing step}
 %The NASA LaRC CFD code CFL3D uses:

@@ -7,8 +7,8 @@ In the free-flow region we discretize the equations using the staggered grid
 concept, while in the porous-medium we employ a cell-centred approach with a 
 Two Point Flux Approximation (TPFA).
 
-For the temporal discretization we use implicit finite differences methods, 
-like Backward Euler (BE) and the Backward Differencing Formula 2 (BDF2).
+For the temporal discretization we use the implicit finite differences methods 
+Backward Euler (BE) and Backward Differencing Formula 2 (BDF2).
 %
 %\section{Staggered grid concept}
 \section{Free-flow}
@@ -67,7 +67,7 @@ Figure~\ref{fig:staggrid},
 and we apply the Gauss's divergence theorem:
 \begin{equation}
 \int_{V_p} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_p} \mathbf{v} \cdot 
-\mathbf{n} \; dA = 0.
+\mathbf{n} \; dA = 0. 
 \end{equation}
 The integral over the boundary $\partial V_p$ can be split over the four faces, 
 that we identify with $e_p$ (east), $n_p$ (north), $w_p$ (west), $s_p$ (south):
@@ -320,11 +320,12 @@ let us consider each of them separately, starting from the simplest one:
 	\emph{transporting velocity}, coming from $\mathbf{v} \cdot \mathbf{n}$, 
 	and the \emph{transported field}, that in this case is the velocity itself. 
 	For the former we average between the values sharing the face, 
-	while for the latter we have to consider an approximation that takes into 
-	account the flow direction, as it will be explained in detail in 
-	Subsections~\ref{subsec:diffscheme} and \ref{subsec:tvd}. For the moment we 
-	simply denote this approximation with a superscript $^*$.
-	We develop only the contributions from $e_u$ and $n_u$, the other two are 
+	while for the latter we have to consider an approximation using a 
+	differencing scheme, like the upwind method or the TVD methods. For the 
+	moment we simply denote this approximation with a superscript $^*$, then 
+	several possible options will be explained in detail in 
+	Subsections~\ref{subsec:diffscheme} and \ref{subsec:tvd}. We develop only 
+	the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\
 	For the frontal momentum flux we approximate the transporting velocity with 
 	an average between the values at the centre of the two staggered cells 
@@ -382,7 +383,7 @@ point of view instead we can introduce the following \emph{Péclet number}
 	Pe = \frac{|u| h}{2\nu},
 \end{equation}
 where $h$ denotes the cell width. When the grid is too coarse or the viscosity 
-is too low $Pe\rightarrow\infty$, and this can lead to a lost of stability of 
+is too low $Pe\rightarrow\infty$, and this can lead to a loss of stability of 
 the numerical method (see for example \cite{main:quarteroni}).
 
 In the following we will list the most immediate options, referring to the 
@@ -392,7 +393,7 @@ transporting velocity according to
 Figure~\ref{fig:superscripts}, but all the schemes can be generalized to the 
 case of non-uniform grids. Moreover the basic construction is one-dimensional, 
 so it can be used for every dimension also in a multi-dimensional problem. For 
-a complete description see for example in \cite{main:vermal}.
+a complete description see for example \cite{main:vermal}.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.75\textwidth]{trecelle_black.pdf}
@@ -416,7 +417,7 @@ property. Indeed it can be shown that when $Pe > 1$ it is not stable.
 \subsubsection{Upwind scheme}
 In opposition to the CD scheme, the upwind scheme consists in using only the 
 upstream value:
-\begin{equation}
+\begin{equation} \label{eq:upwind}
 	u^* = u^U
 \end{equation}
 It is a simple, widely used and robust scheme as it has the transportativeness 
@@ -425,14 +426,14 @@ solution an important amount of numerical diffusion that smooths the gradients.
 %
 \subsubsection{Hybrid scheme}
 The hybrid scheme (\cite{diff:hybrid}) consists in evaluating if $Pe<1$ or 
-$Pe>1$ at each face and then employing the CD or the upwind respectively. It 
+$Pe>1$ at each face and then employing respectively the CD or the upwind. It 
 exploits the good properties of the two schemes mentioned above, so it is 
 highly stable and accurate when the diffusion is dominant, however the overall 
 accuracy in terms of Taylor expansions reduces to first order.
 %
 \subsubsection{QUICK scheme}
 The Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
-(\cite{fv:leonard}) is an higher-order method that involves an extended stencil 
+(\cite{fv:leonard}) is a higher-order method that involves an extended stencil 
 of degrees of freedom. It can be obtained evaluating the quadratic interpolator 
 of $u^D$, $u^U$ and 
 $u^{FU}$ at the position where $u^*$ is:
@@ -489,7 +490,7 @@ gradient, but produce oscillations for $x<0.5$.
 \subsection{TVD methods} \label{subsec:tvd}
 Total Variation Diminishing (TVD) methods belong to a category of methods 
 called \emph{high resolution methods}, that address the problem of computing a 
-solution without any oscillation and with an higher order accuracy, second 
+solution without any oscillation and with an higher-order accuracy, second 
 order in this case. They were originally developed for scalar conservation laws 
 of the type:
 \begin{align}
@@ -682,18 +683,20 @@ more complex function, so its evaluation can be more expensive. However their
 performances should be compared case by case.
 
 In Figure~\ref{fig:1dconslawtvd} we can see the application of the TVD method 
-using the Van Leer flux limiter \eqref{eq:quick:vl} to the problem 
+using the Van Leer flux limiter \eqref{eq:vl} to the problem 
 \eqref{eq:1dconslaw}--\eqref{eq:1dconslawend}. It can be observed that the 
 gradient is approximated with the same accuracy of the QUICK scheme 
-\eqref{eq:quick}, but the overshoot for $x<0.5$ is avoided.
+\eqref{eq:quick}, but the overshoot for $x<0.5$ is avoided. Because of their 
+good behaviour, we will broadly use TVD methods in the numerical experiments 
+reported in Chapter~\ref{chap:results}.
 \begin{figure}
 	\centering
 	\input{../img/1DconslawTVD_report}
-	\caption[Solution of a one-dimensional scalar conservation law with the TVD 
+	\caption[Solution of a one-dimensional scalar conservation law using a TVD 
 	method]{Solution of the problem 
 	\eqref{eq:1dconslaw}--\eqref{eq:1dconslawend} at the time 
 	$t=0.5$. The TVD method approximates the gradient as accurately as the 
-	QUICK method but does not produce any overshoot for $x<0.5$.}
+	QUICK method, but it does not produce any overshoot for $x<0.5$.}
 	\label{fig:1dconslawtvd}
 \end{figure}
 %
@@ -967,7 +970,7 @@ Section~\ref{sec:coupling} requires attention because of the different concepts
 employed in the two subdomains. For the sake of simplicity let us suppose to 
 have a two-dimensional domain split by an horizontal interface, so that $u$ and 
 $v$ are respectively the tangential and normal component of the velocity to the 
-interface, and that the porous-medium occupies the inferior subdomain. In 
+interface, and that the porous-medium occupies the lower subdomain. In 
 Figure~\ref{fig:coupledcells} the degrees of freedom of two cells touching 
 the interface are represented. The superscripts $^\text{if}$ and $^\text{c}$ 
 denote respectively the interface and the internal part of the cells. The 
@@ -1026,7 +1029,7 @@ and rearranging we obtain
 \end{equation}
 which can be used as a Dirichlet condition for the tangential component of the 
 velocity.
-\section{Summary}
+\section{Resulting algebraic equations}
 After that all the equations have been discretized, we obtain for every 
 time-step a non-linear algebraic system, which is solved monolithically using 
 the Newton's method. The entries of the Jacobian matrix are computed 
