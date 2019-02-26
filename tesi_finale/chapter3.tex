@@ -32,13 +32,11 @@ Navier-Stokes equations in a two-dimensional domain.
 	\caption[Staggered grid control volumes]{An example of a staggered grid 
 	with the pressure degrees of freedom (dofs) stored at the centres of the 
 	cells and the velocity dofs stored on the faces. The different control 
-	volumes are highlighted. The indices in capital letters 
-	$\dots,I-1,I,I+1,\dots$ 
-	and $\dots,J-1,J,J+1,\dots$ refer to cells, thus to the position of 
-	cell-centred variables, while the indices in lower case letters 
-	$\dots,i-1,i,i+1,\dots$ and $\dots,j-1,j,j+1,\dots$ refer to faces, thus to 
-	the 
-	position of staggered variables.}
+	volumes are highlighted. The indices in capital letters $\dots, I-1, I, 
+	I+1, \dots$ and $\dots, J-1, J, J+1, \dots$ refer to cells, thus to the 
+	position of cell-centred variables, while the indices in lower case letters 
+	$\dots, i-1, i, i+1, \dots$ and $\dots,j-1,j,j+1,\dots$ refer to faces, 
+	thus to the position of staggered variables.}
 	\label{fig:staggrid}
 \end{figure}
 
@@ -54,17 +52,15 @@ to impose boundary and interface conditions.
 For the sake of simplicity we consider now a bi-dimensional domain and 
 $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 %
-%\subsection{Cell-centred equations}
 \subsubsection{Continuity equation}
 The continuity equation \eqref{eq:ransmass} is discretized using control 
 volumes that coincide with the cells of the grid, thus it is treated is a 
 cell-centred way. Since we are dealing with incompressible fluids, it does not 
 involve the density and this makes its approximation easier.
 %We will see in section ... how to deal with non constant desities
-We integrate over the ``grey'' control 
-volume $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$, according to 
-Figure~\ref{fig:staggrid}, 
-and we apply the Gauss's divergence theorem:
+We integrate over the ``grey'' control volume $V_p = [x_{i-1},x_i] \times 
+[y_{j-1},y_j]$, according to Figure~\ref{fig:staggrid}, and we apply the 
+Gauss's divergence theorem:
 \begin{equation}
 \int_{V_p} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_p} \mathbf{v} \cdot 
 \mathbf{n} \; dA = 0. 
@@ -84,127 +80,7 @@ where $|e_p|$ denotes the measure of the face $e_p$. Thus we obtain
 \begin{equation}
 	u_{i,J} |e_p| + v_{I,j}|n_p| - u_{i-1,J}|w_p| - v_{I,j-1}|s_p| = 0
 \end{equation}
-\subsubsection{Turbulence model equations}
-The equations for the turbulent kinetic energy \eqref{eq:komegak} and the 
-specific dissipation rate \eqref{eq:komegaomega} are treated analogously to the 
-continuity equation, but they involve more terms. Let us integrate them over 
-the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
-\begin{itemize}
-	\item the storage terms are approximated with the values at the centre of 
-	the cell:
-	\begin{equation}
-	\int_{V_p} \frac{\partial k}{\partial t} \; dV = \frac{d}{dt} \int_{V_p}k 
-	\; dV \approx \frac{dk_{I,J}}{dt}|V_p|,
-	\end{equation}
-	\begin{equation}
-	\int_{V_p} \frac{\partial 
-	\omega}{\partial t} \; dV = \frac{d}{dt} \int_{V_p} \omega \; dV \approx 
-	\frac{\partial \omega_{I,J}}{\partial t}|V_p|.
-	\end{equation}
-	%
-	\item the Gauss's divergence theorem is applied to the convective terms:
-	\begin{equation}
-		\int_{V_p} \nabla \cdot (k \mathbf{v}) \; dV = \int_{\partial V_p} k 
-		(\mathbf{v} 
-		\cdot \mathbf{n}) \; dA,
-	\end{equation}
-	\begin{equation}
-	\int_{V_p} \nabla \cdot (\omega \mathbf{v}) \; dV = \int_{\partial V_p} 
-	\omega 
-	(\mathbf{v} \cdot \mathbf{n}) \; dA,
-	\end{equation}
-	then the velocity is approximated with its value at the centre of the face, 
-	while for the transported quantities $k$ and $\omega$ we employ the 
-	upstream value with respect to the sign of the velocity, so considering for 
-	example the face $e_p$ and supposing that $u_{i,J}>0$ we have:
-	\begin{equation}
-		\int_{e_p} ku \; dA \approx k_{I,J}u_{i,J}|e_p|, \quad \int_{e_p} 
-		\omega u \; dA \approx \omega_{I,J}u_{i,J}|e_p|.
-	\end{equation}
-	Notice that this approach is not the only possible choice, as it will be 
-	explained with more details in Subsections~\ref{subsec:diffscheme} and 
-	\ref{subsec:tvd}.
-	%
-	\item the Gauss's divergence theorem is applied to the diffusive terms:	
-	\begin{equation}
-		\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + 
-		\sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] \; dV = \int_{\partial 
-		V_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k \cdot 
-		\mathbf{n} \; dA,
-	\end{equation}
-	\begin{equation}
-	\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + \sigma\frac{k}{\omega}\bigg) 
-	\nabla \omega\bigg] \; dV = \int_{\partial V_p} \bigg(\nu + \sigma 
-	\frac{k}{\omega}\bigg) \nabla \omega \cdot \mathbf{n} \; dA.
-	\end{equation}
-	Then, considering for example the face $e_p$, the derivatives of $k$ and 
-	$\omega$ are approximated with centred finite differences, while the 
-	coefficients involving the viscosity are approximated by a weighted average 
-	between the values at the centre of the cells sharing the face, thus 
-	assuming a linear trend:
-	\begin{equation}
-	\int_{e_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \frac{\partial 
-	k}{\partial x} \; dA \approx \bigg(\nu + \sigma^* 
-	\frac{k}{\omega}\bigg)_\text{avg} \frac{k_{I+1,J}-k_{I,J}}{x_{I+1}-x_I} 
-	|e_p|,
-	\end{equation}
-	\begin{equation}
-	\int_{e_p} \bigg(\nu + \sigma\frac{k}{\omega}\bigg) \frac{\partial 
-	\omega}{\partial x} \; dA \approx \bigg(\nu + \sigma 
-	\frac{k}{\omega}\bigg)_\text{avg} 
-	\frac{\omega_{I+1,J}-\omega_{I,J}}{x_{I+1} - x_I} |e_p|,
-	\end{equation}
-	where the subscript $_\text{avg}$ denotes the weighted average
-	\begin{equation}
-	(\ast)_\text{avg} = \frac{x_{I+1} - x_i}{x_{I+1} - x_I}(\ast)_{I,J} + 
-	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
-	\end{equation}
-	%
-	\item in the source terms all the quantities are approximated with their 
-	value at the centre of the cell. We report here only the derivatives 
-	appearing in the entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$, 
-	that are computed with centred finite differences:
-	\begin{equation}
-		\frac{\partial u}{\partial x}\Big|_{I,J} \approx 
-		\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
-	\end{equation}
-	\begin{equation}
-	\frac{\partial v}{\partial y} \Big|_{I,J} \approx
-	\frac{v_{I,j+1}+v_{I,j}-v_{I,j-1}-v_{I,j-2}}{2(y_{J+1}-y_{J-1})},
-	\end{equation}
-	\begin{equation}
-		\frac{\partial u}{\partial y}\Big|_{I,J} \approx 
-		\frac{u_{i,J+1}+u_{i-1,J+1}-u_{i,J-1}-u_{i-1,J-1}}{2(y_{J+1}-y_{J-1})},
-	\end{equation}
-	\begin{equation}
-	\frac{\partial v}{\partial x} \Big|_{I,J} \approx 
-	\frac{v_{I+1,j}+v_{I+1,j-1}-v_{I-1,j}-v_{I-1,j-1}}{2(x_{I+1}-x_{I-1})},
-	\end{equation}
-	\begin{equation}
-		\frac{\partial k}{\partial x}\Big|_{I,J} \approx \frac{k_{I+1,J} - 
-		k_{I-1,J}}{x_{I+1} - x_{I-1}}, 
-		\quad \frac{\partial k}{\partial y}\Big|_{I,J} \approx 
-		\frac{k_{I,J+1}-k_{i,J-1}}{y_{J+1}-y_{J-1}},
-	\end{equation}
-	\begin{equation}
-		\frac{\partial \omega}{\partial x}\Big|_{I,J} \approx 
-		\frac{\omega_{I+1,J} - \omega_{I-1,J}}{x_{I+1} - x_{I-1}}, \quad 
-		\frac{\partial \omega}{\partial y}\Big|_{I,J} \approx 
-		\frac{\omega_{I,J+1}-\omega_{i,J-1}}{y_{J+1}-y_{J-1}}.
-	\end{equation}
-	%
-	\item the sink terms are approximated with the values at the centres of the 
-	cells:
-	\begin{equation}
-		\int_{V_p} \beta^* k \omega \; dV \approx 
-		\beta^*k_{I,K}\omega_{I,J}|V_p|,
-	\end{equation}
-	\begin{equation}
-		\int_{V_p} \beta \omega^2 \; dV \approx \beta \omega_{I,J}^2 |V_p|.
-	\end{equation}
-\end{itemize}
 %
-%\subsection{Staggered equations}
 \subsubsection{Momentum equation}
 The momentum equation \eqref{eq:ransmom2} is discretized using the staggered 
 control volumes. Let us consider the equation for the component $u$ of the 
@@ -362,12 +238,130 @@ with $g = \SI{-9.81}{m/s}$. The gravity term is discretized straight-forward:
 \int_{V_v} g \; dV = g |V_v|,
 \end{equation}
 where $V_v = [x_{i-1}, xi] \times [y_J, y_{J+1}]$ is the ``blue'' control 
-volume in 
-Figure~\ref{fig:staggrid}. 
-
+volume in Figure~\ref{fig:staggrid}.
 %
-\subsection{Differencing schemes} \label{subsec:diffscheme} %Linear 
-%differencing schemes ?
+\subsubsection{Turbulence model equations}
+The equations for the turbulent kinetic energy \eqref{eq:komegak} and the 
+specific dissipation rate \eqref{eq:komegaomega} are treated analogously to the 
+continuity equation, but they involve more terms. Let us integrate them over 
+the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
+\begin{itemize}
+	\item the storage terms are approximated with the values at the centre of 
+	the cell:
+	\begin{equation}
+	\int_{V_p} \frac{\partial k}{\partial t} \; dV = \frac{d}{dt} \int_{V_p}k 
+	\; dV \approx \frac{dk_{I,J}}{dt}|V_p|,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \frac{\partial 
+		\omega}{\partial t} \; dV = \frac{d}{dt} \int_{V_p} \omega \; dV 
+		\approx 
+	\frac{\partial \omega_{I,J}}{\partial t}|V_p|.
+	\end{equation}
+	%
+	\item the Gauss's divergence theorem is applied to the convective terms:
+	\begin{equation}
+	\int_{V_p} \nabla \cdot (k \mathbf{v}) \; dV = \int_{\partial V_p} k 
+	(\mathbf{v} 
+	\cdot \mathbf{n}) \; dA,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \nabla \cdot (\omega \mathbf{v}) \; dV = \int_{\partial V_p} 
+	\omega 
+	(\mathbf{v} \cdot \mathbf{n}) \; dA,
+	\end{equation}
+	then the velocity is approximated with its value at the centre of the face, 
+	while for the transported quantities $k$ and $\omega$ we employ the 
+	upstream value with respect to the sign of the velocity, so considering for 
+	example the face $e_p$ and supposing that $u_{i,J}>0$ we have:
+	\begin{equation}
+	\int_{e_p} ku \; dA \approx k_{I,J}u_{i,J}|e_p|, \quad \int_{e_p} 
+	\omega u \; dA \approx \omega_{I,J}u_{i,J}|e_p|.
+	\end{equation}
+	Notice that this approach is not the only possible choice, as it will be 
+	explained with more details in Subsections~\ref{subsec:diffscheme} and 
+	\ref{subsec:tvd}.
+	%
+	\item the Gauss's divergence theorem is applied to the diffusive terms:	
+	\begin{equation}
+	\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + 
+	\sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] \; dV = \int_{\partial 
+		V_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k \cdot 
+	\mathbf{n} \; dA,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \nabla \cdot \bigg[\bigg(\nu + \sigma\frac{k}{\omega}\bigg) 
+	\nabla \omega\bigg] \; dV = \int_{\partial V_p} \bigg(\nu + \sigma 
+	\frac{k}{\omega}\bigg) \nabla \omega \cdot \mathbf{n} \; dA.
+	\end{equation}
+	Then, considering for example the face $e_p$, the derivatives of $k$ and 
+	$\omega$ are approximated with centred finite differences, while the 
+	coefficients involving the viscosity are approximated by a weighted average 
+	between the values at the centre of the cells sharing the face, thus 
+	assuming a linear trend:
+	\begin{equation}
+	\int_{e_p} \bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \frac{\partial 
+		k}{\partial x} \; dA \approx \bigg(\nu + \sigma^* 
+	\frac{k}{\omega}\bigg)_\text{avg} \frac{k_{I+1,J}-k_{I,J}}{x_{I+1}-x_I} 
+	|e_p|,
+	\end{equation}
+	\begin{equation}
+	\int_{e_p} \bigg(\nu + \sigma\frac{k}{\omega}\bigg) \frac{\partial 
+		\omega}{\partial x} \; dA \approx \bigg(\nu + \sigma 
+	\frac{k}{\omega}\bigg)_\text{avg} 
+	\frac{\omega_{I+1,J}-\omega_{I,J}}{x_{I+1} - x_I} |e_p|,
+	\end{equation}
+	where the subscript $_\text{avg}$ denotes the weighted average
+	\begin{equation}
+	(\ast)_\text{avg} = \frac{x_{I+1} - x_i}{x_{I+1} - x_I}(\ast)_{I,J} + 
+	\frac{x_i-x_I}{x_{I+1} - x_I}(\ast)_{I+1,J}.
+	\end{equation}
+	%
+	\item in the source terms all the quantities are approximated with their 
+	value at the centre of the cell. We report here only the derivatives 
+	appearing in the entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$, 
+	that are computed with centred finite differences:
+	\begin{equation}
+	\frac{\partial u}{\partial x}\Big|_{I,J} \approx 
+	\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial v}{\partial y} \Big|_{I,J} \approx
+	\frac{v_{I,j+1}+v_{I,j}-v_{I,j-1}-v_{I,j-2}}{2(y_{J+1}-y_{J-1})},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial u}{\partial y}\Big|_{I,J} \approx 
+	\frac{u_{i,J+1}+u_{i-1,J+1}-u_{i,J-1}-u_{i-1,J-1}}{2(y_{J+1}-y_{J-1})},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial v}{\partial x} \Big|_{I,J} \approx 
+	\frac{v_{I+1,j}+v_{I+1,j-1}-v_{I-1,j}-v_{I-1,j-1}}{2(x_{I+1}-x_{I-1})},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial k}{\partial x}\Big|_{I,J} \approx \frac{k_{I+1,J} - 
+		k_{I-1,J}}{x_{I+1} - x_{I-1}}, 
+	\quad \frac{\partial k}{\partial y}\Big|_{I,J} \approx 
+	\frac{k_{I,J+1}-k_{i,J-1}}{y_{J+1}-y_{J-1}},
+	\end{equation}
+	\begin{equation}
+	\frac{\partial \omega}{\partial x}\Big|_{I,J} \approx 
+	\frac{\omega_{I+1,J} - \omega_{I-1,J}}{x_{I+1} - x_{I-1}}, \quad 
+	\frac{\partial \omega}{\partial y}\Big|_{I,J} \approx 
+	\frac{\omega_{I,J+1}-\omega_{i,J-1}}{y_{J+1}-y_{J-1}}.
+	\end{equation}
+	%
+	\item the sink terms are approximated with the values at the centres of the 
+	cells:
+	\begin{equation}
+	\int_{V_p} \beta^* k \omega \; dV \approx 
+	\beta^*k_{I,K}\omega_{I,J}|V_p|,
+	\end{equation}
+	\begin{equation}
+	\int_{V_p} \beta \omega^2 \; dV \approx \beta \omega_{I,J}^2 |V_p|.
+	\end{equation}
+\end{itemize}
+%
+\subsection{Linear differencing schemes} \label{subsec:diffscheme}
 The choice of the scheme for the approximation of a transported field is of 
 great importance for both the accuracy and the stability of the solution of the 
 problem. In general this decision has to be taken for every convective term, 
@@ -386,7 +380,8 @@ where $h$ denotes the cell width. When the grid is too coarse or the viscosity
 is too low $Pe\rightarrow\infty$, and this can lead to a loss of stability of 
 the numerical method (see for example \cite{main:quarteroni}).
 
-In the following we will list the most immediate options, referring to the 
+In the following we will list the most immediate options for linear schemes, 
+referring to the 
 convective term of the equation~\eqref{eq:stagu} for the $x$-component of the 
 velocity. It is considered here the case of a uniform grid, with positive 
 transporting velocity according to 
@@ -425,7 +420,7 @@ property, but its accuracy is only of first order, indeed it introduces in the
 solution an important amount of numerical diffusion that smooths the gradients. 
 %
 \subsubsection{Hybrid scheme}
-The hybrid scheme (\cite{diff:hybrid}) consists in evaluating if $Pe<1$ or 
+The hybrid scheme \cite{diff:hybrid} consists in evaluating if $Pe<1$ or 
 $Pe>1$ at each face and then employing respectively the CD or the upwind. It 
 exploits the good properties of the two schemes mentioned above, so it is 
 highly stable and accurate when the diffusion is dominant, however the overall 
@@ -433,7 +428,7 @@ accuracy in terms of Taylor expansions reduces to first order.
 %
 \subsubsection{QUICK scheme}
 The Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
-(\cite{fv:leonard}) is a higher-order method that involves an extended stencil 
+\cite{fv:leonard} is a higher-order method that involves an extended stencil 
 of degrees of freedom. It can be obtained evaluating the quadratic interpolator 
 of $u^D$, $u^U$ and 
 $u^{FU}$ at the position where $u^*$ is:
@@ -523,7 +518,7 @@ as it happens using the higher order methods presented in the previous
 subsection.
 
 According to \cite{tvd:sweeby} and \cite{main:darwish} we can achieve our 
-target adding to the first order upwind approximation a second order 
+goal adding to the first order upwind approximation a second order 
 non-linear 
 anti-diffusive flux: 
 \begin{equation} \label{eq:tvdformula}
@@ -822,7 +817,7 @@ at the current time-step and not at the previous one.
 \subsubsection{Backward Euler method}
 The Backward Euler (BE) method (or implicit Euler method) consists in 
 approximating the time derivative with a backward finite difference:
-\begin{equation}
+\begin{equation} \label{eq:be}
 \frac{\partial \phi}{\partial t} \approx \frac{	\phi^n-\phi^{n-1}}{\Delta 
 	t} = f(\phi^n, t^n).
 \end{equation}
@@ -834,7 +829,7 @@ condition $\phi^0$ must be provided.
 \subsubsection{BDF2 method}
 The Backward Differencing Formula 2 (BDF2) method consists in approximating the 
 time derivative with a backward finite difference of second order:
-\begin{equation}
+\begin{equation} \label{eq:bdf2}
 \frac{\partial \phi}{\partial t} \approx 
 \frac{3\phi^n-4\phi^{n-1}+\phi^{n-2}}{2\Delta t} = f(\phi^n, t^n).
 \end{equation}
@@ -1029,6 +1024,7 @@ and rearranging we obtain
 \end{equation}
 which can be used as a Dirichlet condition for the tangential component of the 
 velocity.
+%
 \section{Resulting algebraic equations}
 After that all the equations have been discretized, we obtain for every 
 time-step a non-linear algebraic system, which is solved monolithically using 

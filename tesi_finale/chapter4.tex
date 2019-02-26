@@ -80,12 +80,13 @@ convergence orders for the different differencing schemes.
 		\input{../img/l2error_test_navierstokes_sincos_vl}}
 	\subfloat[Van Leer, $Re = \num{e3}$]{
 		\input{../img/l2error_test_navierstokes_sincos_vl_hre}}
-	\caption[$L^2$-errors for the Sin-Cos problem]{$L^2$-errors for the Sin-Cos 
-	problem depending on the square root of the number of cells in the grid. 
+	\caption[$L^2$-errors for the Sin-Cos test]{$L^2$-errors for the Sin-Cos 
+	test depending on the square root of the number of cells in the grid. 
 	The grey lines are the reference lines for the first-order and second-order 
 	convergence.}
 	\label{fig:sin_err}
 \end{figure}
+
 \begin{table}
 	\centering
 	\[
@@ -100,7 +101,7 @@ convergence orders for the different differencing schemes.
 	\end{array}
 	\]
 	\caption[Convergence orders with $Re = 1$ for the Sin-Cos 
-	problem]{Convergence orders with $Re = 1$ for the Sin-Cos problem. They are 
+	test]{Convergence orders with $Re = 1$ for the Sin-Cos test. They are 
 	computed considering the last two refinements of the grid.}
 	\label{tab:sin_lre}
 	\[
@@ -115,19 +116,121 @@ convergence orders for the different differencing schemes.
 	\end{array}
 	\]
 	\caption[Convergence orders with $Re = \num{e3}$ for the Sin-Cos 
-	problem]{Convergence orders with $Re = \num{e3}$ for the Sin-Cos problem. 
+	test]{Convergence orders with $Re = \num{e3}$ for the Sin-Cos test. 
 	They are computed considering the last two refinements of the grid.}
 	\label{tab:sin_hre}
 \end{table}
 
-conclusioni
+We observe, as expected, a better behaviour of the TVD methods with respect to 
+the upwind method. In Table~\ref{tab:sin_lre} we can see that at $Re=1$ the 
+formers show a full second order convergence for the velocity, while for the 
+rate is a bit lower; the latter instead shows a first for all the variables. At 
+$Re=\num{e3}$ a slight decrease of the rates of the TVD methods occurs also for 
+the velocities, but they remain higher then the ones of the upwind method. In 
+Table~\ref{tab:sin_hre} we observe a convergence order of 1 for the pressure 
+using the Van Leer flux limiter, but looking at Figure~\ref{fig:sin_err} we can 
+see that the global trend indicates a convergence of higher order. Moreover it 
+can be observed how, thanks to the faster convergence, on the same grid the 
+absolute values of the errors reach smaller values using the TVD methods. 
+Between the Min-Mod and Van Leer flux limiter it is hard to say which performs 
+better, the results are very similar.
 
 Analogous tests with other analytical solutions are reported in the 
-Appendix~\ref{app:conv}.
+Appendix~\ref{app:conv}. They show always a better convergence of the TVD 
+methods with respect to the upwind method, but in some cases the convergence 
+order of pressure and velocity behave differently.
 %
 \subsection{Time convergence}
+We test the time convergence of the $L^\infty(0,T;L^2(\Omega))$ norm of the 
+error of the solution of the Navier-Stokes equations, comparing the results 
+obtained with the BE method \eqref{eq:be} and the BDF2 method \eqref{eq:bdf2}.\\
+We consider the unsteady version of the 
+equations~\eqref{eq:nssteadymass}--\eqref{eq:nssteadymom}:
+\begin{align}
+	\label{eq:nsunsteadymass} \nabla \cdot \mathbf{v} -h = 0&\\
+	\label{eq:nsunsteadymom} \frac{\partial \mathbf{v}}{\partial t} +\nabla 
+	\cdot (\mathbf{v} \mathbf{v}^\mathrm{T}) - 
+	\nabla \cdot (\nu \nabla \mathbf{v}) + \frac{1}{\varrho}\nabla p  
+	-\mathbf{f} = \mathbf{0}&
+\end{align}
+Again the gravity is neglected and two possible sources $h$ and $\mathbf{f}$ 
+are taken into account, moreover all the quantities are considered to be 
+non-dimensional.
+%
+\subsubsection{Unsteady Sin-Cos test}
+Let us solve the equations~\eqref{eq:nsunsteadymass}--\eqref{eq:nsunsteadymom} 
+over a two dimensional unit domain $\Omega=(0,1)^2$ and in the time interval 
+$(0,T)$, with $T=1$. We use the following source terms:
+\begin{align}
+h &= 0,\\
+\mathbf{f} &= 2\Big(\frac{\cos(2t)}{\varrho} + \nu \sin(2t)\Big)[- \cos(x) 
+\sin(y), \; 
+\cos(y) \sin(x)]^\mathrm{T},
+\end{align}
+so that, choosing $\varrho=1$, the analytical solution is given by
+\begin{align}
+\label{eq:uexunssin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\sin(2t)\\
+v_\text{ex}(x,y) &= \sin(x)\cos(y)\sin(2t)\\
+\label{eq:pexunssin}	p_\text{ex}(x,y) &= 
+-\frac{\cos(2x)+\sin(2y)}{4}\sin^2(2t),
+\end{align}
+so it is equal to \eqref{eq:uexsin}--\eqref{eq:pexsin}, used in the steady test 
+for the space convergence, except for the modulation over time. We choose 
+$\nu=0.1$, so that $Re=10$. Dirichlet boundary conditions for the velocity are 
+applied on the whole boundary $\partial \Omega$ using the exact solution. 
+Pressure is again fixed  at one point in order to match the exact solution 
+\eqref{eq:pexunssin}.
+
+The problem is solved seven times subdividing the time interval $(0,T)$ into 
+uniform time-steps and each time time doubling their number, starting from a 
+single time-step. Uniform grids of $\num{40x40}$ and $\num{80x80}$ cells are 
+employed and as a differencing scheme the TVD method with the Van Leer flux 
+limiter \eqref{eq:vl} is used. From Figure~\ref{fig:timeerr} we observe that, 
+as expected, the BE method shows a first-order convergence, while the BDF2 
+method is of second order. Moreover we notice that, with a grid of 
+$\num{40x40}$ cells, in the last refinement the error with the BDF2 method does 
+not decrease anymore. This happens because the spatial error becomes 
+dominant, indeed refining the grid the convergence order is restored entirely 
+for the pressure and almost for the velocity.
+\begin{figure}
+	\centering
+	\subfloat{\input{../img/time_convergence_p_report}}
+	\subfloat{\input{../img/time_convergence_v_report}}
+	\caption[$L^\infty(0,T;L^2(\Omega))$-errors for the unsteady Sin-Cos 
+	test]{$L^\infty(0,T;L^2(\Omega))$-errors for the unsteady Sin-Cos test 
+	depending on the number of time-steps. On the left the errors for the 
+	pressure, on the right the error for the magnitude of the velocity. The 
+	grey lines are the reference lines for the first-order and second-order 
+	convergence.}
+	\label{fig:timeerr}
+\end{figure}
 %
 \subsection{Rough channel test}
+\subsubsection{Shallow cavities}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{rough_domain2.pdf}
+	\caption[Domain of the rough channel test with shallow cavities]{Domain of 
+	the rough channel test with shallow cavities.}
+	\label{fig:roughdom}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{rough_channel_vl_report.png}
+	\caption[Velocity magnitude in the rough channel test with shallow 
+	cavities]{Velocity magnitude in the rough channel test with shallow 
+	cavities at $t=\SI{10}{s}$. $Re=\num{2e3}$, Van Leer flux limiter.}
+	\label{fig:roughchannelvl}
+\end{figure}
+%
+\subsubsection{Deep cavities}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{rough_domain_highstep2.pdf}
+	\caption[Domain of the rough channel test with deep cavities]{Domain of the 
+	rough channel test with deep cavities.}
+	\label{fig:roughdomdeep}
+\end{figure}
 %
 \section{RANS tests}
 \subsection{Backward facing step}
