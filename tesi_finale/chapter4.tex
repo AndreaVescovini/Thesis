@@ -206,12 +206,13 @@ for the pressure and almost for the velocity.
 \end{figure}
 %
 \subsection{Rough channel test}
-We test the behaviour of the TVD methods compared to the upwind method, applied 
-to the unsteady Navier-Stokes equations \eqref{eq:nsmass}--\eqref{eq:nsmom}, in 
-a channel flow with a rough (i.e. non-flat) lower boundary. The roughness 
-consists in small cavities evenly spaced cavities. Two different configurations 
-are studied, one with shallow cavities (Figure~\ref{fig:roughdom}) and another 
-with deeper cavities (Figure~\ref{fig:roughdomdeep}).
+We test the behaviour of the TVD methods compared to the upwind method solving 
+the unsteady Navier-Stokes equations \eqref{eq:nsmass}--\eqref{eq:nsmom} in 
+a two-dimensional channel with a rough (i.e. non-flat) lower boundary. The 
+roughness consists of small evenly spaced cavities. Two different 
+configurations are studied, one with shallow cavities, depicted in 
+Figure~\ref{fig:roughdom}, and another with deeper cavities, depicted in 
+Figure~\ref{fig:roughdomdeep}.
 
 On the left boundary $\Gamma_\text{in}$ we set inflow boundary conditions 
 \eqref{eq:inflow}, specifying an horizontal velocity
@@ -231,6 +232,25 @@ $\varrho=\SI{1}{kg/m^3}$. The gravity contribution in \eqref{eq:nsmom} is
 neglected.
 %
 \subsubsection{Shallow cavities}
+In the case of shallow cavities we use the domain in Figure~\ref{fig:roughdom} 
+and we employ a uniform grid of $\num{95x50}$ cells. The problem is then solved 
+over the time interval [$0,T$], with $T=\SI{10}{s}$; the initial time-step is 
+$\Delta t=\SI{5e-3}{s}$, then it is adapted as explained in 
+Section~\ref{sec:algeq}, allowing a maximum time-step of $\SI{0.1}{s}$. 
+At first we set $\nu=\SI{5e-4}{m^2/s}$, so that $Re=\num{2e3}$. Since we do not 
+have an analytical solution for this problem, we compute a \emph{reference 
+solution} using the upwind method over a grid six times finer.
+
+In Figure~\ref{fig:linecompshallow} we compare the profiles of the magnitude 
+of the velocity along a section near the end of the channel, at 
+$x=\SI{8.75}{m}$, i.e. at the middle of the last cavity.  The TVD solutions 
+match the reference one, while the upwind solution shows a small shift, 
+especially in the lower part of the channel, above the cavity. So, on a coarse 
+grid, we obtain a solution that is the one we would obtain with the upwind 
+method on a finer grid. In Table~\ref{tab:errshallow} we can see the $L^2$-norm 
+of the errors between the coarse solutions and the reference one, computed 
+along the section. As expected, the one related to the upwind method is at 
+least one order of magnitude larger than the others. 
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rough_domain2.pdf}
@@ -241,10 +261,21 @@ neglected.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rough_channel_vl_report.png}
-	\caption[Velocity magnitude in the rough channel test with shallow 
-	cavities]{Velocity magnitude in the rough channel test with shallow 
-	cavities at $t=\SI{10}{s}$. $Re=\num{2e3}$, Van Leer flux limiter.}
+	\caption[Magnitude of the velocity magnitude in the rough channel test with 
+	shallow cavities]{Magnitude of the velocity magnitude $[\si{m/s}]$ in the 
+	rough channel test with shallow cavities at $t=\SI{10}{s}$. $Re=\num{2e3}$, 
+	Van Leer flux limiter.}
 	\label{fig:roughchannelvl}
+\end{figure}
+\begin{figure}
+	\centering
+	\input{../img/line_comparison}
+	\caption[Profile of the magnitude of the velocity in the rough channel with 
+	shallow cavities at $Re=\num{2e3}$]{Profile of the magnitude of the 
+	velocity $[\si{m/s}]$ in the rough channel with shallow cavities along the 
+	section $x=\SI{8.75}{m}$, at $t=\SI{10}{s}$. $Re=\num{2e3}$. The region on 
+	the left of the dashed line is inside the cavity.}
+	\label{fig:linecompshallow}
 \end{figure}
 \begin{table}
 	\centering
@@ -261,17 +292,29 @@ neglected.
 	\bottomrule
 	\end{array}
 	\]
-	\caption[$L^2$-errors for the velocity in the rough channel with shallow 
-	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
-	and $t=\SI{10}{s}$ in the rough channel with shallow cavities. $Re = 
-	\num{2e3}$.}
+	\caption[$L^2$-errors for the profile of the magnitude of the velocity in 
+	the rough channel with shallow cavities at $Re=\num{2e3}$]{$L^2$-errors for 
+	the profile of the magnitude of the velocity along a section at 
+	$x=\SI{8.75}{m}$ and $t=\SI{10}{s}$ in the rough channel with shallow 
+	cavities. $Re = \num{2e3}$.}
 	\label{tab:errshallow}
 \end{table}
+
+We repeat the test choosing $\nu=\SI{1}{m^2/s}$, so that $Re=1$. In 
+Figure~\ref{fig:linecompshallowlre} we see that all the solutions have the same 
+profile, moreover in the cavity there is no recirculation. In 
+Table~\ref{tab:errshallow_lre} the $L^2$-errors are reported; the upwind one is 
+the bigger, but they are all very similar. So, in this situation of low $Re$, 
+the benefit of using a high-resolution scheme is reduced.
 \begin{figure}
 	\centering
-	\input{../img/line_comparison}
-	\caption[short text]{text}
-	\label{fig:linecompshallow}
+	\input{../img/line_comparison_lre}
+	\caption[Profile of the magnitude of the velocity in the rough channel with 
+	shallow cavities at $Re=1$]{Profile of the magnitude of the velocity 
+	$[\si{m/s}]$ in the rough channel with shallow cavities along the section 
+	$x=\SI{8.75}{m}$, at $t=\SI{5}{s}$. $Re=1$. The region on the left of the 
+	dashed line is inside the cavity.}
+	\label{fig:linecompshallowlre}
 \end{figure}
 \begin{table}
 	\centering
@@ -288,26 +331,46 @@ neglected.
 	\bottomrule
 	\end{array}
 	\]
-	\caption[$L^2$-errors for the velocity in the rough channel with shallow 
-	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
-	and $t=\SI{5}{s}$ in the rough channel with shallow cavities. $Re = 1$.}
+	\caption[$L^2$-errors for the profile of the magnitude of the velocity in 
+	the rough channel with shallow cavities at $Re=1$]{$L^2$-errors for the 
+	profile of the magnitude of the velocity along a section at 
+	$x=\SI{8.75}{m}$ and $t=\SI{5}{s}$ in the rough channel with shallow 
+	cavities. $Re = 1$.}
 	\label{tab:errshallow_lre}
 \end{table}
-\begin{figure}
-	\centering
-	\input{../img/line_comparison_lre}
-	\caption[short text]{text}
-	\label{fig:linecompshallowlre}
-\end{figure}
-
 %
 \subsubsection{Deep cavities}
+In the case of deep cavities we use the domain in Figure~\ref{fig:roughdomdeep} 
+and we employ a uniform grid of $\num{95x70}$ cells. Again we solve until 
+$T=\SI{10}{s}$, starting from an initial time-step of $\SI{e-3}{s}$. We set 
+$\nu=\SI{5e-4}{m^2/s}$, so that $Re=\num{2.8e3}$. As before we compute a 
+reference solution over a grid six times finer.
+
+In Figure~\ref{fig:linecompdeep} we compare the profiles of the magnitude of 
+the velocity along the section at $x=\SI{8.75}{m}$. Now the biggest differences 
+are in the region inside the cavity, where the recirculation occurs. The upwind 
+method, with its numerical diffusion, smooths the profile, while the TVD 
+methods produce a more accurate result, even if they do not match exactly the 
+reference solution. Indeed, looking at the $L^2$-errors reported in 
+Table~\ref{tab:errdeep}, we see that the upwind has again the largest error, 
+but the difference with the other schemes is reduced with respect to the 
+previous case of shallow cavities.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rough_domain_highstep2.pdf}
 	\caption[Domain of the rough channel test with deep cavities]{Domain of the 
 	rough channel test with deep cavities.}
 	\label{fig:roughdomdeep}
+\end{figure}
+\begin{figure}
+	\centering
+	\input{../img/line_comparison_highstep_report}
+	\caption[Profile of the magnitude of the velocity in the rough channel with 
+	deep cavities at $Re=\num{2.8e3}$]{Profile of the magnitude of the velocity 
+	$[\si{m/s}]$ in the rough channel with deep cavities along the section 
+	$x=\SI{8.75}{m}$, at $t=\SI{10}{s}$. $Re=\num{2.8e3}$. The region on the 
+	left of the dashed line is inside the cavity.}
+	\label{fig:linecompdeep}
 \end{figure}
 \begin{table}
 	\centering
@@ -324,18 +387,12 @@ neglected.
 	\bottomrule
 	\end{array}
 	\]
-	\caption[$L^2$-errors for the velocity in the rough channel with deep 
-	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
-	and $t=\SI{10}{s}$ in the rough channel with deep cavities. $Re = 
-	\num{2e3}$.}
+	\caption[$L^2$-errors for the profile of the magnitude of the velocity in 
+	the rough channel with deep cavities]{$L^2$-errors for the profile of the 
+	magnitude of the velocity along a section at $x=\SI{8.75}{m}$ and 
+	$t=\SI{10}{s}$ in the rough channel with deep cavities. $Re = \num{2.8e3}$.}
 	\label{tab:errdeep}
 \end{table}
-\begin{figure}
-	\centering
-	\input{../img/line_comparison_highstep_report}
-	\caption[short text]{text}
-	\label{fig:linecompdeep}
-\end{figure}
 %
 \section{RANS tests}
 \subsection{Backward facing step}
