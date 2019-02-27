@@ -1,19 +1,17 @@
 Processi di scambio tra flussi liberi e flussi in mezzi porosi sono comuni in 
-molte applicazioni industriali o ambientali. Nel caso di regimi turbolenti e 
-interfacce che presentano eterogeneità, un'accurata descrizione del flusso 
-libero è importante, in quanto i vortici che si vengono a creare vicino 
-all'interfaccia, a causa della turbolenza, hanno una grande influenza sugli 
-scambi.
+molte applicazioni industriali o ambientali. In di regimi turbolenti e 
+interfacce che presentano eterogeneità, è importante avere un'accurata 
+descrizione del flusso libero, in quanto i vortici che si vengono a creare 
+vicino all'interfaccia, a causa della turbolenza, hanno una grande influenza 
+sugli scambi.
 
 L'obbiettivo di questa tesi è quindi l'applicazione di schemi ad alta 
-risoluzione 
-(high resolution schemes)
-per la discretizzazione a volumi finiti del termine convettivo nelle equazioni 
-di Navier-Stokes incomprimibili. In particolare l'attenzione è rivolta ai 
-metodi Total Variation Diminishing (TVD). Essi sono stati implementati 
-all'interno del codice \DUMUX, nell'ambito di una discretizzazione su griglia 
-sfalsata (staggered grid). Sono inoltre state considerate due possibili 
-generalizzazioni al caso di griglie cartesiane non 
+risoluzione (high resolution schemes) per la discretizzazione a volumi finiti 
+del termine convettivo nelle equazioni di Navier-Stokes incomprimibili. In 
+particolare l'attenzione è rivolta ai metodi Total Variation Diminishing (TVD). 
+Essi sono stati implementati all'interno del codice \DUMUX, nell'ambito di una 
+discretizzazione su griglia sfalsata (staggered grid). Sono state inoltre 
+considerate due possibili generalizzazioni al caso di griglie cartesiane non 
 uniformi.
 
 I molteplici test di confronto con il metodo upwind di ordine 1 che sono stati 
@@ -26,7 +24,7 @@ confrontandoli con quelli disponibili prodotti dal codice CFL3D della NASA. È
 stata ottenuta una buona previsione della distanza di riattacco, in accordo con 
 i risultati di riferimento. Infine è stato studiato un problema accoppiato tra 
 flusso libero e flusso in un mezzo poroso, ponendo attenzione all'effetto che 
-un'interfaccia che presenta ostacoli ha sul campo di velocità. Si è ottenuto 
+un'interfaccia con ostacoli ha sul campo di velocità. Si è ottenuto 
 che per valori alti di permeabilità in flusso nel mezzo poroso, descritto con 
 la legge di Forchheimer, influenza il flusso libero.
 \\[\baselineskip]

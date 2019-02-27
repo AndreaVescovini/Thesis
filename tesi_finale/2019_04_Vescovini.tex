@@ -27,6 +27,7 @@
 \usepackage{subfig} % per posizionare tante figure
 \usepackage{bbold} % per \mathbb
 \usepackage{booktabs} % per i filetti delle tabelle
+%\usepackage[font={sf,it}]{caption} % font diverso nelle didascalie
 %\usepackage[section]{placeins} % ridefinisce section inserendo un \FloatBarrier
 \usepackage{emptypage} % pagina tutta bianca a fine capitolo
 \usepackage{pdfpages} % per inserire pdf
@@ -57,7 +58,8 @@
 
 \newlength{\figwidth}\setlength{\figwidth}{0.39\textwidth}
 \newlength{\widthsette}\setlength{\widthsette}{0.7\textwidth}
-%\newlength{\fullwidth}\setlength{\fullwidth}{\textwidth}
+\newlength{\roughwidth}\setlength{\roughwidth}{0.9\textwidth}
+\newlength{\roughheight}\setlength{\roughheight}{\roughwidth}
 
 \makeatletter
 \newcommand{\addemptysup}{\@ifnextchar^{}{^{}}}
@@ -78,14 +80,14 @@
 	,chapter5%
 	,appendice%
 }
-\emergencystretch=1em % per gli overfull hbox nella bibliografia. Ci sta.
+\emergencystretch=1em % per gli overfull hbox nella bibliografia.
 \addbibresource{bibliotesi.bib}
 
 \begin{document}
 \selectlanguage{british}
 \frontmatter
 %\pagenumbering{Roman}
-\includepdf[pages=-]{solofrontespizio.pdf}
+%\includepdf[pages=-]{solofrontespizio.pdf}
 \include{preliminariesBook}
 \mainmatter
 \include{chapter1}

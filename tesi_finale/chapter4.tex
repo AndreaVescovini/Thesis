@@ -206,6 +206,30 @@ for the pressure and almost for the velocity.
 \end{figure}
 %
 \subsection{Rough channel test}
+We test the behaviour of the TVD methods compared to the upwind method, applied 
+to the unsteady Navier-Stokes equations \eqref{eq:nsmass}--\eqref{eq:nsmom}, in 
+a channel flow with a rough (i.e. non-flat) lower boundary. The roughness 
+consists in small cavities evenly spaced cavities. Two different configurations 
+are studied, one with shallow cavities (Figure~\ref{fig:roughdom}) and another 
+with deeper cavities (Figure~\ref{fig:roughdomdeep}).
+
+On the left boundary $\Gamma_\text{in}$ we set inflow boundary conditions 
+\eqref{eq:inflow}, specifying an horizontal velocity
+\begin{equation}
+	\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad 
+	u_\text{in} = \SI{1}{m/s}.
+\end{equation}
+On the lower and upper boundaries $\Gamma_w$ we set no-slip boundary conditions 
+\eqref{eq:noslip}, while on the right boundary $\Gamma_\text{out}$ we set 
+outflow boundary conditions \eqref{eq:outflow}, fixing the value of the pressure
+\begin{equation}
+	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
+\end{equation}
+As initial conditions the velocity is set to zero everywhere, while the 
+pressure is set to $p_\text{ext}$ everywhere. The density is 
+$\varrho=\SI{1}{kg/m^3}$. The gravity contribution in \eqref{eq:nsmom} is 
+neglected.
+%
 \subsubsection{Shallow cavities}
 \begin{figure}
 	\centering
@@ -222,6 +246,60 @@ for the pressure and almost for the velocity.
 	cavities at $t=\SI{10}{s}$. $Re=\num{2e3}$, Van Leer flux limiter.}
 	\label{fig:roughchannelvl}
 \end{figure}
+\begin{table}
+	\centering
+	\[
+	\begin{array}{ccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada} \\
+	\midrule
+	\num{1.708e-4} & \num{9.556e-6} & \num{1.119e-5} \\
+	\midrule
+	\text{Min-Mod} & \text{Superbee} & \text{MC Limiter} \\
+	\midrule
+	\num{1.537e-5} &  \SI{8.335e-6} & \num{8.659e-6}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[$L^2$-errors for the velocity in the rough channel with shallow 
+	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
+	and $t=\SI{10}{s}$ in the rough channel with shallow cavities. $Re = 
+	\num{2e3}$.}
+	\label{tab:errshallow}
+\end{table}
+\begin{figure}
+	\centering
+	\input{../img/line_comparison}
+	\caption[short text]{text}
+	\label{fig:linecompshallow}
+\end{figure}
+\begin{table}
+	\centering
+	\[
+	\begin{array}{ccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada}\\
+	\midrule
+	\num{3.431e-6} & \num{2.917e-6} & \num{2.937e-6}\\
+	\midrule
+	\text{Min-Mod} & \text{Superbee} & \text{MC Limiter} \\ 
+	\midrule
+	\num{2.956e-6} & \num{2.899e-6} & \num{2.902e-6}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[$L^2$-errors for the velocity in the rough channel with shallow 
+	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
+	and $t=\SI{5}{s}$ in the rough channel with shallow cavities. $Re = 1$.}
+	\label{tab:errshallow_lre}
+\end{table}
+\begin{figure}
+	\centering
+	\input{../img/line_comparison_lre}
+	\caption[short text]{text}
+	\label{fig:linecompshallowlre}
+\end{figure}
+
 %
 \subsubsection{Deep cavities}
 \begin{figure}
@@ -230,6 +308,33 @@ for the pressure and almost for the velocity.
 	\caption[Domain of the rough channel test with deep cavities]{Domain of the 
 	rough channel test with deep cavities.}
 	\label{fig:roughdomdeep}
+\end{figure}
+\begin{table}
+	\centering
+	\[
+	\begin{array}{ccc}
+	\toprule
+	\text{Upwind} & \text{Van Leer} & \text{Van Alabada}\\
+	\midrule
+	\num{3.180e-4} & \num{5.862e-5} & \num{6.900e-5}\\
+	\midrule
+	\text{Min-Mod} & \text{Superbee} & \text{MC Limiter} \\
+	\midrule
+	\num{8.579e-5} & \num{7.883e-5} & \num{5.584e-5}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[$L^2$-errors for the velocity in the rough channel with deep 
+	cavities]{$L^2$-errors for the velocity along a section at $x=\SI{8.75}{m}$ 
+	and $t=\SI{10}{s}$ in the rough channel with deep cavities. $Re = 
+	\num{2e3}$.}
+	\label{tab:errdeep}
+\end{table}
+\begin{figure}
+	\centering
+	\input{../img/line_comparison_highstep_report}
+	\caption[short text]{text}
+	\label{fig:linecompdeep}
 \end{figure}
 %
 \section{RANS tests}
@@ -252,7 +357,7 @@ for the pressure and almost for the velocity.
 %	\item Central differencing in Space? Non lo dice cosa usa, inoltre secondo 
 %	me non usa una staggered grid.
 %\end{itemize}
-\subsection{Cavities reciprocal influence}
+\subsection{Cavities mutual influence}
 %An easy result.
 \section{Coupled test}
 \subsection{Cavities coupled with the porous-medium}

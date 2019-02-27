@@ -91,12 +91,12 @@ want to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
 \begin{itemize}
 	\item on inflow boundaries, Dirichlet conditions are imposed to the 
 	velocity:
-	\begin{equation}
+	\begin{equation} \label{eq:inflow}
 		\mathbf{v} = \mathbf{v}_\text{in},
 	\end{equation}
 	\item on solid walls, homogeneous Dirichlet conditions are imposed to the 
 	velocity (also called no-slip conditions):
-	\begin{equation}
+	\begin{equation} \label{eq:noslip}
 		\mathbf{v} = \mathbf{0},
 	\end{equation}
 	\item on outflow boundaries, natural boundary conditions are imposed, 
@@ -108,8 +108,8 @@ want to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
 	However outflow boundary conditions are usually located where the flow is 
 	almost unidirectional and the surface stresses are known, so, especially 
 	when using the finite volumes method, they are replaced by:
-	\begin{equation}
-	(\nabla \mathbf{v})\mathbf{n} = \mathbf{0}, \quad p = p_\text{out},
+	\begin{equation} \label{eq:outflow}
+	(\nabla \mathbf{v})\mathbf{n} = \mathbf{0}, \quad p = p_\text{ext},
 	\end{equation}
 	thus fixing a a zero-gradient condition for the velocity and imposing a 
 	Dirichlet condition to the pressure (see \cite{main:vermal}).
