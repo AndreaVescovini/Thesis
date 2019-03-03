@@ -1,8 +1,8 @@
 \chapter{Numerical model} \label{chap:discretization} %discretized equations?
-In this chapter we describe the methods that are used to discretize the model. 
+In this chapter we describe the methods that are used to discretize the mathematical model. 
 For the spatial discretization we use the finite volumes method, which allows 
-to solve efficiently flow problems guaranteeing the mass conservation. See 
-\cite{fv:leveque} for a broad description.
+to solve efficiently flow problems guaranteeing mass conservation. See 
+\cite{fv:leveque} for a more general description.
 In the free-flow region we discretize the equations using the staggered grid 
 concept, while in the porous-medium we employ a cell-centred approach with a 
 Two Point Flux Approximation (TPFA).
@@ -19,7 +19,7 @@ vectorial primary variables. In saddle point problems, like the incompressible
 Navier-Stokes or RANS equations, if we locate all the primary variables, i.e. 
 pressure, velocity and possibly the turbulent kinetic energy and its 
 dissipation rate, at the same positions in the grid, spurious modes in the 
-solution may arise, leading to wrong results. A possible fix to this issue 
+solution may arise, leading to wrong results. A possible solution to this issue 
 is thus to store the variables in a \emph{staggered} fashion, putting 
 the degrees of freedom related to scalar variables at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
@@ -49,7 +49,7 @@ Another advantage of this discretization method is that on the boundary we have
 the degrees of freedom of the normal component of the velocity, so it is easier 
 to impose boundary and interface conditions.
 
-For the sake of simplicity we consider now a bi-dimensional domain and 
+For the sake of simplicity we consider now a two-dimensional domain with 
 $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 %
 \subsubsection{Continuity equation}
@@ -319,8 +319,9 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 	%
 	\item in the source terms all the quantities are approximated with their 
 	value at the centre of the cell. We report here only the derivatives 
-	appearing in the entries of $\mathbf{S}$, $\nabla k$ and $\nabla \omega$, 
-	that are computed with centred finite differences:
+	appearing in the entries of symmetric strain rate tensor $\mathbf{S}$,
+	$\nabla k$ and $\nabla \omega$, that are computed with centred finite
+	differences:
 	\begin{equation}
 	\frac{\partial u}{\partial x}\Big|_{I,J} \approx 
 	\frac{u_{i+1,J}+u_{i,J}-u_{i-1,J}-u_{i-2,J}}{2(x_{I+1}-x_{I-1})},
@@ -365,8 +366,8 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 The choice of the scheme for the approximation of a transported field is of 
 great importance for both the accuracy and the stability of the solution of the 
 problem. In general this decision has to be taken for every convective term, 
-indeed we have found it both in the discretization of the velocity 
-equation and of the turbulence model equations. As already mentioned, an 
+indeed we have found it both in the discretization of the Navier-Stokes equations
+and of the turbulence model equations. As already mentioned, an 
 important property that the scheme should have is the \emph{transportativeness} 
 (see \cite{main:vermal}), i.e. it should take into account the direction of the 
 flow. From a physical point of view this comes from the fact that, when in a 
@@ -851,7 +852,7 @@ $\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
 %	t^n\Delta t^{n-1}(\Delta t^n+\Delta t^{n-1})} =\\
 %= f(\phi^n, t^n)
 %\end{multline}
-\begin{multline}
+\begin{multline} \label{eq:bdf2gen}
 \frac{\partial \phi}{\partial t} \approx \phi^n\bigg( \frac{1}{\Delta t^n + 
 	\Delta t^{n-1}} + \frac{1}{\Delta t^n}\bigg) - \phi^{n-1} \frac{\Delta t^n 
 	+ \Delta t^{n-1}}{\Delta t^n \Delta t^{n-1}} \;+ \\+ \phi^{n-2} 
@@ -975,7 +976,7 @@ that the permeability in the porous-medium is isotropic, so that we can
 consider it a scalar.
 \begin{figure}
 	\centering
-	\includegraphics[width=0.4\textwidth]{coupled_cells.pdf}
+	\includegraphics[width=0.5\textwidth]{coupled_cells_axis.pdf}
 	\caption[Cells at the coupling interface]{Cells at the coupling interface. 
 	The degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ 
 	are fictitious.}
@@ -987,7 +988,7 @@ the free-flow at the interface $v_\text{ff}^\text{if}$ to express the flux
 across the boundary of the porous-medium.
 
 For the continuity of normal stresses \eqref{eq:coupnormalstress} the key point 
-is the approximation of $p_\text{pm}^\text{ff}$. This is done reverting 
+is the approximation of $p_\text{pm}^\text{if}$. This is done reverting 
 the Forchheimer's law \eqref{eq:forch2}, approximating the derivative of $p$ 
 with a finite difference:
 \begin{equation}
@@ -997,8 +998,9 @@ with a finite difference:
 	+C_F\sqrt{\mathrm{K}}+ 
 	\frac{\varrho}{\mu}|v_\text{ff}^\text{if}| 
 	v_\text{ff}^\text{if}\big)+\varrho
-	 g\Big].
+	 g\Big],
 \end{equation}
+where $y^\text{if}$ and $y^\text{c}_\text{pm}$ denote respectively the coordinates along the $y$-axis of $p^\text{if}_\text{pm}$ and $p^\text{c}_\text{pm}$.
 $\mathrm{K}$ and $\mu$ are evaluated at the centre of the porous-medium cell. 
 Then $p_\text{pm}^\text{if}$ is applied at the right-hand side of 
 \eqref{eq:coupnormalstress} and it is thus used as a flux across 

@@ -397,6 +397,73 @@ previous case of shallow cavities.
 %
 \section{RANS tests}
 \subsection{Backward facing step}
+The backward facing step is a widely-used test configuration, in which a turbulent flow in a channel incurs separation because of a sudden enlargement in the flow domain, as we can see in Figure~\ref{fig:bfsarrows}. We want to use this test in order to compare the results that we obtain using the TVD method, with the Van Leer flux limiter \eqref{eq:vl}, and the $k\text{-}\omega$ turbulence model with the numerical results from \cite{web:nasa}, computed using the NASA CFL3D code, and the experimental results from \cite{bfs:driver}.
+
+In the domain $\Omega$, depicted in Figure~\ref{fig:bfsdomain}, with a step height $H=\SI{1}{m}$, we solve the RANS equations \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega}, imposing inflow boundary conditions on the left boundary $\Gamma_\text{in}$
+\begin{equation}
+	\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad u_\text{in} = \SI{44.2}{m/s},
+\end{equation} no-slip boundary conditions on the lower and upper boundaries $\Gamma_w$ and outflow boundary conditions on the right boundary $\Gamma_\text{out}$, fixing the value of pressure
+\begin{equation}
+	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
+\end{equation}
+\begin{figure}
+	\centering
+%	\includegraphics[width=\textwidth]{bfs_domain.pdf}
+	\includegraphics[width=\textwidth]{bfs_domain_axis.pdf}
+	\caption[Domain of the backward facing step test]{Domain of the backward facing step test. For convenience, we set the position $x=0$ at the step and the position $y=0$ at the bottom of the channel.}
+	\label{fig:bfsdomain}
+\end{figure}
+The density is $\varrho = \SI{1}{kg/m^3}$ and the viscosity is $\nu=\SI{1.228e-3}{m^2/s}$, so that, in order to match \cite{web:nasa}, the Reynolds number based on the step height results
+\begin{equation}
+	Re_H = \frac{u_\text{in}H}{\nu} \simeq \num{3.6e4}.
+\end{equation}
+
+The domain sizes are chosen according to \cite{web:nasa}, with the only exception of the channel length before the step. Indeed, in \cite{web:nasa}, a small portion of the horizontal boundary near $\Gamma_\text{in}$ uses symmetry boundary conditions, but we simplify the model employing no-slip boundary conditions on the whole horizontal boundaries. As a consequence, we shorten the channel length in order to match as good as possible the profile of the $u$ component of the velocity across the section at the position $x/H=-4$, with a boundary layer thickness of approximately $1.5H$ (see Figure~\ref{fig:bfscomp}).
+\begin{figure} %mettere in paraview frecce 2d
+	\centering
+	\includegraphics[width=\textwidth]{bfs_glimphs2.png}
+	\caption[Velocity field after the backward facing step]{Velocity field $[\si{m/s}]$ after the backward facing step. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
+	\label{fig:bfsarrows}
+\end{figure}
+
+According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that implicit methods for ad advancement in time are used.
+
+Thus we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T_\text{end} = \SI{30}{s}$. It can be observed that after approximately $t=\SI{20}{s}$ the solution stabilizes at a steady state. As initial conditions we set
+\begin{equation}
+p=p_\text{ext} \quad \forall \mathbf{x} \in \Omega, \quad \mathbf{v} = [u_\text{init},0]^\mathrm{T} \quad u_\text{init} = \begin{cases}
+u_\text{in} \quad&\text{if $x<0$}\\
+\frac{8}{9}u_\text{in} \quad&\text{if $x>0$}
+\end{cases}
+\end{equation}
+The factor $8/9$ ensures that the discharge at $\Gamma_\text{in}$ and at $\Gamma_\text{out}$ is the same. For $k$ and $\omega$ we set in the whole domain the values estimated with \eqref{eq:koic}.
+
+%griglia
+
+According to \cite{web:nasa}, a key indicator for the reliability of a simulation is the prediction of the \emph{reattachment length} $l_\text{rea}$, i.e. the distance after the step at which the recirculation finishes and thus the $u$ component of the velocity at the bottom of the channel becomes positive. We analyse this length computing the \emph{friction coefficient} $C_f$, that is a non-dimensional form of the stress at the wall, and it is defined by:
+\begin{equation}
+C_f = \frac{\tau_w}{\frac{1}{2}\varrho U_\text{ref}^2}, \quad \tau_w = \mu \frac{\partial u}{\partial y} \Big|_{y=0}.
+\end{equation}
+$U_\text{ref}$ is the $u$ component of the velocity at $x/H=-4$ and it is the characteristic value that we use to produce non-dimensional results. In our case when $C_f<$ the flow is recirculating, then at $x=l_{rea}$ it becomes positive. The numerical results from \cite{web:nasa} predict $l_\text{rea}/H \simeq 6.8$, while the experimental results from \cite{bfs:driver} predict $l_\text{rea}/H = 6.26 \pm 0.10$, as it can be seen in Figure~\ref{bfscf}.
+
+\begin{figure}
+	\centering
+	\input{../img/bfs_fin_cf_report}
+	\caption[Friction coefficient in the backward facing step test]{Friction coefficient at the bottom of the channel after the backward facing step. The reattachment length is the distance at which it becomes positive after its global minimum.}
+	\label{fig:bfscf}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\subfloat[$x/H=-4$]{\input{../img/bfs_fin_vel0_report}}
+	\subfloat[$x/H=1$]{\input{../img/bfs_fin_vel1_report}}\\
+	\subfloat[$x/H=4$]{\input{../img/bfs_fin_vel2_report}}
+	\subfloat[$x/H=10$]{\input{../img/bfs_fin_vel4_report}}
+	\caption[Velocity profiles in the backward facing step test]{Profiles of the $u$ component of the velocity [$\si{m/s}$] across four sections in the backward facing step test. $Re_H=\num{3.6e4}$. $U_\text{ref}$ is the velocity in the centre of the channel at $x/H=-4$.}
+	\label{fig:bfscomp}
+\end{figure}
+
+
+
 %The NASA LaRC CFD code CFL3D uses:
 %\begin{itemize}
 %	\item free-stream turbulence intensity = 0.061\%
