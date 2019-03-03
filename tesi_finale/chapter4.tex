@@ -397,7 +397,7 @@ previous case of shallow cavities.
 %
 \section{RANS tests}
 \subsection{Backward facing step}
-The backward facing step is a widely-used test configuration, in which a turbulent flow in a channel incurs separation because of a sudden enlargement in the flow domain, as we can see in Figure~\ref{fig:bfsarrows}. We want to use this test in order to compare the results that we obtain using the TVD method, with the Van Leer flux limiter \eqref{eq:vl}, and the $k\text{-}\omega$ turbulence model with the numerical results from \cite{web:nasa}, computed using the NASA CFL3D code, and the experimental results from \cite{bfs:driver}.
+The backward facing step is a widely-used test configuration, in which a turbulent flow in a channel incurs separation because of a sudden enlargement in the flow domain. As we can see in Figure~\ref{fig:bfsarrows}, there is a big recirculation after the step, a corner eddy and a very small eddy precisely at the corner. We want to use this test in order to compare the results that we obtain using the TVD method, with the Van Leer flux limiter \eqref{eq:vl}, and the $k\text{-}\omega$ turbulence model with the numerical results from \cite{web:nasa}, computed using the NASA CFL3D code, and the experimental results from \cite{bfs:driver}.
 
 In the domain $\Omega$, depicted in Figure~\ref{fig:bfsdomain}, with a step height $H=\SI{1}{m}$, we solve the RANS equations \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega}, imposing inflow boundary conditions on the left boundary $\Gamma_\text{in}$
 \begin{equation}
@@ -410,7 +410,7 @@ In the domain $\Omega$, depicted in Figure~\ref{fig:bfsdomain}, with a step heig
 	\centering
 %	\includegraphics[width=\textwidth]{bfs_domain.pdf}
 	\includegraphics[width=\textwidth]{bfs_domain_axis.pdf}
-	\caption[Domain of the backward facing step test]{Domain of the backward facing step test. For convenience, we set the position $x=0$ at the step and the position $y=0$ at the bottom of the channel.}
+	\caption[Domain of the backward facing step test]{Domain $\Omega$ of the backward facing step test. For convenience, we set the position $x=0$ at the step and the position $y=0$ at the bottom of the channel.}
 	\label{fig:bfsdomain}
 \end{figure}
 The density is $\varrho = \SI{1}{kg/m^3}$ and the viscosity is $\nu=\SI{1.228e-3}{m^2/s}$, so that, in order to match \cite{web:nasa}, the Reynolds number based on the step height results
@@ -418,13 +418,7 @@ The density is $\varrho = \SI{1}{kg/m^3}$ and the viscosity is $\nu=\SI{1.228e-3
 	Re_H = \frac{u_\text{in}H}{\nu} \simeq \num{3.6e4}.
 \end{equation}
 
-The domain sizes are chosen according to \cite{web:nasa}, with the only exception of the channel length before the step. Indeed, in \cite{web:nasa}, a small portion of the horizontal boundary near $\Gamma_\text{in}$ uses symmetry boundary conditions, but we simplify the model employing no-slip boundary conditions on the whole horizontal boundaries. As a consequence, we shorten the channel length in order to match as good as possible the profile of the $u$ component of the velocity across the section at the position $x/H=-4$, with a boundary layer thickness of approximately $1.5H$ (see Figure~\ref{fig:bfscomp}).
-\begin{figure} %mettere in paraview frecce 2d
-	\centering
-	\includegraphics[width=\textwidth]{bfs_glimphs2.png}
-	\caption[Velocity field after the backward facing step]{Velocity field $[\si{m/s}]$ after the backward facing step. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
-	\label{fig:bfsarrows}
-\end{figure}
+The domain sizes are chosen according to \cite{web:nasa}, with the only exception of the channel length before the step. Indeed, in \cite{web:nasa}, a small portion of the horizontal boundary near $\Gamma_\text{in}$ uses symmetry boundary conditions, but we simplify the model employing no-slip boundary conditions on the whole horizontal boundaries. As a consequence, we shorten the channel length in order to match as good as possible the profile of the $u$ component of the velocity along the section at the position $x/H=-4$, with a boundary layer thickness of approximately $1.5H$ (see Figure~\ref{fig:bfscomp}).
 
 According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that implicit methods for ad advancement in time are used.
 
@@ -437,33 +431,44 @@ u_\text{in} \quad&\text{if $x<0$}\\
 \end{equation}
 The factor $8/9$ ensures that the discharge at $\Gamma_\text{in}$ and at $\Gamma_\text{out}$ is the same. For $k$ and $\omega$ we set in the whole domain the values estimated with \eqref{eq:koic}.
 
-%griglia
-
 According to \cite{web:nasa}, a key indicator for the reliability of a simulation is the prediction of the \emph{reattachment length} $l_\text{rea}$, i.e. the distance after the step at which the recirculation finishes and thus the $u$ component of the velocity at the bottom of the channel becomes positive. We analyse this length computing the \emph{friction coefficient} $C_f$, that is a non-dimensional form of the stress at the wall, and it is defined by:
 \begin{equation}
 C_f = \frac{\tau_w}{\frac{1}{2}\varrho U_\text{ref}^2}, \quad \tau_w = \mu \frac{\partial u}{\partial y} \Big|_{y=0}.
 \end{equation}
-$U_\text{ref}$ is the $u$ component of the velocity at $x/H=-4$ and it is the characteristic value that we use to produce non-dimensional results. In our case when $C_f<$ the flow is recirculating, then at $x=l_{rea}$ it becomes positive. The numerical results from \cite{web:nasa} predict $l_\text{rea}/H \simeq 6.8$, while the experimental results from \cite{bfs:driver} predict $l_\text{rea}/H = 6.26 \pm 0.10$, as it can be seen in Figure~\ref{bfscf}.
+$U_\text{ref}$ is the $u$ component of the velocity at $x/H=-4$ and it is the characteristic value that we use to produce non-dimensional results. In our case when $C_f<0$ the flow is recirculating, then at $x=l_{rea}$ it becomes positive. The numerical results from \cite{web:nasa} predict $l_\text{rea}/H \simeq 6.8$, while the experimental results from \cite{bfs:driver} predict $l_\text{rea}/H = 6.26 \pm 0.10$, as it can be seen in Figure~\ref{fig:bfscf}.
 
-\begin{figure}
+Performing a sensitivity analysis in order to choose a suitable grid, we observed that
+\begin{itemize}
+	\item with a coarse mesh the reattachment length decreases, in particular a refinement of the smallest cell in the $y$-direction in effective.
+	\item too stretched cells increase the number of Newton iteration needed to get the convergence of the problem.
+	\item the cells in portion of the channel after the step can be coarsened in the $x$-direction without a great influence on the solution.
+	\item too refined cells in the $y$-direction in the area with the recirculation do not improve in a relevant way the solution.
+\end{itemize}
+So, for the following analysis, we choose a grid made of $\num{119x70}$ cells, employing gradings up to 1.25 in order to have small cells near the walls.
+
+\begin{figure}[p] %mettere in paraview frecce 2d
+	\centering
+	\includegraphics[width=\textwidth]{bfs_glimphs2.png}
+	\caption[Velocity field after the backward facing step]{Velocity field $[\si{m/s}]$ after the backward facing step. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
+	\label{fig:bfsarrows}
+\end{figure}
+\begin{figure}[p]
 	\centering
 	\input{../img/bfs_fin_cf_report}
 	\caption[Friction coefficient in the backward facing step test]{Friction coefficient at the bottom of the channel after the backward facing step. The reattachment length is the distance at which it becomes positive after its global minimum.}
 	\label{fig:bfscf}
 \end{figure}
 
-\begin{figure}
+Fo what concerns the reattachment length, we obtain a good agreement with the CFL3D code, indeed, looking at Figure~\ref{fig:bfscf}, with the Van Leer flux limiter we predict $l_\text{rea} /H \simeq 6.67$. Moreover, in the whole recirculating region, the pattern is very similar, also compared the experimental data from \cite{bfs:driver}. Using the first order upwind methods, instead, it is $l_\text{rea} /H \simeq 6.02$, so approximately a 10\% underestimation occurs. From the profile is seems that the whole recirculation is slightly smaller. Looking at the value near the end of the channel instead both the Van Leer and the upwind show a lower value with respect to the CFL3D code. Comparing in Figure~\ref{fig:bfscomp} the profiles of the $u$ component of the velocity along some section downstream with respect to the step, we obtain in a similarly a good agreement between the Van Leer result and the one from the CFL3D code, while the result from the upwind method presents a small shift, in particular in the cases $x/H=4$ and $x/H=10$. Along the section at $x/H=1$ the velocity at the wall is positive for the Van Leer and the CFL3D, since we are in correspondence of the corner eddy. For the upwind method, instead, the velocity is negative, as we are already in the bigger eddy because the whole pattern is anticipated.
+\begin{figure}[ht]
 	\centering
 	\subfloat[$x/H=-4$]{\input{../img/bfs_fin_vel0_report}}
 	\subfloat[$x/H=1$]{\input{../img/bfs_fin_vel1_report}}\\
 	\subfloat[$x/H=4$]{\input{../img/bfs_fin_vel2_report}}
 	\subfloat[$x/H=10$]{\input{../img/bfs_fin_vel4_report}}
-	\caption[Velocity profiles in the backward facing step test]{Profiles of the $u$ component of the velocity [$\si{m/s}$] across four sections in the backward facing step test. $Re_H=\num{3.6e4}$. $U_\text{ref}$ is the velocity in the centre of the channel at $x/H=-4$.}
+	\caption[Velocity profiles in the backward facing step test]{Profiles of the $u$ component of the velocity [$\si{m/s}$] along four sections in the backward facing step test. $Re_H=\num{3.6e4}$. $U_\text{ref}$ is the velocity in the centre of the channel at $x/H=-4$.}
 	\label{fig:bfscomp}
 \end{figure}
-
-
-
 %The NASA LaRC CFD code CFL3D uses:
 %\begin{itemize}
 %	\item free-stream turbulence intensity = 0.061\%
