@@ -1,0 +1,34 @@
+% This file was created by matlab2tikz.
+%
+\definecolor{mycolor1}{rgb}{0.00000,0.44700,0.74100}%
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\widthsette,
+height=0.75\widthsette,
+at={(0\widthsette,0\widthsette)},
+scale only axis,
+xmin=0,
+xmax=2,
+xlabel={$d$ [m]},
+ymin=0.35,
+ymax=0.38,
+ylabel={velocity [m/s]},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids,
+yticklabel style={/pgf/number format/.cd,fixed,precision=3}
+]
+\addplot [color=black, line width=1.0pt, mark size=2.5pt, mark=o, mark options={solid, black}, forget plot]
+  table[row sep=crcr]{%
+0.05	0.352715\\
+0.2	0.371891\\
+0.3	0.375066\\
+0.5	0.376806\\
+1	0.375925\\
+1.5	0.374456\\
+2	0.373188\\
+};
+\end{axis}
+\end{tikzpicture}%

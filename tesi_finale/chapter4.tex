@@ -5,10 +5,8 @@ then in time. Then another spatial comparison test between the upwind method
 and the TVD methods is performed using a channel flow. After that the results 
 from the backward facing step test using the RANS equations are shown and 
 compared to those from the CFL3D code \cite{web:nasa}. Next, a turbulent 
-channel flow with two small cavities is studied and at last a coupled free-flow 
-and porous-medium flow problem is analysed, varying the permeability of the 
-porous-medium.\\
-In all the tests the gravity has been neglected.
+channel flow with two small cavities is studied and at last it is coupled
+with a porous-medium flow, analysing the several values of permeability of the porous-medium.
 %
 \section{Navier-Stokes tests}
 \subsection{Space convergence} \label{subsec:conv}
@@ -205,7 +203,7 @@ for the pressure and almost for the velocity.
 	\label{fig:timeerr}
 \end{figure}
 %
-\subsection{Rough channel test}
+\subsection{Rough channel test} \label{subsec:roughchannel}
 We test the behaviour of the TVD methods compared to the upwind method solving 
 the unsteady Navier-Stokes equations \eqref{eq:nsmass}--\eqref{eq:nsmom} in 
 a two-dimensional channel with a rough (i.e. non-flat) lower boundary. The 
@@ -395,7 +393,7 @@ previous case of shallow cavities.
 	\label{tab:errdeep}
 \end{table}
 %
-\section{RANS tests}
+\section{RANS test}
 \subsection{Backward facing step}
 The backward facing step is a widely-used test configuration, in which a turbulent flow in a channel incurs separation because of a sudden enlargement in the flow domain. As we can see in Figure~\ref{fig:bfsarrows}, there is a big recirculation after the step, a corner eddy and a very small eddy precisely at the corner. We want to use this test in order to compare the results that we obtain using the TVD method, with the Van Leer flux limiter \eqref{eq:vl}, and the $k\text{-}\omega$ turbulence model with the numerical results from \cite{web:nasa}, computed using the NASA CFL3D code, and the experimental results from \cite{bfs:driver}.
 
@@ -425,7 +423,7 @@ According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it wa
 Thus we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T_\text{end} = \SI{30}{s}$. It can be observed that after approximately $t=\SI{20}{s}$ the solution stabilizes at a steady state. As initial conditions we set
 \begin{equation}
 p=p_\text{ext} \quad \forall \mathbf{x} \in \Omega, \quad \mathbf{v} = [u_\text{init},0]^\mathrm{T} \quad u_\text{init} = \begin{cases}
-u_\text{in} \quad&\text{if $x<0$}\\
+u_\text{in} \quad&\text{if $x\leq 0$}\\
 \frac{8}{9}u_\text{in} \quad&\text{if $x>0$}
 \end{cases}
 \end{equation}
@@ -487,8 +485,127 @@ Fo what concerns the reattachment length, we obtain a good agreement with the CF
 %	\item Central differencing in Space? Non lo dice cosa usa, inoltre secondo 
 %	me non usa una staggered grid.
 %\end{itemize}
+\section{Cavities problem}
+In this section our goal is to study the behaviour of a coupled turbulent free-flow and 
+porous-medium system, that are in contact by means of a rough interface, or that presents 
+obstacles, exploiting the benefit of high-order methods. A first approximation of this kind of interface can be obtained with a series of little
+cavities, as it is used in Subsection~\ref{subsec:roughchannel} to study the \emph{rough channel} with the 
+Navier-Stokes equations. Now we want to use the RANS equations and as 
+turbulence model we choose the $k\text{-}\omega$ that we tested in the previous section using the backward facing step case.
+Since we use a structured grid and we need very small cells next to walls that have different orientations in order to resolve the viscous sub-layer, we decide to consider a simple configuration with only two cavities, in order not to increase too much the computational effort. We start our analysis from the free-flow, then we take into account the effect of a porous-medium.
+%
 \subsection{Cavities mutual influence}
-%An easy result.
-\section{Coupled test}
-\subsection{Cavities coupled with the porous-medium}
+In this first test we simulate only the free-flow solving the RANS equations  \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega} in the domain $\Omega_\text{ff}$ depicted in Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
+condition on the left boundary $\Gamma_\text{in}$:
+\begin{equation}
+	\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad u_\text{in} = \SI{1}{m/s},
+\end{equation}
+no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary conditions on the upper boundary $\Gamma_\text{sym}$ and outflow boundary conditions on the right boundary $\Gamma_\text{out}$, fixing the value of the pressure:
+\begin{equation}
+	p = p_{ext} = \SI{1.1e5}{\pascal}.
+\end{equation}
+The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow is almost uniform in the upper part of the domain and we can exploit symmetry boundary conditions. The first portion of the lower wall is flat, in order to let the flow develop, then there are the two cavities of height $h=\SI{0.1}{m}$ and length $\SI{0.5}{m}$, spaced by a tunable distance $d$.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{cavities_domain.pdf}
+%	\includegraphics[width=\textwidth]{cavities_domain_axis.pdf}
+	\caption[Free-flow domain $\Omega_\text{ff}$ in the cavities problem]{Free-flow domain $\Omega_\text{ff}$ in the cavities problem. The distance $d$ is varied from $\SI{0.05}{m}$ to $\SI{2}{m}$. For convenience we set the origin of the $x$-axis at the $\Gamma_\text{in}$ and the origin of the $y$-axis at the bottom of the cavities.}
+	\label{fig:singledomain}
+\end{figure}
+The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and the kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We neglect the gravity contribution.
+
+We want to see how the flow field in the second cavity is affected by the 
+presence of the first cavity, depending on the distance $d$ between them, that 
+has been varied from $\SI{0.05}{m}$ to $\SI{2}{m}$.
+
+We simulate the time interval $[0, T_\text{end}]$, with $T_\text{end}=\SI{30}{s}$, such that the solution reaches an equilibrium, and an initial time-step $\Delta t = \SI{e-5}{s}$. We start from the initial 
+conditions of uniform parallel flow for $y>h$ and no flow for $y\leq h$
+\begin{equation}
+	\mathbf{v} = [u_\text{init},0]^\mathrm{T}, \quad u_\text{init} =
+	\begin{cases}
+	u_\text{in} \quad&\text{if $y>h$}\\
+	0 \quad&\text{if $y\leq h$}
+	\end{cases}
+\end{equation}
+while we set in the whole $\Omega_\text{ff}$ $p=p_\text{ext}$, $k=k_\text{in}$ and $\omega=\omega_\text{in}$, estimated with the formulas~\eqref{eq:koic}.
+
+Performing a sensitivity analysis, we choose a grid made of $\num{377x50}$ 
+elements, with gradings in the inlet and outlet portions of the channel in order 
+to have small uniform cells around the two cavities, with sizes of $\SI{5x3.3}{mm}$.
+%Aggiungere qualcosa sulla sensitivity analysis
+
+At a first glance the behaviour of the fluid in the two cavities is very 
+similar, there is not any strong influence of the first one on the second one 
+and the pattern of the velocity field is the same, as we see in Figure~\ref{fig:veld1}. 
+%aggiungere cenno a quali recirculations ci sono e mettere le freccette 
+%nell'immagine?
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth%, trim={0 0 0 6cm}, clip
+	]{cavities_dist1_vel_report.png}
+	\caption[Magnitude of the velocity field in the cavities problem]{Magnitude of the velocity field [$\si{m/s}$] around the cavities, with $d=\SI{1}{m}$ at $t=T_\text{end}$. $Re=\num{6e5}$.}
+	\label{fig:veld1}
+\end{figure}
+In order to better analyse the results of the simulations, we compare the 
+profiles of the velocity in the first cells above $y=h$. The velocity in these points drives the flow in the cavities, 
+since we start from zero velocity inside them. Looking at the profiles in Figure~\ref{fig:velprofile1}, there is a positive 
+peak of the velocity near the centre of each cavity, then, when the wall starts 
+again, there is a negative peak, followed by a space, that we call recovery 
+distance $d_{rec}$, of approximately $\SI{0.5}{m}$, in which there is a recovery 
+of the value that the velocity had before the cavity. The values in the second 
+cavity are slightly lower than the correspondent ones in the first cavity, but 
+the shape is the same and this confirms the fact that the behaviour of the flow 
+in the two cavities is the analogous.
+\begin{figure}
+	\centering
+	\input{../img/cavities_vel1_report}
+	\caption[Profile of the $u$ component of the velocity at $y=h$ in the cavities problem]{Profile of the $u$ component of the velocity at $y=h$, with a distance $d=\SI{1}{m}$ between cavities, at $t=T_\text{end}$. $Re = \num{6e5}$.}
+	\label{fig:velprofile1}
+\end{figure}
+
+The peaks above the cavities are due to the fact that those sections of the profile are not 
+touching the wall, so the wall friction is not highly affecting the velocity as it is
+in the other sections and this allows the velocity to reach higher values.
+When a cavity is over and the wall begins there is a sudden decrease in the 
+velocity because before the corner of the cavity the flow is split into a 
+portion that goes down and generates the recirculation and another portion that 
+instead goes up, as we observe in Figure~\ref{fig:vel_split}.
+\begin{figure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{cavities_vel_split_report.png}
+	\caption[$v$-component of the velocity near end of a cavity in the cavities problem]{$v$-component of the velocity $\si{m/s}$ near end of a cavity. It can be observed that the flow splits. $Re = \num{6e5}$.}
+	\label{fig:vel_split}
+\end{figure}
+This change in the flow direction implies a reduction of the $u$ component of the velocity. After the 
+distance $d_{rec}$ the effect of the wall has restored the boundary layer that 
+there was before the cavity. If $d < d_{rec}$, i.e. the distance between the 
+cavities is smaller than the recovery distance, the flow in the second 
+cavity will be slower because it will be driven by lower velocities.
+
+We report in Figure~\ref{fig:velpeaks} the maximum values of the $u$-component 
+of the velocity in correspondence of the peak above the second cavity, depending 
+of the distance between the cavities.
+\begin{figure}
+	\centering
+	\input{../img/cavities_peaks_report}
+	\caption[Relation between the maximum velocity above the second cavity and 
+	the distance between the cavities]{Relation between the maximum velocity in the peak above the second cavity and the distance $d$ between the cavities.}
+	\label{fig:velpeaks}
+\end{figure}
+We see that if $d < d_{rec}$ the velocity is affected by the presence of 
+the first cavity and so its value is lower. For $d>d_{rec}$ the velocity is 
+slightly decreasing as $d$ increases; this fact is due to the turbulence that 
+is generated near the end of the first cavity. As it can be seen in 
+Figure~\ref{fig:kd1}, the turbulent kinetic energy that is generated from the 
+first cavity is transported towards the second one, leading to an increased 
+thickness of the boundary layer as we move in the $x$-direction.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth,% trim={0 0 0 7cm}, clip 
+	]{cavities_dist1_k_report.png}
+	\caption[Turbulen kinetic energy in the cavities problem]{Turbulent kinetic energy [$\si{m^2/s^2}$] around the cavities with $d=\SI{1}{m}$, at $t=T_\text{end}$. $Re=\num{6e5}$.}
+	\label{fig:kd1}
+\end{figure}
+%
+\subsection{Coupled problem}
 %A more complex result.
