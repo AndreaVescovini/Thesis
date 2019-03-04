@@ -44,8 +44,7 @@ one point in order to match the exact solution \eqref{eq:pex1d}.
 
 The problem is solved over a sequence of eight uniform grids, starting from 
 4 cells and each time halving their size. Both the cases of $\nu=1$ 
-and $\nu=\num{e-3}$ are considered, that correspond to $Re=1$ and $Re=\num{e3}$ 
-respectively. In Figure~\ref{fig:1d_err} the errors computed are reported 
+and $\nu=\num{e-3}$ are considered, that correspond respectively to $Re=1$ and $Re=\num{e3}$. In Figure~\ref{fig:1d_err} the errors computed are reported 
 depending on the number of cells, while in 
 Tables~\ref{tab:1d_lre}--\ref{tab:1d_hre} we can compare directly the 
 convergence orders for the different differencing schemes.
@@ -100,14 +99,14 @@ convergence orders for the different differencing schemes.
 	\label{tab:1d_hre}
 \end{table}
 
-In this test at $Re=1$ all the methods behave similarly, as we 
-can see in Table~\ref{tab:1d_lre}, with the second order convergence for the 
-velocity also using the upwind method. Probably in this one-dimensional 
-situation the second-order diffusive term is dominating. From 
-Table~\ref{tab:1d_hre} we observe instead that the TVD keep the second order 
+In this test, at $Re=1$, all the methods behave similarly, as we 
+can see in Table~\ref{tab:1d_lre}, with the second-order convergence for the 
+velocity also using the upwind method. Probably, in this one-dimensional 
+configuration, the second-order diffusive term is dominating. From 
+Table~\ref{tab:1d_hre} we observe instead that the TVD methods keep the second-order 
 convergence for the velocity and increase the rate also for the pressure, while 
 the upwind method decreases them. With the finest grid we observe from 
-Figure~\ref{fig:1d_err} that with the TVD methods the errors at three orders of 
+Figure~\ref{fig:1d_err} that with the TVD methods the errors are three orders of 
 magnitude lower than with the upwind method.
 
 %\FloatBarrier
@@ -140,8 +139,8 @@ one point in order to match the exact solution \eqref{eq:pexkov}.
 
 The problem is solved over a sequence of seven uniform grids, starting from 
 $\num{4x4}$ cells and each time halving their size. Both the cases of 
-$\nu=\num{2.5e-2}$ and $\nu=\num{2.5e-4}$ are considered, that correspond to 
-$Re=80$ and $Re=\num{8e3}$ respectively. In Figure~\ref{fig:kov_err} the errors 
+$\nu=\num{2.5e-2}$ and $\nu=\num{2.5e-4}$ are considered, that correspond respectively to 
+$Re=80$ and $Re=\num{8e3}$. In Figure~\ref{fig:kov_err} the errors 
 computed are reported depending on the number of cells, while in 
 Tables~\ref{tab:kov_lre}--\ref{tab:kov_hre} we can compare directly the 
 convergence orders for the different differencing schemes.
@@ -201,7 +200,7 @@ convergence orders for the different differencing schemes.
 \end{table}
 
 From Tables~\ref{tab:kov_lre} and \ref{tab:kov_hre}, we see that in this test 
-the convergence results for $Re=80$ and $Re=\num{8e3}S$ are very similar. With 
+the convergence results for $Re=80$ and $Re=\num{8e3}$ are very similar. With 
 the upwind method the convergence orders are always 1, while with the TVD 
 methods we obtain a second order, but only for the velocity. However, observing 
 Figure~\ref{fig:kov_err}, the convergence orders for the TVD methods at 
