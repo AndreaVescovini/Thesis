@@ -14,11 +14,12 @@ role in the electrochemical reactions that determine the cell performances and
 efficiency (see \cite{wu:fuelcell}).
 
 In order to study these processes we focus on the case of the evaporation from 
-a soil surface and we consider a system that involves two subdomains: the upper 
+a porous material and we consider a system that involves two subdomains: the 
+upper 
 one with a free-flow and the lower one occupied by a porous-medium. At the 
 interface between the two subdomains there is exchange of mass, momentum and 
-energy, but in the surrounding environment there is a great variety of 
-phenomena that have an influence on these exchanges, as we can see for example 
+energy, but in the surrounding environment there is a large variety of 
+phenomena that have an infzluence on these exchanges, as we can see for example 
 in Figure~\ref{fig:intro}.
 \begin{figure}[ht]
 	\centering
@@ -53,12 +54,13 @@ particular, in the discretization of the Navier-Stokes equations using finite
 volumes, a key role is played by the approximation used for the non linear term 
 $\nabla \cdot (\mathbf{v} \mathbf{v}^\mathrm{T})$. A common and easy 
 choice is to employ a first order upwind approximation for the 
-\emph{transported} velocity, but this option can produce solutions with a lot 
-of numerical diffusion. Other possibilities are given by high order methods 
+\emph{transported} velocity, but this option can produce solutions with 
+excessive numerical diffusion. Other possibilities are given by high order 
+methods 
 like the Linear Upwind Differencing (LUD) scheme, the Central Differencing (CD) 
 scheme or the Quadratic Upstream Interpolation for Convective Kinetics (QUICK) 
 scheme; sometimes they can produce 
-accurate solution but they have also shown to be not stable in certain 
+accurate solution but they have also shown to be unstable in certain 
 situations and to produce overshoots or undershoots that 
 may lead to unphysical values of quantities that for example have to be 
 positive (see \cite{main:vermal}). With this in mind our interest will be in 

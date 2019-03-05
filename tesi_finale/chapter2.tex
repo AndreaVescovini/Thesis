@@ -1,9 +1,9 @@
 \chapter{Governing equations} \label{chap:equations} %mathematical model?
-In this chapter the equations that have been used to model the 
-free-flow and the porous-medium flow are presented. For the free-flow we start 
+In this chapter we present the equations that have been used to model the 
+free-flow and the porous-medium flow. For the free-flow we start 
 considering the incompressible Navier-Stokes equations to simulate laminar 
 flows, then we move to the RANS equations employing the $k\text{-}\omega$ 
-model as a turbulence model to deal with turbulent flows. For the porous-medium 
+model as a turbulence model. For the porous-medium 
 flow our choice is the Forchheimer's law, that is an extension of the more 
 common Darcy's law to higher Reynolds numbers.
 \section{Free-flow}
@@ -30,12 +30,12 @@ and the first law of thermodynamics:
 \begin{equation} \label{eq:firstthermo}
 \frac{d}{dt} \int_V e \; dV = \dot{Q} + \dot{W}
 \end{equation}
-for an infinitesimal volume $V$. In the equation \eqref{eq:2newton} the vector 
+for any material volume $V$. In equation \eqref{eq:2newton} vector 
 $\mathbf{b}$ represents possible external volume forces per unit of mass, for 
 example the gravity $\mathbf{g}$. $\sigma$ is the Cauchy stress tensor 
 and 
 $\mathbf{n}$ is the outward unit vector normal to the surface $\partial V$ of 
-$V$, while in the equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
+$V$, while in equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
 heat added to the fluid and $\dot{W}$ is the net rate of work done on the fluid.
 
 For viscous fluids we can identify two contributions in the Cauchy stress 
@@ -61,9 +61,10 @@ Moreover we define the kinematic viscosity
 \nu = \frac{\mu}{\varrho}.
 \end{equation}
 
-We want to deal with incompressible fluids, so that the density is taken 
-constant and not related to the pressure through a state equation. Thus the 
-energy equation is not needed anymore and we can exclude it from the system. 
+We want to deal with incompressible fluids with a constant density that is not 
+related to the pressure through a state equation. Thus, the 
+energy equation becomes decoupled from the others and we can exclude it from 
+the system. 
 Notice that with this assumption $p$ is no more the thermodynamic pressure.
 Using these assumptions from the balance equations 
 \eqref{eq:masscons} and \eqref{eq:2newton} we obtain the Navier-Stokes 
@@ -143,7 +144,7 @@ Re = \frac{UL}{\nu}.
 \end{equation}
 This quantity plays an important role in the behaviour of the solution of the 
 Navier-Stokes equations since it expresses the ratio between the inertia forces 
-and the viscous forces. This can be easily seen in the equation 
+and the viscous forces. This can be easily seen in equation 
 \eqref{eq:momnondim} since, when $Re\gg 1$, the viscous term loses 
 importance with respect to the advective one and vice versa.
 
@@ -186,10 +187,11 @@ comparable to the size of the domain, there is an injection of kinetic energy
 and eddies are generated. Then there is an intermediate band in which the 
 convection is dominant and eddies shrink without a significant loss of energy. 
 The third band corresponds to the smallest scales at which eddies are present. 
-Indeed, once they reach a certain size, the effect of the viscosity starts to 
-be relevant and we assist to a dissipation of the kinetic energy of the eddies 
-into internal thermal energy. So, globally, energy is transferred from large 
-scales to small ones, until it gets dissipated; this process is known as 
+Indeed, once they reach a certain size, the effect of viscosity starts to 
+be relevant and the kinetic energy of the eddies is dissipated
+into internal thermal energy. So, globally, energy is transferred from the 
+large 
+scales to the small ones, until it gets dissipated; this process is known as 
 the Richardson energy cascade (Figure~\ref{fig:cascade}).
 \begin{figure}%[t]
 	\centering
@@ -300,7 +302,7 @@ The new term
 \begin{equation}
 \tau_R = -\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}
 \end{equation}
-is called Reynolds stress tensor. Mathematically it expresses the correlation 
+is called Reynolds stress tensor. Mathematically, it expresses the correlation 
 between the components of the instantaneous velocity field, while physically it 
 represents the diffusive effect of turbulence (see \cite{main:vermal}).
 %
@@ -310,7 +312,8 @@ the wall is called boundary layer and it is important because the
 viscosity plays an important role there, even in turbulent conditions.
 Independently of the flow regime, the no-slip condition imposes a null velocity 
 at the wall and thus a gradient orthogonal to the flow direction. The thickness 
-of the boundary layer $\delta$ is defined as the position where the velocity 
+of the boundary layer $\delta$ is conventionally defined as the position where 
+the velocity 
 reaches the 99\% of its maximum value and different values are observed for 
 different kinds of flow.  See for 
 example \cite{main:pope} or \cite{main:davidson} for a complete description.

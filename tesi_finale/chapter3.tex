@@ -1,7 +1,7 @@
 \chapter{Numerical model} \label{chap:discretization} %discretized equations?
 In this chapter we describe the methods that are used to discretize the mathematical model. 
 For the spatial discretization we use the finite volumes method, which allows 
-to solve efficiently flow problems guaranteeing mass conservation. See 
+to solve flow problems efficiently, guaranteeing the conservation of mass. See 
 \cite{fv:leveque} for a more general description.
 In the free-flow region we discretize the equations using the staggered grid 
 concept, while in the porous-medium we employ a cell-centred approach with a 
@@ -19,9 +19,12 @@ vectorial primary variables. In saddle point problems, like the incompressible
 Navier-Stokes or RANS equations, if we locate all the primary variables, i.e. 
 pressure, velocity and possibly the turbulent kinetic energy and its 
 dissipation rate, at the same positions in the grid, spurious modes in the 
-solution may arise, leading to wrong results. A possible solution to this issue 
-is thus to store the variables in a \emph{staggered} fashion, putting 
-the degrees of freedom related to scalar variables at the centre of the cells 
+pressure solution may arise, leading to wrong results. In the context of finite 
+volumes, a possible solution to 
+this issue 
+is to store the variables in a \emph{staggered} fashion, putting 
+the degrees of freedom related to scalar variables and, in particular, of the 
+pressure at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
 normal direction. Therefore we obtain different control volumes, as we can see 
 in Figure~\ref{fig:staggrid} for the case of the 
@@ -93,7 +96,7 @@ velocity:
 \end{equation}
 Notice that, since we are considering a two-dimensional model, we have 
 substituted the factor $2/3$ with a $1$ in front of $\varrho k$, because it 
-came from the requirement \eqref{eq:tracciatau}.
+comes from the requirement \eqref{eq:tracciatau}.
 
 We integrate it over the ``red'' control volume $V_u=[x_I, 
 x_{I+1}]\times[y_{j-1},y_j]$, 
