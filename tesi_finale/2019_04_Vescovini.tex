@@ -33,7 +33,8 @@
 \usepackage{pdfpages} % per inserire pdf
 \usepackage[separate-uncertainty=true]{siunitx} % per le unitàdi misura
 \usepackage[autostyle]{csquotes} % per la bibliografia
-\usepackage[style=alphabetic,backend=biber]{biblatex}%styles: numeric,trad-plain
+\usepackage[style=alphabetic,maxbibnames=99,maxcitenames=2,backend=biber]{biblatex}%styles:
+% numeric,trad-plain
 %\usepackage[bindingoffset=4mm]{geometry} % aggiunge spazio per la rilegatura
 \usepackage{fancyhdr} % per le testatine
 \pagestyle{fancy}
@@ -75,13 +76,13 @@
 \newcommand{\xFU}{x_{FU}\addemptysup}
 
 \includeonly{%
-%	preliminariesBook%
+	preliminariesBook%
 	,chapter1%
-%	,chapter2%
-%	,chapter3%
-%	,chapter4%
-%	,chapter5%
-%	,appendice%
+	,chapter2%
+	,chapter3%
+	,chapter4%
+	,chapter5%
+	,appendice%
 }
 \emergencystretch=1em % per gli overfull hbox nella bibliografia.
 \addbibresource{bibliotesi.bib}
