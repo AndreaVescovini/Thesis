@@ -46,7 +46,7 @@ The problem is solved over a sequence of eight uniform grids, starting from
 4 cells and each time halving their size. Both the cases of $\nu=1$ 
 and $\nu=\num{e-3}$ are considered, that correspond respectively to $Re=1$ and $Re=\num{e3}$. In Figure~\ref{fig:1d_err} the errors computed are reported 
 depending on the number of cells, while in 
-Tables~\ref{tab:1d_lre}--\ref{tab:1d_hre} we can compare directly the 
+Table~\ref{tab:1d} we can compare directly the 
 convergence orders for the different differencing schemes.
 \begin{figure}
 	\centering
@@ -62,15 +62,17 @@ convergence orders for the different differencing schemes.
 		\input{../img/l2error_test_navierstokes_1d_vl}}
 	\subfloat[Van Leer, $Re = \num{e3}$]{
 		\input{../img/l2error_test_navierstokes_1d_vl_hre}}
-	\caption[$L^2$-errors for the 1D test]{$L^2$-errors for the 1D test 
+	\caption[$L^2(\Omega)$ norm of the errors for the 1D test]{$L^2(\Omega)$ 
+	norm of the errors for the 1D test 
 	depending on the number of cells in the grid. The grey lines are the 
-	reference lines for the first-order and second-order convergence.}
+	reference lines for the first-order (lower) and second-order (upper) 
+	convergence.}
 	\label{fig:1d_err}
 \end{figure}
 \begin{table}
 	\centering
-	\[
-	\begin{array}{c|ccc}
+	\subfloat[$Re=1$]{
+	$\begin{array}{c|ccc}
 	\toprule
 	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
 	\midrule
@@ -78,13 +80,10 @@ convergence orders for the different differencing schemes.
 	u & 1.985 & 1.996 & 1.996\\
 	\bottomrule
 	\end{array}
-	\]
-	\caption[Convergence orders with $Re = 1$ for the 1D test]{Convergence 
-	orders with $Re = 1$ for the 1D test. They are computed considering the 
-	last two refinements of the grid.}
-	\label{tab:1d_lre}
-	\[
-	\begin{array}{c|ccc}
+	\label{tab:1d_lre}$
+	}\\
+	\subfloat[$Re=\num{e3}$]{
+	$\begin{array}{c|ccc}
 	\toprule
 	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
 	\midrule
@@ -92,11 +91,11 @@ convergence orders for the different differencing schemes.
 	u & 1.318 & 2.274 & 2.356\\
 	\bottomrule
 	\end{array}
-	\]
-	\caption[Convergence orders with $Re = \num{e3}$ for the 1D 
-	test]{Convergence orders with $Re = \num{e3}$ for the 1D test. They 
+	\label{tab:1d_hre}$}
+	\caption[Convergence orders for the 1D 
+	test]{Convergence orders with for the 1D test. They 
 	are computed considering the last two refinements of the grid.}
-	\label{tab:1d_hre}
+	\label{tab:1d}
 \end{table}
 
 In this test, at $Re=1$, all the methods behave similarly, as we 
@@ -142,7 +141,7 @@ $\num{4x4}$ cells and each time halving their size. Both the cases of
 $\nu=\num{2.5e-2}$ and $\nu=\num{2.5e-4}$ are considered, that correspond respectively to 
 $Re=80$ and $Re=\num{8e3}$. In Figure~\ref{fig:kov_err} the errors 
 computed are reported depending on the number of cells, while in 
-Tables~\ref{tab:kov_lre}--\ref{tab:kov_hre} we can compare directly the 
+Table~\ref{tab:kov} we can compare directly the 
 convergence orders for the different differencing schemes.
 \begin{figure}
 	\centering
@@ -158,16 +157,17 @@ convergence orders for the different differencing schemes.
 		\input{../img/l2error_test_navierstokes_kovasznay_vl}}
 	\subfloat[Van Leer, $Re = \num{8e3}$]{
 		\input{../img/l2error_test_navierstokes_kovasznay_vl_hre}}
-	\caption[$L^2$-errors for the Kovasznay test]{$L^2$-errors for the 
+	\caption[$L^2(\Omega)$ norm of the errors for the Kovasznay 
+	test]{$L^2(\Omega)$ norm of the errors for the 
 	Kovasznay test depending on the number of cells in the grid. The grey 
-	lines are the reference lines for the first-order and second-order 
-	convergence.}
+	lines are the reference lines for the first-order (lower) and second-order 
+	(upper) convergence.}
 	\label{fig:kov_err}
 \end{figure}
 \begin{table}
 	\centering
-	\[
-	\begin{array}{c|ccc}
+	\subfloat[$Re=80$]{
+	$\begin{array}{c|ccc}
 	\toprule
 	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
 	\midrule
@@ -176,13 +176,10 @@ convergence orders for the different differencing schemes.
 	v & 0.940 & 2.422 & 2.565\\
 	\bottomrule
 	\end{array}
-	\]
-	\caption[Convergence orders with $Re = 80$ for the Kovasznay 
-	test]{Convergence orders with $Re = 80$ for the Kovasznay test. They 
-	are computed considering the last two refinements of the grid.}
-	\label{tab:kov_lre}
-	\[
-	\begin{array}{c|ccc}
+	\label{tab:kov_lre}$
+	}\\
+	\subfloat[$Re=\num{8e3}$]{
+	$\begin{array}{c|ccc}
 	\toprule
 	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
 	\midrule
@@ -191,15 +188,16 @@ convergence orders for the different differencing schemes.
 	v & 0.997 & 1.960 & 1.958\\
 	\bottomrule
 	\end{array}
-	\]
-	\caption[Convergence orders with $Re = \num{8e3}$ for the Kovasznay 
-	test]{Convergence orders with $Re = \num{8e3}$ for the Kovasznay 
+	\label{tab:kov_hre}$
+	}
+	\caption[Convergence orders for the Kovasznay 
+	test]{Convergence orders with for the Kovasznay 
 	test. They are computed considering the last two refinements of the 
 	grid.}
-	\label{tab:kov_hre}
+	\label{tab:kov}
 \end{table}
 
-From Tables~\ref{tab:kov_lre} and \ref{tab:kov_hre}, we see that in this test 
+From Table~\ref{tab:kov}, we see that in this test 
 the convergence results for $Re=80$ and $Re=\num{8e3}$ are very similar. With 
 the upwind method the convergence orders are always 1, while with the TVD 
 methods we obtain a second order, but only for the velocity. However, observing 

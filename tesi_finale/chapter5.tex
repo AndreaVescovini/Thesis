@@ -1,50 +1,57 @@
-\chapter{Conclusions}
+\chapter{Conclusions and outlook}
 \section{Conclusions}
 In this work we have seen the application of the TVD methods for the 
 approximation of the convective term in the momentum equation of the 
 Navier-Stokes equations and of the RANS equations, within a finite volumes 
-framework. The aim was to improve the results of coupled obtained employing the 
+framework. The aim was to use them for the simulation of coupled free-flow and 
+porous-medium flow models, improving the results obtained employing the 
 first order upwind scheme, using a method that introduces less numerical 
-viscosity in the solution, but that at the same time guarantees the stability 
+viscosity in the solution, but that, at the same time, guarantees the stability 
 and avoids the creation of unphysical oscillations.
 
-In all the test that have been performed, we have experienced an increased 
+In all the tests that have been performed, we have experienced an increased 
 accuracy of the solution with respect to the one obtained with the first order 
 upwind method. The spatial convergence rates in the tests with analytical 
 solution were between 1.5 and 2 in many cases, while with the upwind method we had always a first-order convergence. 
 The differences were more relevant at $Re\simeq\num{e3}$ rather than at 
 $Re\simeq1$, because of the increased importance of the convective term with 
-respect to the diffusive one. Moreover, employing a BDF2 scheme for the 
+respect to the diffusive one. Also with turbulent flows in the backward facing 
+step test, we have 
+obtained, using the Van Leer flux limiter, a satisfying agreement with 
+validated numerical results from the CFL3D code and experimental data.
+Moreover, employing a BDF2 scheme for the 
 temporal discretization, we have available an high order discretization both 
-in 
-space and in time, thus allowing a more accurate study of transient phenomena. 
+in space and in time, thus allowing a more accurate study of transient 
+phenomena.
 
-With this tool we have studied a coupled model made of a free-flow and a 
-porous-medium flow. In particular we have focused on the effects that a shaped rough
-interface, with small cavities in our case, has on the flow field.
+With this tool, we have studied a coupled model made of a free-flow and a 
+porous-medium flow, focusing in particular on the effects that a rough
+interface, with small cavities, has on the flow field.
 At first, we have considered only the free-flow and we have studied how the 
 velocity is affected by the presence of two cavities at the interface and 
 which is the distance between them such that the variation in the flow field, 
-because of the first cavity, does not influence anymore the behaviour around 
-the 
-second one. We have obtained that, for cavities long $\SI{0.5}{m}$, after a 
+because of the first cavity, does not significantly influence anymore the 
+behaviour around the 
+second one. We have obtained that, for cavities $\SI{0.5}{m}$ long, after a 
 distance equal to one cavity the flow field has recovered the configuration it 
-had before the first cavity; however each cavity introduces an increase in the 
+had before the first cavity. However each cavity introduces an increase in the 
 turbulent kinetic energy, that accelerates the growth of the turbulent 
 boundary layer.
 
 Afterwards we have chosen a distance such that the two cavities do not 
 influence each other and we have placed a porous-medium between them, in order 
-to analyse how its presence affects the flow field. We have observed that 
-for values of permeability greater than $\SI{e-8}{m^2}$ the flow field in the 
+to analyse how its presence affects the flow field. We have observed that, 
+for values of permeability greater than $\SI{e-8}{m^2}$, the flow field in the 
 free-flow shows noticeable differences with respect to the case without the 
-porous-medium. In particular not only the fact the the flow can enter into the 
-porous-medium has an effect, but also the Beaver-Joseph-Saffman slip condition 
-that was imposed at the interface between the two subdomains. The presence of 
-the eddies in the cavities influences the flow in the porous-medium, because 
-in correspondence the corner eddy it can enter also from a direction opposite 
-to the one of the main flow. However, when this happens, the values of the 
-velocity are relatively small and thus this behaviour does not affect the free-flow as it happens when the flow enters in the other direction.
+porous-medium. In particular, not only the fact that the flow can enter into 
+the porous-medium has an effect, but also the Beaver-Joseph-Saffman slip 
+condition that was imposed at the interface between the two subdomains. The 
+presence of eddies in the cavities influences the flow in the 
+porous-medium, because in correspondence of the corner eddy it can enter also 
+from a direction opposite to the one of the main flow. However, when this 
+happens, the values of the velocity are relatively small and thus this 
+behaviour does not affect the free-flow as it happens when the flow enters the 
+porous-medium at the end of a cavity.
 %
 \section{Future developments}
 Future developments to this thesis can be devoted to the investigation of more 

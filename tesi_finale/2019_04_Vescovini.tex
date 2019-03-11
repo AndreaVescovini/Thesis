@@ -55,6 +55,7 @@
 	hidelinks
 }
 \pdfminorversion=7 % per togliere il warning delle immagini
+\pdfsuppresswarningpagegroup=1 % warning per due immagini pdf in una pagina
 \newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
 \renewcommand*{\pagenumbering}[1]{} % per mettere un'unica numerazione
 
@@ -86,6 +87,8 @@
 }
 \emergencystretch=1em % per gli overfull hbox nella bibliografia.
 \addbibresource{bibliotesi.bib}
+
+\DeclareMathOperator{\esssup}{ess\,sup}
 
 \begin{document}
 \selectlanguage{british}
