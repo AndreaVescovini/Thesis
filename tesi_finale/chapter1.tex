@@ -1,5 +1,5 @@
 \chapter{Introduction}
-Flow and transport processes between turbulent free-flows and porous-media 
+Flow and transport processes between free-flows and porous-media 
 flows are common in a wide range of environmental, industrial, civil and medical 
 applications.
 For example \textcite{tesi:mosthaf}, \textcite{intro:davarzani} and \textcite  {tesi:fetzer} have studied the effect that a turbulent air flow has on the 
@@ -8,7 +8,7 @@ in spite of its clarity, involves many different physical phenomena that act at
 different scales, thus, because of this complexity, a reliable prediction of 
 the evaporation rates is still a challenge. In Figure~\ref{fig:intro} we can 
 see a schematic representation of the mechanisms that play a role in such a 
-situation, where both transport and thermal effects can be taken into account. 
+situation, where both transport and thermal can be relevant. 
 Moreover, considering natural phenomena, an additional difficulty is given by 
 the intrinsic uncertainty and heterogeneity of material properties, such as the 
 soil porosity, and atmospheric conditions, such as the air humidity or the 
@@ -24,7 +24,7 @@ solar radiation.
 \end{figure}
 
 These studies can be exploited, for example, to better understand the process of soil salinization, that is one of the most serious agricultural problems in many arid and coastal areas in the world. It consists in the excessive accumulation of salt in the soil pores, with the consequence of a partial or complete loss of productivity. A limited amount of salt precipitation in the soil, due to evaporation of irrigation water, is inevitable, but a wrong water management could lead salinity problems in the long term, especially in arid areas where irrigation is necessary to increase the production for food requirements (see \cite{web:fao}). According to \cite{soil:munns}, more than 6\% of wolrd's total land area is salt affected.
-The region of the soil near the surface is the most involved in this problem, hence the importance of studying the interactions between the free-flow and the porous-medium flow that there occur. For example, \textcite{intro:salinization} have investigated the application of kinetic approaches to describe the salt precipitation in a coupled system.
+The part of the soil most involved in this problem is the one near the surface, hence the importance of studying the interactions between the free-flow and the porous-medium flow that there occur. For example, \textcite{intro:salinization} have investigated the application of kinetic approaches to describe the salt precipitation in a coupled system.
 \begin{figure}
 	\centering
 	\subfloat[]{\includegraphics[height=0.22\textheight]{salinity.jpg}}
@@ -33,9 +33,12 @@ The region of the soil near the surface is the most involved in this problem, he
 	\label{fig:intro2}
 \end{figure}
 
-Switching to a technical framework, PEM (Proton Exchange Membrane) fuel cells represent a possible alternative power source, that could be used for transportations. In their design, transport and diffusion phenomena through gas channels and gas diffusers play an important role in the electrochemical reactions that determine the cell performances and efficiency. As we can see in Figure~\ref{fig:intro2}, reactant gases are supplied at the anode and cathode being transported through gas channels, then they diffuse into porous layers called gas diffusers, that should deliver them uniformly and efficiently to the catalyst layers, where reactions take place (see \cite{wu:fuelcell}, \cite{tesi:baber} and \cite{tesi:pem}). Protons are produced at the anode and transported through the membrane to react with oxygen at the cathode and produce water. The water management within the cells is of great importance because it is essential to have a certain level of humidity in the membrane in order to facilitate the transport of protons, but an excess of water could flood the catalyst layers, with the result of an inhibition of the reactions.
-Because of the complex and compact geometry of PEM fuels cells, it is generally difficult and expensive to take measurements, thus mathematical and numerical models are helpful in order to better understand the mechanical, thermal and chemical phenomena that take place to improve the cell performances and lifetime.
+Switching to a technical framework, PEM (Proton Exchange Membrane) fuel cells represent a possible alternative power source that, in particular, could be used for transportations. In their design, transport and diffusion phenomena through gas channels and gas diffusers play an important role in the electrochemical reactions that determine the cell performances and efficiency. As we can see in Figure~\ref{fig:intro2}, reactant gases are transported through gas channels and supplied at the anode and cathode, then they diffuse into porous layers called gas diffusers, that should deliver them uniformly and efficiently to the catalyst layers, where reactions take place (see \cite{wu:fuelcell}, \cite{tesi:baber} and \cite{tesi:pem}). Protons are produced at the anode and transported through the membrane to react with oxygen at the cathode and produce water. The water management within the cells is of great importance because it is essential to have a certain level of humidity in the membrane in order to facilitate the transport of protons, but an excess of water could flood the catalyst layers, with the result of an inhibition of the reactions.
+Because of the complex and compact geometry of PEM fuels cells, it is generally difficult and expensive to take measurements, thus mathematical and numerical models are helpful in order to better understand the mechanical, thermal and chemical phenomena that take place, in order to improve the cell performances and lifetime.
 
+Other examples of applications can be found in the fields of refrigeration of stored food \cite{intro:food}, cooling systems for aerospace engineering \cite{intro:aero}, ventilation of motorcycle helmets \cite{intro:discacim}, wind flows around buildings in urban environments \cite{intro:buildings} and hemodynamics \cite{intro:med}.
+
+\section{State of the art}
 In order to study these processes, in the following we focus on the case of the evaporation from 
 a porous material and we consider a system that involves two subdomains: the 
 upper one with a free-flow and the lower one occupied by a porous-medium, as it is represented in Figure~\ref{fig:intro}.
@@ -45,25 +48,23 @@ and energy.
 Numerical studies of this coupled system can be performed with a 
 \emph{single-domain} approach or with a \emph{two-domain} approach 
 \cite{tesi:fetzer}.
-
 Within the single-domain approach, the same equations are solved in the whole 
 computational domain, including both the free-flow region and the 
-porous-medium. A first possibility is to use the Navier-Stokes to model the 
+porous-medium. A first possibility is to use the Navier-Stokes equations to model the 
 flow motion and thus to perform a direct numerical simulation (DNS) of the 
 whole system. The porous-medium has to be resolved at the pore-scale, thus a 
 detailed knowledge of the pore structure, not easy to obtain for real 
 materials, is necessary. The computational effort is very high because 
 of the strict spatial and temporal requirements of a DNS and it increases even 
-more if the fluid is non-isothermal, multi-phase and multi-component. 
-\textcite{intro:dns} and \textcite{intro:dns2} have performed DNS in 
-porous-media domains using the lattice Boltzmann method. A cheaper possibility 
-for the case of laminar single-phase flows is to employ the Brinkman's equation 
+more if the fluid is non-isothermal, multi-phase and multi-component. \textcite{intro:dns} and \textcite{intro:dns2} have performed DNS in 
+porous-media domains using the lattice Boltzmann method, while \textcite{intro:yang} have performed coupled simulations considering idealized coarse porous materials.
+A cheaper possibility for the case of laminar single-phase flows is to employ the Brinkman's equation 
 \cite{intro:brinkman}, which is a superposition of the Stokes equations and 
-Darcy's law, with a modified viscosity:
-\begin{equation}
-	-\nabla \cdot (\tilde{\mu} \nabla \mathbf{v}) + \mu 
-	\mathbf{K}^{-1}\mathbf{v} + \nabla p = \mathbf{f}.
-\end{equation}
+Darcy's law, with a modified viscosity. %:
+%\begin{equation}
+%	-\nabla \cdot (\tilde{\mu} \nabla \mathbf{v}) + \mu 
+%	\mathbf{K}^{-1}\mathbf{v} + \nabla p = \mathbf{f}.
+%\end{equation}
 Then the transition between the two 
 regions can be expressed with a spatial variation of the involved physical 
 parameters, either considering a transition region or admitting a discontinuous 
@@ -71,43 +72,26 @@ variation at the interface. \textcite{intro:shavit} proposed a modification of
 the Brinkman's equation and applied it to the case of shallow water flows over 
 porous surfaces.
 
-Within the two-domain approach, adopted also in this thesis, different set of 
+Within the two-domain approach, adopted also in this thesis, different sets of 
 equations are used in the two subdomains and they are coupled imposing suitable 
-conditions at the interface.
-The free-flow can be described with the Stokes 
+conditions at the interface. This allows to keep separated models to describe phenomena that act on different temporal and spatial scales. The free-flow can be modelled with the Stokes 
 equations, Navier-Stokes equations or RANS equations, depending on the flow 
-regime. The porous-medium approach instead is usually described with the 
-Darcy's law or sometimes with the Forchheimer's law, when the Reynolds number 
-is higher.
+regime. The porous-medium flow, instead, is usually described with a REV-scale approach, exploiting the 
+Darcy's law or the Forchheimer's law when the Reynolds number is higher or the Richards equation. The interface could also be \emph{complex}, i.e. it could be allowed to store mass, for example to take into account drops formation (see \cite{tesi:baber}).
 
-In \cite{intro:disca2} a single-domain approach (through a penalization) and a 
-two-domain approach for 
-the Navier-Stokes/Forchheimer coupling are compared, with the results that the 
-first is much easier to implement, but the second one describes better the 
-physics of the problem. (single-phase, single-component flows).
+\textcite{intro:discacim} compared the performances of a single-domain approach with a penalization technique and a 
+two-domain approach, using the Navier-Stokes equations and the Forchheimer's law to model a incompressible, single-phase, single-component flow. They concluded that the former is easier to implement, but the latter describes better the physics of the problem. Alternative approaches may exploit pore-networks models in the porous-medium subdomain, that allow to focus on the pore scale effects, avoiding the complexity of a DNS (see \cite{paper:kilian}).
 
-In \cite{intro:disca} the well posedness for the Stokes/Darcy problem is proved 
-and an iterative method for the solution is proposed.
+\textcite{paper:mosthaf} proposed a Stokes/Darcy coupling concept for multi-phase, 
+multi-component, non-isothermal flows. It is based on phenomenological arguments and it tries to be as close as possible to the 
+imposition of thermodynamic equilibrium. \textcite{intro:davarzani}, instead, focused on the coupling in case of non-equilibrium conditions among phases.
+\textcite{paper:fetzer} generalized the equilibrium concept to the case of turbulent flows, then, in \cite{tesi:fetzer}, several turbulence models are tested and possible simplifications in the implementation of interface conditions are considered. The effects of turbulence, as well as the non-linear inertial effects of the Navier-Stokes equations, are sometimes neglected for simplicity, but to model natural systems they must be considered as they play an important role in most of the situations. Another aspect investigated in \cite{tesi:fetzer} is the influence of a rough interface between the two subdomains. In particular, both the effects of a sand-grain roughness and of periodical porous obstacles are studied.
+Rough interfaces have been taken into account also in \cite{intro:kuzbek} and \cite{intro:kuz} to analyse heat transfer within a duct, while rough boundaries for free-flows are considered in \cite{lien:obstacles} to study flow paths around buildings, in \cite{intro:limnology}, in a limnological framework, and in \cite{intro:targui} to study heat exchangers.
 
-In \cite{tesi:fetzer} several turbulence models are tested and 4 different sets 
-of interface conditions for multi-phase, multi component flows are tried. 
-Moreover sand-grain roughness is analysed and also obstacles roughness, as in 
-our case\\
+Theoretical results concerning the well-posedness can be found in \cite{intro:disca}, for the Stokes/Darcy problem, and in \cite{intro:disca2009}, for the Navier-Stokes/Darcy problem. They are based on classical results for saddle-point problems. Regarding the numerical aspects, many different methods have been employed in literature. In \cite{intro:disca2009} several finite elements choices are considered, in \cite{tesi:mosthaf} the box method is used, while in \cite{tesi:fetzer} the same box method is compared to a combined staggered and collocated finite volumes method. In \cite{intro:disca} an iterative algorithm is proposed in order to decouple the two subdomains, while in \cite{intro:rybak} a temporal decoupling strategy is used.
 
-Consequently a numerical study of this system generally involves a coupled 
-model where the free-flow is described by the RANS equations and the 
-porous-medium flow is described with a REV-scale approach, such as the Darcy's 
-law. 
-Simple models for single-phase systems can be generalized to take 
-into account multicomponent non-isothermal flows, with one phase in the 
-free-flow region and two phases in the porous-medium. Finally the problem 
-has to be closed through suitable coupling conditions imposed at the 
-interface; they are usually based on phenomenological arguments in order to 
-keep the description simple and they should be as close as possible to the 
-imposition of thermodynamic the equilibrium~\cite{paper:mosthaf}.
-
-In this thesis the focus is on the improvement of the free-flow model. When the 
-flow is in a turbulent regime, turbulent eddies develop near the interface and 
+\section{Content of the thesis}
+In this thesis the focus is on the improvement, from the numerical point of view, of the free-flow model with respect to \cite{tesi:fetzer}. When the flow is in a turbulent regime, turbulent eddies develop near the interface and 
 they cascade through consecutively smaller scales until the kinetic energy 
 dissipates into internal thermal energy. Because of their location, they have 
 a strong influence on the exchange processes between the two subdomains, so an 
