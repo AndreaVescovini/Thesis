@@ -3,8 +3,8 @@
  \documentclass[%
  	12pt,
  	a4paper,
-%	twoside, openright
-	oneside, openany
+	twoside, openright
+%	oneside, openany
 ]{book}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage[utf8]{inputenc}
@@ -41,9 +41,9 @@
 \renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter\ -\ #1}{}}
 \renewcommand{\sectionmark}[1]{\markright{\thesection\ -\ #1}}
 \fancyhf{}
-%\fancyhead[RO]{\slshape\nouppercase{\rightmark}}%twoside
-%\fancyhead[LE]{\slshape\nouppercase{\leftmark}}%twhoside	
-\fancyhead[C]{\slshape\nouppercase{\leftmark}}%oneside
+\fancyhead[RO]{\slshape\nouppercase{\rightmark}}%twoside
+\fancyhead[LE]{\slshape\nouppercase{\leftmark}}%twhoside	
+%\fancyhead[C]{\slshape\nouppercase{\leftmark}}%oneside
 \fancyfoot[C]{\thepage}
 \setlength{\headheight}{14.5pt}
 \PassOptionsToPackage{hyphens}{url}
