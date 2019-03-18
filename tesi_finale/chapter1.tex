@@ -9,8 +9,8 @@ drying rate of an adjacent wet porous-medium like a soil, as studied by
 Although systems like this are very common,	they involve
 %This kind of system, in spite of its simplicity, involves
 many different physical phenomena that act at 
-different scales.
-Due to concerns of scales and the complexity of the phenomena,
+different scales and
+due to concerns of scales and the complexity of the phenomena,
 %Thus
 a reliable prediction of the evaporation rates is still a challenge. In Figure~\ref{fig:intro} we can 
 see a schematic representation of the mechanisms that play a role in such a 
@@ -128,12 +128,12 @@ conditions at the interface. This allows to keep separated models to describe ph
 equations, Navier-Stokes equations or RANS equations, depending on the flow 
 regime. The porous-medium flow, instead, is usually described using a REV-scale approach, exploiting the 
 Darcy's law or the Forchheimer's law when the Reynolds number is higher or the 
-Richards equation. The interface could also be \emph{complex}, i.e. it could be 
+Richards' equation. The interface could also be \emph{complex}, i.e. it could be 
 %allowed to store mass, for example to take into account drop formation
-adapted to store mass, to, fro example, take into account information about the formation of droplets
+adapted to store mass, to, for example, take into account information about the formation of droplets
 (see \cite{tesi:baber}).
 
-\textcite{intro:discacim} compared the performances of a single-domain approach with a penalization technique and a 
+\textcite{intro:discacim} compared the performances of a single-domain approach exploiting a penalization technique and a 
 two-domain approach, using the Navier-Stokes equations and the Forchheimer's 
 law to model an incompressible, single-phase, single-component flow. They 
 concluded that the former is easier to implement, but the latter more accurately describes the physics of the problem. Alternative approaches may exploit 
@@ -161,7 +161,9 @@ Rough interfaces have been taken into account also in \cite{intro:kuzbek} and \c
 Theoretical results concerning the well-posedness can be found in \cite{intro:disca}, for the Stokes/Darcy problem, and in \cite{intro:disca2009}, for the Navier-Stokes/Darcy problem. They are based on classical results for saddle-point problems. Regarding the numerical aspects, many different methods have been employed in literature. In \cite{intro:disca2009} several finite elements choices are considered, in \cite{tesi:mosthaf} the box method is used, while in \cite{tesi:fetzer} the same box method is compared to a combined staggered and collocated finite volumes method. In \cite{intro:disca} an iterative algorithm is proposed in order to decouple the two subdomains, while in \cite{intro:rybak} a temporal decoupling strategy is used.
 
 \section{Content of the thesis}
-In this thesis the focus is on the improvement, from the numerical point of view, of the free-flow model with respect to \cite{tesi:fetzer}. When the flow is in a turbulent regime, turbulent eddies develop near the interface and 
+In this thesis the focus is on the improvement, from the numerical point of view, of the free-flow model with respect to \cite{tesi:fetzer} and on the further investigation of the effects given by a rough interface between the two subdomains.
+
+When the flow is in a turbulent regime, turbulent eddies develop near the interface and 
 they cascade through consecutively smaller scales until the kinetic energy 
 dissipates into internal thermal energy. Because of their location, they have 
 a strong influence on the exchange processes between the two subdomains, so an 
@@ -187,6 +189,8 @@ been derived with the purpose of providing a solution with a second order
 accuracy, but without any risk of numerical oscillations. They are called also 
 high resolution methods \cite{tvd:monotonicity}.
 
+Using this tool, we study a coupled system involving a turbulent free-flow and a porous-medium flow, considering an isothermal, single-phase, single-component fluid. It is a simplified model with respect to the one employed in \cite{tesi:fetzer} to study evaporation processes, but it allows to focus on the fluid mechanical phenomena that occur at the interface. In particular, being in nature the soil surface intrinsically rough, it is important to investigate the effects given by a rough interface, to obtain a deeper understanding of the flow behaviour in this case. 
+
 The thesis is organized as follows. In Chapter~\ref{chap:equations}, the equations employed in the models will be 
 presented, with particular attention to the free-flow equations. In 
 Chapter~\ref{chap:discretization}, the finite volume method will be described 
@@ -198,7 +202,7 @@ particular, we will
 compare the results obtained with the TVD methods with those obtained
 the first order upwind scheme. Then, two tests 
 involving turbulent flows are presented and, finally, a more complex scenario involving 
-obstacles at the interface between a free-flow region and a porous-medium is investigated.
+a rough interface, consisting of porous obstacles, between a free-flow region and a porous-medium is investigated.
 
 The high order methods mentioned above have been implemented in the framework 
 of the open-source simulator \DUMUX: DUNE for multi-$\{$phase, component, 
