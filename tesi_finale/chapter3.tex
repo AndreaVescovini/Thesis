@@ -1,14 +1,14 @@
 \chapter{Numerical model} \label{chap:discretization} %discretized equations?
-In this chapter we describe the methods that are used to discretize the mathematical model. 
+In this chapter we describe the methods that we have used to discretize the mathematical model. 
 For the spatial discretization we use the finite volumes method, which allows 
-to solve flow problems efficiently, guaranteeing the conservation of mass. See 
+to solve flow problems efficiently, guaranteeing the conservation of mass also locally. See 
 \cite{fv:leveque} for a more general description.
-In the free-flow region we discretize the equations using the staggered grid 
+In the free-flow region, we discretize the equations using the staggered grid 
 concept, while in the porous-medium we employ a cell-centred approach with a 
 Two Point Flux Approximation (TPFA).
 
 For the temporal discretization we use the implicit finite differences methods 
-Backward Euler (BE) and Backward Differencing Formula 2 (BDF2).
+Backward Euler (BE) and Backward Differencing Formula of order 2 (BDF2).
 %
 %\section{Staggered grid concept}
 \section{Free-flow}
@@ -26,7 +26,7 @@ is to store the variables in a \emph{staggered} fashion, putting
 the degrees of freedom related to scalar variables and, in particular, of the 
 pressure at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
-normal direction. Therefore we obtain different control volumes, as we can see 
+normal direction. Therefore, we obtain different control volumes, as we can see 
 in Figure~\ref{fig:staggrid} for the case of the 
 Navier-Stokes equations in a two-dimensional domain.
 \begin{figure}[t]
@@ -124,7 +124,7 @@ let us consider each of them separately, starting from the simplest one:
 	\item in the storage term we approximate the velocity with the value at the 
 	centre of the control volume:
 	\begin{equation}
-	\frac{d}{dt} \int_{V_u}  u\; dV \approx \frac{du_{i,J}}{dt}|V_u|;
+	\frac{d}{dt} \int_{V_u}  u\; dV \approx \frac{du_{i,J}}{dt}|V_u|.
 	\end{equation}
 	%
 	\item in the pressure term the contributions from the faces $n_u$ and $s_u$ 
@@ -149,7 +149,7 @@ let us consider each of them separately, starting from the simplest one:
 	\int_{e_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA
 	- \int_{w_u} \nu_\text{eff} \frac{\partial u}{\partial x} \; dA \;+\\
 	+\int_{n_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA
-	- \int_{s_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA
+	- \int_{s_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA.
 	\end{multline}
 	We develop the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\	
@@ -417,7 +417,7 @@ property. Indeed it can be shown that when $Pe > 1$ it is not stable.
 In opposition to the CD scheme, the upwind scheme consists in using only the 
 upstream value:
 \begin{equation} \label{eq:upwind}
-	u^* = u^U
+	u^* = u^U.
 \end{equation}
 It is a simple, widely used and robust scheme as it has the transportativeness 
 property, but its accuracy is only of first order, indeed it introduces in the 
@@ -605,14 +605,14 @@ We list here some of the most popular functions that have been implemented in
 \DUMUX and in Figure~\ref{fig:fluxlimiters} we can see their graph in the 
 Sweby's diagram:
 \begin{itemize}
-	\item Van Leer \cite{tvd:vanleer}
+	\item Van Leer \cite{tvd:vanleer}:
 	\begin{equation} \label{eq:vl}
 	\psi(r) = \frac{r+|r|}{1+r}.
 	\end{equation}
 	It is a smooth function that asymptotically reaches 2 for $r \rightarrow 
 	\infty$.
 %
-	\item Van Alabada \cite{tvd:vanalabada}
+	\item Van Alabada \cite{tvd:vanalabada}:
 	\begin{equation} \label{eq:vanalabada}
 	\psi(r)=
 	\begin{cases}
@@ -622,33 +622,33 @@ Sweby's diagram:
 	\end{equation}
 	It is a smooth function that instead goes to 1 as $r \rightarrow \infty$.
 %
-	\item Min-Mod \cite{tvd:roe}
+	\item Min-Mod \cite{tvd:roe}:
 	\begin{equation} \label{eq:minmod}
-	\psi(r) = \max \{0, \min \{ r,1\} \}
+	\psi(r) = \max \{0, \min \{ r,1\} \}.
 	\end{equation}
 	It is a piecewise linear function that lies on the lower boundary of the 
 	TVD region. Intuitively, using this limiter we add to the upstream value  
 	half of	the smallest increment in absolute value between $u^U-u^{FU}$ and 
 	$u^D - u^U$.
 %
-	\item Superbee \cite{tvd:roe}
+	\item Superbee \cite{tvd:roe}:
 	\begin{equation} \label{eq:superbee}
-	\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}
+	\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}.
 	\end{equation}
 	It is a piecewise linear function that lies on the upper boundary of the 
 	TVD region.
 %
-	\item UMIST \cite{tvd:lien}
+	\item UMIST \cite{tvd:lien}:
 	\begin{equation} \label{eq:umist}
 	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{3r+1}{4},\frac{r+3}{4}, 
-	2\bigg\} \bigg\}
+	2\bigg\} \bigg\}.
 	\end{equation}
 	It is a piecewise linear function that was designed as a symmetrical TVD 
 	version of QUICK.
 %
-	\item MC (Monotinized Central) limiter \cite{tvd:mclimiter}
+	\item MC (Monotinized Central) limiter \cite{tvd:mclimiter}:
 	\begin{equation} \label{eq:mclim}
-	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{r+1}{2}, 2\bigg\} \bigg\}
+	\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{r+1}{2}, 2\bigg\} \bigg\}.
 	\end{equation}
 	It is also known as MUSCL (Monotonic Upstream-Centred Scheme for 
 	Conservation Laws) limiter.
@@ -860,7 +860,7 @@ $\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
 	\Delta t^{n-1}} + \frac{1}{\Delta t^n}\bigg) - \phi^{n-1} \frac{\Delta t^n 
 	+ \Delta t^{n-1}}{\Delta t^n \Delta t^{n-1}} \;+ \\+ \phi^{n-2} 
 \frac{\Delta 
-	t^n}{\Delta t^{n-1} (\Delta t^n + \Delta t^{n-1})} = f(\phi^n,t^n)
+	t^n}{\Delta t^{n-1} (\Delta t^n + \Delta t^{n-1})} = f(\phi^n,t^n).
 \end{multline}
 See \cite{main:matenum} for more detailed information about time discretization 
 methods.
@@ -899,10 +899,9 @@ method in order to compute the velocity, i.e. the flux over the boundary
 $\partial 
 V_L$:
 \begin{align}
-	\mathbf{J}_f(\mathbf{v}^k) \delta \mathbf{v}^{k+1} =& 
-	-\mathbf{f}(\mathbf{v}^k), \quad \text{$\forall k\geq 0$ until 
+	\mathbf{J}_f(\mathbf{v}^k) \delta \mathbf{v}^{k+1} = &-\mathbf{f}(\mathbf{v}^k), \quad \text{$\forall k\geq 0$ until 
 	convergence}\\
-	\mathbf{v}^{k+1} =& \mathbf{v}^k + \delta \mathbf{v}^{k+1}
+	\mathbf{v}^{k+1} = &\;\mathbf{v}^k + \delta \mathbf{v}^{k+1},
 \end{align}
 where
 \begin{equation} \label{eq:resforch}

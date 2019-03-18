@@ -1,10 +1,10 @@
 \chapter{Governing equations} \label{chap:equations} %mathematical model?
-In this chapter we present the equations that have been used to model the 
+In this chapter we present the equations that used to model the 
 free-flow and the porous-medium flow. For the free-flow we start 
 considering the incompressible Navier-Stokes equations to simulate laminar 
-flows, then we move to the RANS equations employing the $k\text{-}\omega$ 
+flows, then we move to the RANS equations with the $k\text{-}\omega$ 
 model as a turbulence model. For the porous-medium 
-flow our choice is the Forchheimer's law, that is an extension of the more 
+flow our choice is the Forchheimer's law, which is an extension of the more 
 common Darcy's law to higher Reynolds numbers.
 \section{Free-flow}
 \subsection{Navier-Stokes equations}
@@ -135,7 +135,7 @@ quantity $U$, and if we neglect the gravity, we obtain
 	\cdot (\tilde{\mathbf{v}} \tilde{\mathbf{v}}^\mathrm{T}) - \tilde{\nabla} 
 	\cdot \bigg(\frac{1}{Re} \tilde{\nabla} \tilde{\mathbf{v}}\bigg) + 
 	\tilde{\nabla} 
-	\tilde{p} = 0
+	\tilde{p} = 0,
 \end{equation}
 where the non-dimensional number $Re$ that multiplies the viscous term is the 
 Reynolds number and it is defined as:
@@ -266,7 +266,7 @@ equation that let resolve the eddies until a certain threshold.
 The first move towards the RANS equations is to decompose each instantaneous 
 quantity in the sum of a mean value and a fluctuation: 
 \begin{equation} \label{eq:decomp}
-\mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}', \quad p = \bar{p} + p'
+\mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}', \quad p = \bar{p} + p'.
 \end{equation}
 According to \cite{main:vermal} the mean value can be obtained with a time 
 average over a long time interval 
@@ -442,7 +442,7 @@ all the entries of the Reynolds stress tensor, but in this way a large set of
 equations is obtained and consequently the required computational effort 
 increases. See \cite{main:pope} or \cite{main:vermal} for more information.
 
-From now on the over bar, used to denote the averaged quantities, will be 
+From now, on the overbar used to denote averaged quantities will be 
 neglected in order to simplify the notation.
 
 \subsubsection{Zero-equations models}
@@ -451,44 +451,44 @@ models because they compute the turbulent viscosity using an algebraic relation
 that exploits geometrical quantities, so they do not introduce any additional 
 PDE to the problem. Due to their simplicity they were used in the past years 
 when the computational resources were limited, but they have intrinsic weak 
-points because they can be applied only in special simple situations.
+points and they can be applied only in special simple situations.
 
-An important example is Prandtl's \emph{mixing length} model. It is 
+An important example is Prandtl's \emph{mixing length} model \cite{turbo:prandtl}. It is 
 useful with two-dimensional flows when the mean velocity field has a dominant 
 direction and the gradient in the longitudinal direction is negligible with 
 respect to that in the orthogonal direction. Let us assume that $u$ is the 
 main component of the velocity and that the flow is bounded by a wall at $y=0$. 
 From dimensional considerations it can be assumed that
 \begin{equation}
-\nu_t = = l_\text{mix}v_\text{mix},
+\nu_t = l_\text{mix}v_\text{mix},
 \end{equation}
 where $l_\text{mix}$ and $v_\text{mix}$ are a characteristic length scale and a 
 velocity 
-scale of turbulence. Then it is reasonable to chose
+scale of turbulence. Then, it is reasonable to choose
 \begin{equation}
 	v_\text{mix} = l_\text{mix} \left\lvert \frac{\partial u}{\partial y} 
 	\right\rvert,
 \end{equation}
 because the shear stress in the mean flow gives its contribution to the 
-turbulent mixing of the largest eddies. At last $l_\text{mix}$ is chosen from 
-empirical considerations coming from the boundary layer theory previously 
-described, for example
+turbulent mixing of the largest eddies. At last, $l_\text{mix}$ is chosen from 
+empirical considerations derived from the boundary layer theory previously 
+described. For example,
 \begin{equation}
-l_\text{mix} = \kappa y
+l_\text{mix} = \kappa y,
 \end{equation}
-in the original version or
+in the original version, or
 \begin{equation}
-l_\text{mix} = \kappa y[1 - exp(y^+ / 26)]
+l_\text{mix} = \kappa y[1 - exp(y^+ / 26)],
 \end{equation}
-using a correction from Van Driest that dampens $\nu_t$ for $y \rightarrow 0$.
+using a correction proposed by \textcite{turbo:vandriest} that dampens $\nu_t$ for $y \rightarrow 0$.
 %
 \subsubsection{$k\text{-}\varepsilon$ model}
 Two-equation models involve the solution of two additional PDEs and the 
-$k\text{-}\varepsilon$ is probably the most famous one of this category, the 
+$k\text{-}\varepsilon$ is probably the most famous one in this category. The 
 key contribution to this model was given by \textcite{turbo:ke}. It is 
 based on the assumption that the turbulent viscosity $\nu_t$ could be correctly 
 determined through the turbulent kinetic energy $k$ and its dissipation rate 
-$\varepsilon$, so considering dimensions the relation must be
+$\varepsilon$. Considering the dimension units, the relation must be
 \begin{equation}
 \nu_t = C_\mu \frac{k^2}{\varepsilon},
 \end{equation}
@@ -509,39 +509,39 @@ derive an equation for $k$:
 where $\sigma_k$ is a non-dimensional constant. In a similar way we could 
 derive an evolution equation for $\varepsilon$, but it would contain too many 
 terms difficult to model and to measure, so an empirical equation built in 
-analogy with the one for $k$ is used:
+analogy with the one for $k$ is used instead:
 \begin{equation} \label{eq:epsilon}
 		\frac{\partial \varepsilon}{\partial t} + \nabla \cdot (\varepsilon 
 		\mathbf{v}) - \nabla \cdot \bigg[ \bigg(\nu + 
 		\frac{\nu_t}{\sigma_\varepsilon} 
 		\bigg) \nabla \varepsilon \bigg] - C_{\varepsilon_1} 
 		\frac{\varepsilon}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} + 
-		C_{\varepsilon_2}\frac{\varepsilon^2}{k} = 0
+		C_{\varepsilon_2}\frac{\varepsilon^2}{k} = 0.
 \end{equation}
-The standard model sets the following constants:
+The standard model sets the following constants (see \cite{main:vermal}):
 \begin{equation}
 	C_\mu = 0.09, \quad \sigma_k = 1, \quad \sigma_\varepsilon = 1.3, \quad 
 	C_{\varepsilon_1} = 1.44, \quad C_{\varepsilon_2} = 1.92.
 \end{equation}
 
-This model gives its best for confined flows and high Reynolds number, where 
+This model behaves best for confined flows and high Reynolds number, where 
 the Reynolds stresses are dominant. Near the wall this assumption fails, so it 
 is common to use a wall function such as the one given by the boundary layer 
 theory \eqref{eq:loglaw} in order to compute the velocities at the cells near 
 the wall. This can be done easily for flat walls and it brings also 
 computational advantages, because we can avoid to have very small cells near 
-the wall that solve until the viscous sublayer.
+the wall that resolve the viscous sublayer.
 
-During the years many variants of this model have been developed, for example 
+During the years, many variants of this model have been developed, for example 
 the \emph{RNG}~$k\text{-}\varepsilon$ model, which is derived with a different 
-procedure in order to improve the equation for
-$\varepsilon$, or the \emph{low-$Re$}~$k\text{-}\varepsilon$ model, that 
-adds extra terms in order to model correctly the behaviour near the wall. See 
-\cite{main:vermal} for more information.
+procedure with the purpose of improving the equation for
+$\varepsilon$, or the \emph{low-$Re$}~$k\text{-}\varepsilon$ model, which 
+adds extra terms in order to correctly model the behaviour near the wall. See 
+\cite{main:vermal} for more details.
 %
 \subsubsection{$k\text{-}\omega$ model}
 The $k\text{-}\omega$ model is another two-equations model that uses a specific 
-dissipation rate $\omega$ instead of the dissipation rate $\varepsilon$; it was 
+dissipation rate $\omega$ instead of the dissipation rate $\varepsilon$. It was 
 originally proposed by \textcite{komega:kolmo} and subsequently refined many 
 times by \textcite{turbo:komega}.
 
@@ -557,20 +557,20 @@ with the production term $P$ that can be limited in the following way:
 	P = \min \{ 2 \nu_t \mathbf{S} \cdot \mathbf{S}, 20 \beta^* k \omega \}.
 \end{equation}
 The equation for $\omega$ is empirical and driven by physical considerations as 
-it was the equation \eqref{eq:epsilon} for $\varepsilon$:
+it was the equation \eqref{eq:epsilon} for $\varepsilon$. It reads:
 \begin{equation} \label{eq:komegaomega}
 	\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \mathbf{v}) - 
 	\nabla \cdot \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla 
 	\omega 
 	\bigg] - \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
 	-\frac{\sigma_d}{\omega} \nabla k \cdot 
-	\nabla \omega+ \beta \omega^2 = 0
+	\nabla \omega+ \beta \omega^2 = 0.
 \end{equation}
 The term
 \begin{equation}
 \frac{\sigma_d}{\omega} \nabla k \cdot \nabla \omega
 \end{equation}
-is new, it is related to cross-diffusion and its activation depends on the 
+is new. It is related to cross-diffusion and its activation depends on the 
 direction of the gradients of $k$ and $\omega$:
 \begin{equation}
 \sigma_d =
@@ -602,23 +602,21 @@ Other contributors to the development of this model have referred to it as
 the the root mean square (RMS) of the fluctuating vorticity, i.e.
 \begin{equation}
 	\omega = \sqrt{\overline{ (\boldsymbol\omega ')^2 }}, \quad 
-	\boldsymbol\omega 
-	= 
-	\nabla \times \mathbf{v},
+	\boldsymbol\omega = \nabla \times \mathbf{v}.
 \end{equation}
-in this case $\omega^2$ is the double of the \emph{enstrophy}, which is a 
+In this case, $\omega^2$ is the double of the \emph{enstrophy}, which is a 
 quantity associated to the energy related to vorticity.
 
-This model has shown good results also near the boundaries, so it does not 
+This model has shown good results also near boundaries, so it does not 
 require any wall correction. For our purposes it is the most appropriate choice 
 because we would like to have non-flat boundaries, so employing a 
-wall law would be cumbersome. Moreover the values near the boundary are 
+wall law would be cumbersome, if not impossible. Moreover, the values near the boundary are 
 very important in our tests, because they influence the exchange processes 
 across the interface between free-flow and porous-medium flow.
 
-As boundary conditions the following impositions are made:
+As boundary conditions, we have:
 \begin{itemize}
-	\item on inflow boundaries Dirichlet conditions are set both for $k$ and 
+	\item on inflow boundaries, Dirichlet conditions are set both for $k$ and 
 	$\omega$. According to \cite{ko:ansys}, the following formulas can be used:
 	\begin{equation} \label{eq:koic}
 		k = \frac{3}{2} (|\!|\mathbf{v}|\!|_\text{in} I)^2, \quad \omega = 		
@@ -628,17 +626,17 @@ As boundary conditions the following impositions are made:
 	non-dimensional quantity called turbulence intensity that could be 
 	estimated as
 	\begin{equation}
-	I = \frac{0.16}{Re^{1/8}},
+	I = \frac{0.16}{Re^{1/8}}.
 	\end{equation}
-	$C_\mu=0.09$ and $L$ is a characteristic size of the domain,
-	\item on solid walls $k=0$, while for $\omega$, according to 
-	\cite{main:wilcox}, the following asymptotic behaviour is used:
+	Here, $C_\mu=0.09$ and $L$ is a characteristic size of the domain,
+	\item on solid walls, $k=0$, while, according to 
+	\cite{main:wilcox}, the following asymptotic behaviour for $\omega$ is used:
 	\begin{equation}
 		\omega \rightarrow \frac{6 \nu}{\beta d^2} \quad \text{as} \quad d 
 		\rightarrow 0,
 	\end{equation}
 	where $d$ is the distance from the nearest wall,
-	\item on outflow and symmetry boundaries a zero-gradient condition is 
+	\item on outflow and symmetry boundaries, a zero-gradient condition is 
 	assumed:
 	\begin{equation}
 		\nabla k \cdot \mathbf{n} = 0, \quad \nabla \omega \cdot \mathbf{n} = 0.
@@ -653,19 +651,18 @@ solid matrix to be fixed, neglecting the fluid-structure interaction. Examples
 of porous-media are sand, wood, soil, 
 sandstone and ceramics.
 
-In order to simulate a flow through a porous medium theoretically we could use 
-the standard fluid dynamics equations at the pore scale, but this approach is 
-often complex because at this level the model variables are very irregular and 
-it is hard to get measurements of them. What is usually done is to 
-simplify the description of the flow considering averaged quantities within a 
+To simulate flow through a porous medium theoretically we could use 
+the standard fluid dynamics equations at the pore scale, but this approach is
+extremely expensive because of the strict spatial and temporal requirement of a direct numerical simulation in such a complex domain. Moreover, from the point of view of applications, the knowledge of the model variables inside the pores is often useless, considering also the fact that at this level they are very irregular and also it is hard to get measurements of them.
+What is usually done is to 
+upscale the description of the flow by considering averaged quantities within a 
 Representative Elementary volume (REV), thus considering the 
 porous-medium as a continuum at a larger scale. In this way we lose the 
-information about discontinuities at the pore scale, i.e. whether a point 
-belongs to the solid matrix or is void, but we obtain more easily results that 
-are comparable to experimental measurements.
+information at the pore scale, but we obtain results that 
+are comparable to experimental measurements. The upscaling procedure can be done by rigorous homogenization techniques \cite{homo:allaire} or by formal averaging \cite{volaver:withakerbook}. We briefly describe the latter approach.
 
 Given a domain $\Omega_\text{pm}$ occupied by the porous-medium, we consider 
-for every point $\mathbf{x} \in \Omega_\text{pm}$ a ball $B_r(\mathbf{x})$ of 
+at every point $\mathbf{x} \in \Omega_\text{pm}$ a ball $B_r(\mathbf{x})$ of 
 radius $r$, that will be the REV. Starting from a function $f$ defined at the 
 pore scale we compute its average $\hat{f}$:
 \begin{equation}
@@ -678,9 +675,7 @@ The radius $r$, and thus the dimension of the REVs, should be chosen such that
 \end{equation}
 where $l$ is the pore scale size and $L$ is the macro scale size, as for 
 example in Figure~\ref{fig:rev}. In such a way 
-the high frequency variations of the microscopic properties should not be seen 
-at the REV scale, but the low frequency variations of macroscopic properties 
-should not be lost (see \cite{main:helmig}).
+the high frequency variations of microscopic properties are averaged out at the REV scale, but the low frequency variations of macroscopic properties are kept (see \cite{main:helmig}).
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rev.png}
@@ -729,10 +724,11 @@ averaging over a REV containing only fluid, as they are related by:
 \end{equation}
 
 If we assume that the fluid is incompressible, then the continuity equation 
-reduces to:
+reduces to
 \begin{equation} \label{eq:pmcontinuity}
-\nabla \cdot \mathbf{v} = 0
+\nabla \cdot \mathbf{v} = 0.
 \end{equation}
+%
 \subsection{Momentum equation}
 \subsubsection{Darcy's law}
 For the momentum equation the most common choice is the Darcy's law:
@@ -750,7 +746,7 @@ proportionality between the flow rate and the pressure drop across a uniform
 porous-medium. After that there have been many tries to derive it analytically, 
 starting from the Navier-Stokes equations and using volume averaging techniques 
 with different assumptions made, see for example \cite{volaver:ithakerdarcy}. 
-Moreover it can be obtained through a formal homogenization procedure if the 
+Moreover it can be obtained through a homogenization procedure if the 
 porous-medium is periodic (see \cite{homo:holmes}).
 
 The permeability is a quantity that depends only on the geometry of the porous 
