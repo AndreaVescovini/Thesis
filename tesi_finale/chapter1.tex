@@ -6,11 +6,13 @@ For example a turbulent air flow has a significant effect on the
 drying rate of an adjacent wet porous-medium like a soil, as studied by  
 \textcite{tesi:mosthaf}, \textcite{intro:davarzani} and \textcite  
 {tesi:fetzer}.
-This kind of system, 
-in spite of its simplicity, involves many different physical phenomena that act 
-at 
-different scales, thus a reliable prediction of 
-the evaporation rates is still a challenge. In Figure~\ref{fig:intro} we can 
+Although systems like this are very common,	they involve
+%This kind of system, in spite of its simplicity, involves
+many different physical phenomena that act at 
+different scales.
+Due to concerns of scales and the complexity of the phenomena,
+%Thus
+a reliable prediction of the evaporation rates is still a challenge. In Figure~\ref{fig:intro} we can 
 see a schematic representation of the mechanisms that play a role in such a 
 situation, where both transport and thermal effects can be relevant. 
 Moreover, considering natural phenomena, an additional difficulty is given by 
@@ -28,19 +30,19 @@ solar radiation.
 \end{figure}
 
 These studies can be exploited, for example, to better understand the process 
-of soil salinization, that is one of the most serious agricultural problems in 
+of soil salinization, one of the most serious agricultural problems in 
 many arid and coastal areas in the world. It consists in the excessive 
 accumulation of salt in the soil pores, with the consequence of a partial or 
 complete loss of fertility. A limited amount of salt precipitation in the soil, 
-due to evaporation of irrigation water, is inevitable, but a wrong water 
-management could lead to salinity problems on the long term, especially in arid 
+due to evaporation of irrigation water, is inevitable, but a mismanaged irrigation plan could lead to salinity problems in the long term, especially in arid 
 areas where irrigation is necessary to increase the production for food supply 
 (see \cite{web:fao}). According to \cite{soil:munns}, more than 6\% of world's 
 total land area is affected by salinization.
-The part of the soil which is most involved in this problem is the one near the 
-surface, hence it is important to study the interactions between the free-flow 
-and the porous-medium flow that occur there. For example, 
-\textcite{intro:salinization} have investigated the application of kinetic 
+%The part of the soil which is most involved in this problem is the one near the 
+%surface, hence it is important to study the interactions between the free-flow 
+%and the porous-medium flow that occur there.
+The section of a soil profile which is most affected by salinization is the one near the surface, hence the importance of studying the interactions between the free-flow and the porous-medium flow that occur there.
+For example, \textcite{intro:salinization} have investigated the application of kinetic 
 approaches to describe the salt precipitation in a coupled system.
 \begin{figure}
 	\centering
@@ -66,7 +68,7 @@ efficiently to the catalyst layers, where reactions take place (see
 \cite{wu:fuelcell}, \cite{tesi:baber} and \cite{tesi:pem}). Protons are 
 produced at the anode and transported through the membrane to react with oxygen 
 at the cathode and produce water. The water management within the cells is of 
-great importance because it is essential to have a certain level of humidity in 
+great importance, because it is essential to have a certain level of humidity in 
 the membrane in order to facilitate the transport of protons, but an excess of 
 water could flood the catalyst layers, with the result of an inhibition of the 
 reactions.
@@ -83,9 +85,11 @@ wind flow around buildings in urban environments \cite{intro:buildings} and
 hemodynamics \cite{intro:med}.
 
 \section{State of the art}
-In order to study these processes, in the following we focus on a system that 
+In order to study these processes we focus on
+the case of the evaporation from a porous material and we consider
+a system that 
 involves two subdomains: the upper one with a free-flow and the lower one 
-occupied by a porous-medium, as the one represented in Figure~\ref{fig:intro}.
+occupied by a porous-medium, as it is represented in Figure~\ref{fig:intro}.
 At the interface between the two subdomains there is exchange of mass, momentum 
 and energy.
 
@@ -97,10 +101,12 @@ computational domain, including both the free-flow region and the
 porous-medium. A first possibility is to use the Navier-Stokes equations to model the 
 fluid motion and thus to perform a direct numerical simulation (DNS) of the 
 whole system. The porous-medium has to be resolved at the pore-scale, thus a 
-detailed knowledge of the pore structure, which is not easy to obtain for real 
+detailed knowledge of the pore structure and geometry, which is not easy to obtain for real 
 materials, is necessary. The computational effort is very high because 
-of the strict spatial and temporal requirements of a DNS and it increases even 
-more if the fluid is non-isothermal, multi-phase and multi-component. \textcite{intro:dns} and \textcite{intro:dns2} have performed DNS in 
+of the strict spatial and temporal requirements of a DNS,
+%and it increases even more if the fluid
+all of which increase further if the system
+is non-isothermal, multi-phase and multi-component. \textcite{intro:dns} and \textcite{intro:dns2} have performed DNS in 
 porous-media domains using the lattice Boltzmann method, while \textcite{intro:yang} have performed coupled simulations considering idealised coarse porous materials.
 A cheaper possibility for the case of laminar single-phase flows is to employ the Brinkman's equation 
 \cite{intro:brinkman}, which is a superposition of the Stokes equations and 
@@ -120,17 +126,17 @@ Within the two-domain approach, adopted also in this thesis, different sets of
 equations are used in the two subdomains and they are coupled imposing suitable 
 conditions at the interface. This allows to keep separated models to describe phenomena that act on different temporal and spatial scales. The free-flow can be modelled with the Stokes 
 equations, Navier-Stokes equations or RANS equations, depending on the flow 
-regime. The porous-medium flow, instead, is usually described with a REV-scale approach, exploiting the 
+regime. The porous-medium flow, instead, is usually described using a REV-scale approach, exploiting the 
 Darcy's law or the Forchheimer's law when the Reynolds number is higher or the 
 Richards equation. The interface could also be \emph{complex}, i.e. it could be 
-allowed to store mass, for example to take into account drop formation (see 
-\cite{tesi:baber}).
+%allowed to store mass, for example to take into account drop formation
+adapted to store mass, to, fro example, take into account information about the formation of droplets
+(see \cite{tesi:baber}).
 
 \textcite{intro:discacim} compared the performances of a single-domain approach with a penalization technique and a 
 two-domain approach, using the Navier-Stokes equations and the Forchheimer's 
 law to model an incompressible, single-phase, single-component flow. They 
-concluded that the former is easier to implement, but the latter describes 
-better the physics of the problem. Alternative approaches may exploit 
+concluded that the former is easier to implement, but the latter more accurately describes the physics of the problem. Alternative approaches may exploit 
 pore-networks models in the porous-medium subdomain, that allow to focus on the 
 pore scale effects, avoiding the complexity of a DNS (see \cite{paper:kilian}).
 
@@ -143,8 +149,10 @@ possible simplifications in the implementation of interface conditions are
 considered. The effects of turbulence, as well as the non-linear inertial 
 effects of the Navier-Stokes equations, are sometimes neglected, for 
 simplicity, 
-but to model natural systems they must be included as they play an important 
-role in most of the situations. Another aspect investigated in 
+but to model natural systems they must be included as they
+%play an important role in most of the situations.
+affect the physical factors important in most applications.
+Another aspect investigated in 
 \cite{tesi:fetzer} is the influence of a rough interface between the two 
 subdomains. In particular, both the effects of a sand-grain roughness and of 
 periodical porous obstacles are studied.
@@ -161,7 +169,7 @@ accurate evaluation of their behaviour is of crucial importance. Improvements
 can be obtained with a refinement of the grid, but also by employing 
 high order methods. In 
 particular, in the discretization of the Navier-Stokes equations using finite 
-volumes, the approximation used for the non linear term 
+volumes, the approximation used for the non-linear term 
 $\nabla \cdot (\mathbf{v} \mathbf{v}^\mathrm{T})$ plays a key role. A common and easy 
 choice is to employ a first order upwind approximation for the 
 \emph{transported} velocity, but this option can produce solutions with 
@@ -170,22 +178,25 @@ methods
 like the Linear Upwind Differencing (LUD) scheme, the Central Differencing (CD) 
 scheme or the Quadratic Upstream Interpolation for Convective Kinetics (QUICK) 
 scheme. Under specific conditions, they can produce 
-accurate solutions but they have also shown to be unstable in certain 
+accurate solutions but they have also been shown to be unstable in certain 
 situations and to produce overshoots or undershoots that 
-may lead to unphysical values of quantities that for example have to be 
-positive (see \cite{main:vermal}). With this in mind, our interest is in 
+may lead to unphysical values of quantities which, for example, have to be 
+non-negative (see \cite{main:vermal}). With this in mind, our interest is in 
 the Total Variation Diminishing (TVD) methods, a family of methods that has 
 been derived with the purpose of providing a solution with a second order 
 accuracy, but without any risk of numerical oscillations. They are called also 
-high resolution methods.
+high resolution methods \cite{tvd:monotonicity}.
 
-In Chapter~\ref{chap:equations} the equations employed in the models will be 
+The thesis is organized as follows. In Chapter~\ref{chap:equations}, the equations employed in the models will be 
 presented, with particular attention to the free-flow equations. In 
-Chapter~\ref{chap:discretization} the finite volume method will be described 
+Chapter~\ref{chap:discretization}, the finite volume method will be described 
 and, in Subsection~\ref{subsec:tvd}, the TVD methods will be introduced. At last, 
 in Chapter~\ref{chap:results}, the numerical results will be shown. In 
-particular, we will see the application of the TVD methods to the Navier-Stokes 
-equations in comparison to the first order upwind scheme. Then two tests 
+particular, we will
+%see the application of the TVD methods to the Navier-Stokes 
+%equations in comparison to 
+compare the results obtained with the TVD methods with those obtained
+the first order upwind scheme. Then, two tests 
 involving turbulent flows are presented and, finally, a more complex scenario involving 
 obstacles at the interface between a free-flow region and a porous-medium is investigated.
 
