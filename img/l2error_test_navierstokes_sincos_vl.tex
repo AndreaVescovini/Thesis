@@ -22,7 +22,17 @@ yminorticks=true,
 axis background/.style={fill=white},
 legend style={at={(0.97,0.97)}, anchor=north east, legend cell align=left, align=left}
 ]
-\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}]
+\addplot [color=white!70!black, forget plot, line width=0.75pt]
+  table[row sep=crcr]{%
+4	0.00021579991725\\
+100	8.63199669e-06\\
+};
+\addplot [color=white!70!black, forget plot, line width=0.75pt]
+  table[row sep=crcr]{%
+4	0.00539499793125\\
+100	8.63199669e-06\\
+};
+\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}, line width=0.75pt]
   table[row sep=crcr]{%
 4	0.017335487\\
 8	0.0062618753\\
@@ -32,7 +42,7 @@ legend style={at={(0.97,0.97)}, anchor=north east, legend cell align=left, align
 };
 \addlegendentry{$p$}
 
-\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}]
+\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}, line width=0.75pt]
   table[row sep=crcr]{%
 4	0.00136409678\\
 8	0.000476275877\\
@@ -42,7 +52,7 @@ legend style={at={(0.97,0.97)}, anchor=north east, legend cell align=left, align
 };
 \addlegendentry{$u$}
 
-\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}]
+\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}, line width=0.75pt]
   table[row sep=crcr]{%
 4	0.00114596769\\
 8	0.000417513208\\
@@ -52,15 +62,6 @@ legend style={at={(0.97,0.97)}, anchor=north east, legend cell align=left, align
 };
 \addlegendentry{$v$}
 
-\addplot [color=white!70!black, forget plot]
-  table[row sep=crcr]{%
-4	0.00021579991725\\
-100	8.63199669e-06\\
-};
-\addplot [color=white!70!black, forget plot]
-  table[row sep=crcr]{%
-4	0.00539499793125\\
-100	8.63199669e-06\\
-};
+
 \end{axis}
 \end{tikzpicture}%

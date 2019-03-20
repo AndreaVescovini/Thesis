@@ -26,7 +26,18 @@ axis background/.style={fill=white},
 legend style={at={(0.03,0.03)}, anchor=south west, legend cell align=left, fill=none,
 align=left, font=\scriptsize}
 ]
-\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}]
+
+\addplot [color=white!70!black, forget plot, line width=0.75pt]
+  table[row sep=crcr]{%
+1	0.1\\
+100	0.001\\
+};
+\addplot [color=white!70!black, forget plot, line width=0.75pt]
+  table[row sep=crcr]{%
+1	0.1\\
+100	0.00001\\
+};
+\addplot [color=mycolor1, mark=x, mark options={solid, mycolor1}, line width=0.75pt]
   table[row sep=crcr]{%
 1	5.516e-2\\
 2	3.043e-2\\
@@ -38,7 +49,7 @@ align=left, font=\scriptsize}
 };
 \addlegendentry{BE ($\num{40x40}$)}
 
-\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}]
+\addplot [color=mycolor2, mark=x, mark options={solid, mycolor2}, line width=0.75pt]
   table[row sep=crcr]{%
 1	5.516e-2\\
 2	1.645e-2\\
@@ -50,7 +61,7 @@ align=left, font=\scriptsize}
 };
 \addlegendentry{BDF2 ($\num{40x40}$)}
 
-\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}]
+\addplot [color=mycolor3, mark=x, mark options={solid, mycolor3}, line width=0.75pt]
   table[row sep=crcr]{%
 1	5.42e-2\\
 2	1.647e-2\\
@@ -62,15 +73,5 @@ align=left, font=\scriptsize}
 };
 \addlegendentry{BDF2 ($\num{80x80}$)}
 
-\addplot [color=white!70!black, forget plot]
-  table[row sep=crcr]{%
-1	0.1\\
-100	0.001\\
-};
-\addplot [color=white!70!black, forget plot]
-  table[row sep=crcr]{%
-1	0.1\\
-100	0.00001\\
-};
 \end{axis}
 \end{tikzpicture}%

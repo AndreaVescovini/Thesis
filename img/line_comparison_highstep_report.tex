@@ -22,7 +22,7 @@ axis background/.style={fill=white},
 legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align=left}
 ]
 
-\addplot [color=mycolor1, mark size=1.5pt, mark=x, mark options={solid, mycolor1}]
+\addplot [color=mycolor1, mark size=1.5pt, mark=x, mark options={solid, mycolor1}, line width=0.75pt]
   table[row sep=crcr]{%
 0	0\\
 0.01	0.00885222\\
@@ -99,7 +99,7 @@ legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align
 };
 \addlegendentry{Upwind}
 
-\addplot [color=mycolor2, mark size=1.5pt, mark=x, mark options={solid, mycolor2}]
+\addplot [color=mycolor2, mark size=1.5pt, mark=x, mark options={solid, mycolor2}, line width=0.75pt]
   table[row sep=crcr]{%
 0	0\\
 0.01	0.0122335\\
@@ -176,7 +176,7 @@ legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align
 };
 \addlegendentry{Van Leer}
 
-\addplot [color=mycolor3, mark size=1.5pt, mark=x, mark options={solid, mycolor3}]
+\addplot [color=mycolor3, mark size=1.5pt, mark=x, mark options={solid, mycolor3}, line width=0.75pt]
   table[row sep=crcr]{%
 0	0\\
 0.01	0.0113419\\
@@ -253,7 +253,7 @@ legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align
 };
 \addlegendentry{Min-Mod}
 
-\addplot [color=mycolor4]
+\addplot [color=mycolor4, line width=0.75pt]
   table[row sep=crcr]{%
 0	0\\
 0.00166667	0.00162965\\
@@ -679,7 +679,7 @@ legend style={at={(0.03,0.97)}, anchor=north west, legend cell align=left, align
 1.4	0\\
 };
 \addlegendentry{Reference}
-\addplot [color=black, dashed]
+\addplot [color=black, dashed, line width=0.75pt]
   table[row sep=crcr]{%
 0.5	0\\
 0.5 1.25\\
