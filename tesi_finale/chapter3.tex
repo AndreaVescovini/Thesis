@@ -1066,11 +1066,11 @@ and a tolerance $tol$, for example equal to $\num{e-5}$, we stop to iterate when
 \begin{equation}
 	|\!|\mathbf{s}|\!|_\infty < tol,
 \end{equation}
-where $|\!| \cdot |\!|_	\infty$ denotes the norm of the maximum:
+where $|\!| \cdot |\!|_	\infty$ denotes the norm of the maximum
 \begin{equation}
 	|\!|\mathbf{s}|\!|_\infty = \max_i |s_i|.
 \end{equation}
-Finally the linear system \eqref{eq:linnew} is solved with a direct solver, using the library UMFPack.
+Eventually, the linear system \eqref{eq:linnew} is solved with a direct solver, using the library UMFPack.
 
 The time-step size is variable since at each new time iteration it is chosen 
 multiplying the previous time-step size by a factor depending on how many iterations were required for the 
