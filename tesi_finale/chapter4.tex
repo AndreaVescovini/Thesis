@@ -94,8 +94,8 @@ convergence orders for different differencing schemes.
 	test]{$L^2(\Omega)$norm of the errors 
 	for the Sin-Cos 
 	test depending on the square root of the number of cells in the grid. 
-	The grey lines are the reference lines for the first-order (lower) and 
-	second-order (upper) convergence.}
+	The grey lines are the reference lines parallel to a first order convergence (the lower one) and a
+	second order convergence (the upper one).}
 	\label{fig:sin_err}
 \end{figure}
 
@@ -145,7 +145,7 @@ Figure~\ref{fig:sin_err_vl_hre}, we can
 see that the global trend points to a convergence of higher order. Moreover it 
 can be observed how, thanks to the faster convergence, on the same grid the 
 absolute values of the errors reach smaller values using the TVD methods. 
-Between the Min-Mod and Van Leer flux limiter it is hard to say which one 
+Between the Min-Mod and Van Leer flux limiters it is hard to say which one 
 performs better. The results are very similar.
 
 Analogous tests with other analytical solutions are reported in 
@@ -212,11 +212,11 @@ discretization with a
 single time-step. Uniform grids of $\num{40x40}$ and $\num{80x80}$ cells are 
 employed and as a differencing scheme the TVD method with the Van Leer flux 
 limiter \eqref{eq:vl} is used. From Figure~\ref{fig:timeerr}, we observe that, 
-as expected, the BE method shows a first-order convergence, while the BDF2 
+as expected, the BE method shows a first order convergence, while the BDF2 
 method is of second order. Moreover we notice that, with a grid of 
 $\num{40x40}$ cells, in the last refinement the error with the BDF2 method does 
 not decrease anymore. This happens because the grid is too coarse and the 
-spatial error is dominant over the temporal one, so that, even with small 
+spatial error becomes dominant over the temporal one, so that, even with small 
 time-steps, we can not improve the solution.
 Refining the grid, the spatial error is reduced and the temporal convergence 
 order is restored entirely for the pressure and almost for the velocity.
@@ -229,9 +229,8 @@ order is restored entirely for the pressure and almost for the velocity.
 	test]{$L^\infty(0,T;L^2(\Omega))$ norm of the errors for the unsteady 
 	Sin-Cos test 
 	depending on the number of time-steps. On the left the errors for the 
-	pressure, on the right the errors for the magnitude of the velocity. The 
-	grey lines are the reference lines for the first-order (lower) and 
-	second-order (upper) convergence.}
+	pressure, on the right the errors for the magnitude of the velocity. The grey lines are the reference lines parallel to a first order convergence (the lower one) and a
+	second order convergence (the upper one).}
 	\label{fig:timeerr}
 \end{figure}
 %
@@ -275,7 +274,7 @@ solution} using the upwind method over a grid six times finer.
 In Figure~\ref{fig:linecompshallow} we compare the profiles of the magnitude 
 of the velocity along a cross-section near the end of the channel, at 
 $x=\SI{8.75}{m}$, i.e. at the middle of the last cavity.  The TVD solutions 
-match the reference one, while the upwind solution shows a small shift, 
+match the reference case, while the upwind solution shows a small shift, 
 especially in the lower part of the channel, above the cavity. In 
 Table~\ref{tab:errshallow}, we can see the 
 $L^2(\Omega)$ norm 
@@ -394,7 +393,7 @@ differences
 are in the region inside the cavity, where a recirculation occurs. The upwind 
 method, with its numerical diffusion, smooths the profile, while the TVD 
 methods produce more accurate results, even if they do not match exactly the 
-reference solution. Indeed, looking at the $L^2(\Omega)$ norm of the errors 
+reference solution. Further, when looking at the $L^2(\Omega)$ norm of the errors 
 reported in 
 Table~\ref{tab:errdeep}, we see that the upwind method has again the largest error, 
 but the difference with the other schemes is reduced with respect to the 
@@ -475,16 +474,16 @@ The density is $\varrho = \SI{1}{kg/m^3}$ and the viscosity is $\nu=\SI{1.228e-3
 \end{equation}
 
 The domain sizes are chosen according to \cite{web:nasa}, with the only 
-exception of the channel length before the step. Indeed, in \cite{web:nasa}, a 
+exception of the channel length before the step. In fact, in \cite{web:nasa}, a 
 small portion of the horizontal boundary near $\Gamma_\text{in}$ uses symmetry 
 boundary conditions, but we simplify the model employing no-slip boundary 
 conditions on the whole horizontal boundaries. As a consequence, we shorten the 
-channel length in order to match as good as possible the profile of the $u$ 
-component of the velocity along the cross-section at the position $x/H=-4$, 
+channel length in order to match the profile of the $u$ 
+component of the velocity along the cross-section at the position $x/H=-4$ as closely as possible, 
 with a boundary layer thickness of approximately $1.5H$ (see 
 Figure~\ref{fig:bfscomp}).
 
-According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that a second-order implicit method for the advancement in time is used.
+According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that a second order implicit method for the advancement in time is used.
 
 Thus we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T = \SI{30}{s}$. It can be observed that, after approximately $t=\SI{20}{s}$, the solution stabilizes at a steady state. As initial conditions we set
 \begin{equation}
@@ -530,8 +529,8 @@ So, in the following analysis, we choose a grid made of $\num{119x70}$ cells, em
 	\label{fig:bfscf}
 \end{figure}
 
-For what concerns the reattachment length, we obtain a good agreement with the 
-CFL3D code, indeed, looking at Figure~\ref{fig:bfscf}, with the Van Leer flux 
+Regarding the reattachment length, we obtain a good agreement with the 
+CFL3D code; looking at Figure~\ref{fig:bfscf}, with the Van Leer flux 
 limiter we predict $l_\text{rea} /H \simeq 6.67$. Moreover, in the whole 
 recirculating region, the two patterns are very similar, also compared to the 
 experimental data from \cite{bfs:driver}. Using the first order upwind method, 
@@ -581,7 +580,7 @@ because the whole pattern is shifted.
 \FloatBarrier
 \section{Free-flow and porous-medium flow coupling: cavities problem}
 In this section our goal is to study the behaviour of a coupled system with turbulent free-flow and 
-porous-medium flow, that are in contact by means of a rough interface, exploiting the benefit of high-order methods. A first approximation of this kind of interface can be obtained with a series of little
+porous-medium flow, that are in contact by means of a rough interface, exploiting the benefit of high resolution methods. A first approximation of this kind of interface can be obtained with a series of little
 cavities, as it is used in Subsection~\ref{subsec:roughchannel} to study the \emph{rough channel} with the 
 Navier-Stokes equations. Now we use the RANS equations with the 
 $k\text{-}\omega$ that we tested in the previous section using the backward 
@@ -634,7 +633,7 @@ conditions of uniform parallel flow for $y>h$ and no flow for $y\leq h$
 \end{equation}
 while we set in the whole domain $\Omega_\text{ff}$ $p=p_\text{ext}$, $k=k_\text{in}$ and $\omega=\omega_\text{in}$, estimated with the formulas~\eqref{eq:koic}.
 
-Performing a sensitivity analysis, we choose a grid made of $\num{377x50}$ cells for the case of $d=\SI{1}{m}$. It is important to have small uniform cells in the region of the cavities, so we employ gradings of 1.1 in the $x$-direction in the inlet and outlet portions of the channel, where we can afford to have longer cells. In the $y$-direction we employ instead a grading of 1.2 in the region above the cavities. The cells around the two cavities result to have sizes of $\SI{5x3.3}{mm}$. When $d<\SI{1}{m}$ also the cells between the cavities are uniform, while when $d\geq \SI{1}{m}$ a slight symmetric grading of 1.025 is employed.
+Performing a sensitivity analysis, we choose a grid made of $\num{377x50}$ cells for the case of $d=\SI{1}{m}$. It is important to have small uniform cells in the region of the cavities, so we employ gradings of 1.1 in the $x$-direction in the inlet and outlet portions of the channel, where we can afford to have longer cells. In the $y$-direction we employ instead a grading of 1.2 in the region above the cavities. As a result, the cell size around the two cavities is $\SI{5x3.3}{mm}$. When $d<\SI{1}{m}$ also the cells between the cavities are uniform, while when $d\geq \SI{1}{m}$ a slight symmetric grading of 1.025 is employed.
 
 At a first glance the behaviour of the fluid in the two cavities is very 
 similar, there is not any strong influence of the first one on the second one 
@@ -650,11 +649,13 @@ and the pattern of the velocity field is the same, as we see in Figure~\ref{fig:
 \end{figure}
 In order to better analyse the results of the simulations, we compare the 
 profiles of the $u$ component of the velocity in the first cells above $y=h$. The velocity in these points drives the flow in the cavities, 
-since we start from zero velocity inside them. Looking at the profiles in Figure~\ref{fig:velprofile1}, there is a positive 
+since we start from zero velocity inside them.
+Looking at the profiles in Figure~\ref{fig:velprofile1}, there is a positive 
 peak of the velocity near the centre of each cavity, then, when the wall starts 
-again, there is a negative peak, followed by a space of approximately $\SI{0.5}{m}$ that we call recovery 
-distance $d_{rec}$, in which there is a recovery 
-of the value that the velocity had before the cavity. The values in the second 
+again, there is a negative peak, followed by a
+length of approximately $\SI{0.5}{m}$, hereby referred to as the recovery distance $d_{rec}$.
+In this distance, the flow returns nearly to the dynamics before the cavity, so that the velocity recovers the value that had there.
+The values in the second 
 cavity are slightly lower than the corresponding ones in the first cavity, but 
 the shape is the same. This confirms the fact that the behaviour of the flow 
 in the two cavities is analogous.
@@ -699,7 +700,7 @@ depending on the distance between the cavities.
 	\label{fig:velpeaks}
 \end{figure}
 We see that if $d < d_{rec}$ the velocity is affected by the presence of 
-the first cavity and so its value is lower. For $d>d_{rec}$ the velocity is 
+the first cavity, reducing its value. For $d>d_{rec}$ the velocity is 
 slightly decreasing as $d$ increases; this fact can be interpreted as the 
 effect of the turbulence that 
 is generated near the end of the first cavity. As it can be seen in 
@@ -717,12 +718,10 @@ thickness of the boundary layer as we move in the $x$-direction.
 \subsection{Coupled problem}
 In this second test we simulate the same situation as in the previous 
 single-domain test, 
-choosing a distance between the cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the 
-free-flow with the simulation of a flow inside a porous-medium that fills the space between 
+choosing a distance between the cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the free-flow with the simulation of a flow inside a porous-medium that fills the space between 
 the cavities, as it is shown in Figure~\ref{fig:multidomain}. In this way, we 
-have two 
-domains, $\Omega_\text{ff}$ and $\Omega_\text{pm}$, that are in contact through the 
-interface $\Gamma_\text{int}$.
+have two domains, $\Omega_\text{ff}$ and $\Omega_\text{pm}$, that are in contact through the 
+interface $\Gamma_\text{int}$. The considered fluid is always isothermal, single-phase and single-component and gravity is neglected, as in the previous cases.
 
 We want to analyse the differences that the presence of the porous-medium 
 induces in the flow field with respect to the previous case and study how they 

@@ -10,9 +10,9 @@ viscosity in the solution, but that, at the same time, guarantees the stability
 and avoids the creation of unphysical oscillations.
 
 In all the tests that have been performed, we have experienced an increased 
-accuracy of the solution with respect to the one obtained with the first order 
+accuracy of the solution with respect to those obtained when using the first order 
 upwind method. The spatial convergence rates in the tests with analytical 
-solution were between 1.5 and 2 in many cases, while with the upwind method we had always a first-order convergence. 
+solution were between 1.5 and 2 in many cases, while with the upwind method we had always a first order convergence. 
 The differences were more relevant at $Re\simeq\num{e3}$ rather than at 
 $Re\simeq1$, because of the increased importance of the convective term with 
 respect to the diffusive one. Also with turbulent flows in the backward facing 
@@ -28,8 +28,8 @@ With this tool, we have studied a coupled model made of a free-flow and a
 porous-medium flow, focusing in particular on the effects that a rough
 interface, with small cavities, has on the flow field.
 At first, we have considered only the free-flow and we have studied how the 
-velocity is affected by the presence of two cavities at the interface and 
-which is the distance between them such that the variation in the flow field, 
+velocity is affected by the presence of two cavities at the interface.
+In particular, we have investigated which is the distance between the cavities such that the variation in the flow field, 
 because of the first cavity, does not significantly influence anymore the 
 behaviour around the 
 second one. We have obtained that, for cavities $\SI{0.5}{m}$ long, after a 
@@ -42,10 +42,10 @@ Afterwards we have chosen a distance such that the two cavities do not
 influence each other and we have placed a porous-medium between them, in order 
 to analyse how its presence affects the flow field. We have observed that, 
 for values of permeability greater than $\SI{e-8}{m^2}$, the flow field in the 
-free-flow shows noticeable differences with respect to the case without the 
+free-flow shows noticeable differences when compared to a case without a 
 porous-medium. In particular, not only the fact that the flow can enter into 
 the porous-medium has an effect, but also the Beaver-Joseph-Saffman slip 
-condition that was imposed at the interface between the two subdomains. The 
+condition that was imposed at the interface between the two subdomains affects the flow dynamics. The 
 presence of eddies in the cavities influences the flow in the 
 porous-medium, because in correspondence of the corner eddy it can enter also 
 from a direction opposite to the one of the main flow. However, when this 

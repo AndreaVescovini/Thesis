@@ -23,8 +23,8 @@ pressure solution may arise, leading to wrong results. In the context of finite
 volumes, a possible solution to 
 this issue 
 is to store the variables in a \emph{staggered} fashion, putting 
-the degrees of freedom related to scalar variables and, in particular, of the 
-pressure at the centre of the cells 
+the degrees of freedom related to scalar variables, particularly the 
+pressure, at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
 normal direction. Therefore, we obtain different control volumes, as we can see 
 in Figure~\ref{fig:staggrid} for the case of the 
@@ -50,7 +50,7 @@ differences framework. A more recent description can be found in
 
 Another advantage of this discretization method is that on the boundary we have 
 the degrees of freedom of the normal component of the velocity, so it is easier 
-to impose boundary and interface conditions.
+to impose boundary and interface conditions with respect to the case where all the degrees of freedom are stored at the cell centres.
 
 For the sake of simplicity we consider now a two-dimensional domain with 
 $\mathbf{v} = [u, v]^{\mathrm{T}}$.
@@ -59,7 +59,7 @@ $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 The continuity equation \eqref{eq:ransmass} is discretized using control 
 volumes that coincide with the cells of the grid, thus it is treated is a 
 cell-centred way. Since we are dealing with incompressible fluids, it does not 
-involve the density and this makes its approximation easier.
+involve the density and this makes its approximation simpler.
 %We will see in section ... how to deal with non constant desities
 We integrate over the ``grey'' control volume $V_p = [x_{i-1},x_i] \times 
 [y_{j-1},y_j]$, according to Figure~\ref{fig:staggrid}, and we apply the 
@@ -151,7 +151,7 @@ let us consider each of them separately, starting from the simplest one:
 	+\int_{n_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA
 	- \int_{s_u} \nu_\text{eff} \frac{\partial u}{\partial y} \; dA.
 	\end{multline}
-	We develop the contributions from $e_u$ and $n_u$, the other two are 
+	Here, we develop the contributions from $e_u$ and $n_u$, the other two are 
 	analogous.\\	
 	For the frontal momentum flux we approximate the viscosity with 
 	the value at the centre of the face, while we approximate the derivative of 
@@ -236,7 +236,7 @@ $u$ described above, with the only addition of the gravity term:
 (\nu_\text{eff} \nabla v) + \frac{1}{\varrho}\frac{\partial}{\partial y} \big(p 
 + \varrho k\big) - g= 0,
 \end{equation}
-with $g = \SI{-9.81}{m/s}$. The gravity term is discretized straight-forward:
+with $g = \SI{-9.81}{m/s}$. The gravity term is discretized simply as:
 \begin{equation}
 \int_{V_v} g \; dV = g |V_v|,
 \end{equation}
@@ -368,15 +368,16 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 \subsection{Linear differencing schemes} \label{subsec:diffscheme}
 The choice of the scheme for the approximation of a transported field is of 
 great importance for both the accuracy and the stability of the solution of the 
-problem. In general this decision has to be taken for every convective term, 
-indeed we have found it both in the discretization of the Navier-Stokes equations
+problem. In general this decision has to be taken for every convective term. We have found it both in the discretization of the Navier-Stokes equations
 and of the turbulence model equations. As already mentioned, an 
 important property that the scheme should have is the \emph{transportativeness} 
 (see \cite{main:vermal}), i.e. it should take into account the direction of the 
-flow. From a physical point of view this comes from the fact that, when in a 
-flow convection is dominating over diffusion, a bias of the value on the face 
-towards the direction where the flow comes from must occur. From a mathematical 
-point of view instead we can introduce the following \emph{Péclet number}
+flow. From a physical point of view this comes from the fact that, when
+in a flow convection dominates over diffusion,
+a bias towards the value on the face from which the flow comes should be applied.
+%a bias of the value on the face towards the direction where the flow comes from must occur.
+From a mathematical 
+point of view instead we can introduce the following dimensionless number, the \emph{Péclet number}:
 \begin{equation}
 	Pe = \frac{|u| h}{2\nu},
 \end{equation}
@@ -387,11 +388,11 @@ the numerical method (see for example \cite{main:quarteroni}).
 In the following we will list the most immediate options for linear schemes, 
 referring to the 
 convective term of the equation~\eqref{eq:stagu} for the $x$-component of the 
-velocity. It is considered here the case of a uniform grid, with positive 
+velocity. Here we consider uniform grids, with positive 
 transporting velocity according to 
 Figure~\ref{fig:superscripts}, but all the schemes can be generalized to the 
 case of non-uniform grids. Moreover the basic construction is one-dimensional, 
-so it can be used for every dimension also in a multi-dimensional problem. For 
+so that it may be used in every dimension for a multi-dimensional problems. For 
 a complete description see for example \cite{main:vermal}.
 \begin{figure}
 	\centering
@@ -410,8 +411,8 @@ two first neighbouring values:
 	u^* = \frac{u^D + u^U}{2}.
 \end{equation}
 Employing Taylor expansions, it can be easily seen that this approximation is 
-of second order, but being symmetric it does not have the transportativeness 
-property. Indeed it can be shown that when $Pe > 1$ it is not stable.
+of second order, but, being symmetric, it does not have the transportativeness 
+property. Indeed it can be shown that, when $Pe > 1$, it is not stable.
 %
 \subsubsection{Upwind scheme}
 In opposition to the CD scheme, the upwind scheme consists in using only the 
@@ -420,7 +421,7 @@ upstream value:
 	u^* = u^U.
 \end{equation}
 It is a simple, widely used and robust scheme as it has the transportativeness 
-property, but its accuracy is only of first order, indeed it introduces in the 
+property, but its accuracy is only of first order, in fact it introduces in the 
 solution an important amount of numerical diffusion that smooths the gradients. 
 %
 \subsubsection{Hybrid scheme}
@@ -432,7 +433,7 @@ accuracy in terms of Taylor expansions reduces to first order.
 %
 \subsubsection{QUICK scheme}
 The Quadratic Upstream Interpolation for Convective Kinetics (QUICK) scheme 
-\cite{fv:leonard} is a higher-order method that involves an extended stencil 
+\cite{fv:leonard} is a higher order method that involves an extended stencil 
 of degrees of freedom. It can be obtained evaluating the quadratic interpolator 
 of $u^D$, $u^U$ and 
 $u^{FU}$ at the position where $u^*$ is:
@@ -446,8 +447,8 @@ quantities such as the turbulent kinetic energy $k$ that have to be positive.
 %
 \subsubsection{LUD scheme}
 The Linear Upwind Differencing (LUD) scheme is an extension of the upwind 
-scheme that has a second order accuracy, however it can produce too unphysical 
-oscillations. It can be obtained evaluating the linear interpolator of $u^U$ 
+scheme that has a second order accuracy, however it can produce unphysical 
+oscillations too. It can be obtained evaluating the linear interpolator of $u^U$ 
 and 
 $u^{FU}$ at the position where $u^*$ is:
 \begin{equation} \label{eq:lud}
@@ -483,13 +484,13 @@ Subsection~\ref{subsec:time}).
 
 In Figure~\ref{fig:1dconslaw} we can see the solution at $t=0.5$. The upwind 
 method is very diffusive near the step, but bounded within the extrema of the 
-exact solution. The CD and QUICK methods instead approximate better the steep 
+exact solution. The CD and QUICK methods instead better approximate the steep 
 gradient, but produce oscillations for $x<0.5$.
 %
 \subsection{TVD methods} \label{subsec:tvd}
 Total Variation Diminishing (TVD) methods belong to a category of methods 
-called \emph{high resolution methods}, that address the problem of computing a 
-solution without any oscillation and with an higher-order accuracy, second 
+called \emph{high resolution methods} \cite{tvd:monotonicity}, that address the problem of computing a 
+solution without any oscillation and with an higher order accuracy, second 
 order in this case. They were originally developed for scalar conservation laws 
 of the type:
 \begin{align}
@@ -529,12 +530,12 @@ anti-diffusive flux:
 u^* = u^U + \frac{1}{2}\psi(r)(u^D - u^U), \quad r = 
 \frac{u^U - u^{FU}}{u^D - u^U}.
 \end{equation}
-The flux includes a function $\psi$ called \emph{flux limiter}, indeed it 
+The flux includes a function $\psi$ called \emph{flux limiter}, which 
 should dampen the flux contribution in regions of the domain where it 
 could produce oscillations. It is chosen non-negative in order to preserve the 
 sign of the flux and it depends on the variable $r$, that is defined as the 
 ratio between two consecutive differences of the solution. The non-linearity 
-can not be avoided, indeed it was proved by \textcite{tvd:godunov} that any 
+can not be avoided, in fact it was proved by \textcite{tvd:godunov} that any 
 monotonicity preserving linear scheme can be at most first order accurate.
 
 Exploiting the approximation \eqref{eq:tvdformula} to solve a problem like
@@ -558,7 +559,11 @@ which ensures that backward- and forward-facing gradients are treated in the
 same way.
 
 In order to have a second order scheme, $\psi$ must be at least 
-Lipschitz-continuous. Moreover, following \cite{tvd:sweeby} and 
+Lipschitz-continuous, i.e. there must exists a constant $L>0$ such that
+\begin{equation}
+	|\psi(x_1) - \psi (x_2)| \leq L | x_1 - x_2 | \quad \forall x_1, x_2 \in \mathbb{R}.
+\end{equation}
+Moreover, following \cite{tvd:sweeby} and 
 \cite{tvd:vanleer}, any second order scheme 
 can be obtained as a convex combination of the CD scheme \eqref{eq:cd} and the 
 LUD scheme \eqref{eq:lud}, in the following way:
@@ -599,7 +604,7 @@ also as Sweby's diagram.
 %mettere qualcosa nell'appendice.
 \subsubsection{Flux limters}
 Starting from the bounds \eqref{eq:tvdbounds}, it is easy to create a 
-flux limiter function, indeed in literature many possible choices can be 
+flux limiter function. In literature many possible choices can be 
 found. 
 We list here some of the most popular functions that have been implemented in 
 \DUMUX and in Figure~\ref{fig:fluxlimiters} we can see their graph in the 
@@ -677,7 +682,7 @@ It is not easy to compare the different flux limiters in order to find the
 best one. Generally the Van Alabada and the Min-Mod can be a bit less accurate 
 since $\psi \rightarrow 1$ as $r \rightarrow \infty$, while a scheme like the 
 Superbee can produce sharper gradients, but sometimes the convergence can be a 
-bit more difficult (it is said to be too compressive). The UMIST instead has a 
+bit slower. In particular, according to \cite{tvd:sweeby}, it is said to be \emph{overcompressive}, i.e. it may turn sine waves into square waves. The UMIST instead has a 
 more complex function, so its evaluation can be more expensive. However their 
 performances should be compared case by case.
 
@@ -701,7 +706,7 @@ reported in Chapter~\ref{chap:results}.
 %
 \subsubsection{Non-uniform grids}
 The theory of TVD methods presented above holds for structured grids. In order 
-to deal with Cartesian non-uniform grids, that for example employ a grading, we 
+to deal with Cartesian non-uniform grids, that, for example, employ a grading, we 
 have to generalize it considering the information about the distances between 
 the degrees of freedom involved in the approximation. The generalization has 
 always to be consistent, i.e. the approximation~\eqref{eq:tvdformula} has to be 
@@ -868,7 +873,7 @@ methods.
 %\section{Cell-centred concept}
 \section{Porous-medium flow}
 In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
-scalar equation, with the pressure as a primary variable, indeed, due to the 
+scalar equation, with the pressure as a primary variable, where, due to the 
 incompressibility of the fluid, the time derivative is not present:
 \begin{align}
 \label{eq:cellcentred}	\nabla \cdot \mathbf{v} = 0&\\
@@ -921,7 +926,7 @@ law \eqref{eq:darcy}.
 
 The evaluation of \eqref{eq:resforch} and \eqref{eq:jacforch} over $\partial 
 V_L$ is performed with a Two Point Flux Approximation (TPFA) method, which 
-consists in exploiting the values of the two cells sharing the face; it is a 
+exploits the values of the two cells sharing the face; it is a 
 simple but robust method, commonly used in commercial software.
 \begin{figure}
 	\centering
@@ -930,7 +935,7 @@ simple but robust method, commonly used in commercial software.
 	$V_L$ and $V_R$ sharing the face $\sigma$.}
 	\label{fig:cctpfa}
 \end{figure}
-Let us consider for instance the face $\sigma = \partial V_L \cup \partial 
+Let us consider, for instance, the face $\sigma = \partial V_L \cup \partial 
 V_R$, according to Figure~\ref{fig:cctpfa}, and let the permeability tensor be 
 diagonal so that it act as a scalar. We approximate the derivative of the 
 pressure $\partial p /\partial 
@@ -959,13 +964,13 @@ derived exploiting a decomposition of the vector
 \end{equation}
 based the co-normal vector $\mathbf{Kn}_L$. Moreover it 
 can be shown that this approximation is consistent only if the grid is 
-K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$ 
-(see \cite{tesi:wolff}).
+K-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$. 
+See \cite{tesi:wolff} for further details.
 %
 \section{Coupling conditions}
 The discretization of coupling conditions described in 
 Section~\ref{sec:coupling} requires attention because of the different concepts 
-employed in the two subdomains. For the sake of simplicity let us suppose to 
+employed in the two subdomains. For the sake of simplicity, let us suppose to 
 have a two-dimensional domain split by an horizontal interface, so that $u$ and 
 $v$ are respectively the tangential and normal component of the velocity to the 
 interface, and that the porous-medium occupies the lower subdomain. In 
@@ -975,7 +980,7 @@ denote respectively the interface and the internal part of the cells. The
 degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ will be 
 useful in the following computations, but are fictitious. Let us suppose also 
 that the permeability in the porous-medium is isotropic, so that we can 
-consider it a scalar.
+consider it a positive scalar.
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{coupled_cells_axis.pdf}
@@ -1004,7 +1009,7 @@ with a finite difference:
 \end{equation}
 where $y^\text{if}$ and $y^\text{c}_\text{pm}$ denote respectively the coordinates along the $y$-axis of $p^\text{if}_\text{pm}$ and $p^\text{c}_\text{pm}$.
 $\mathrm{K}$ and $\mu$ are evaluated at the centre of the porous-medium cell. 
-Then $p_\text{pm}^\text{if}$ is applied at the right-hand side of 
+Then, $p_\text{pm}^\text{if}$ is applied at the right-hand side of 
 \eqref{eq:coupnormalstress} and it is thus used as a flux across 
 $\Gamma_\text{int}$.
 
@@ -1019,7 +1024,7 @@ It is then discretized as
 	\frac{u_\text{ff}^\text{c} - 
 	u^\text{if}_\text{ff}}{y_\text{ff}^\text{c}-y^\text{if}}
 \end{equation}
-and rearranging we obtain
+and, rearranging the terms, we obtain
 \begin{equation}
 	u_\text{ff}^\text{if} = 	
 	\frac{u^\text{c}_\text{ff} \beta_\text{BJS}}{1+\beta_\text{BJS}}, \quad 
@@ -1029,8 +1034,8 @@ and rearranging we obtain
 which can be used as a Dirichlet condition for the tangential component of the 
 velocity.
 %
-\section{Resulting algebraic equations} \label{sec:algeq}
-After that all the equations have been discretized, we obtain for every 
+\section{The resulting algebraic equations} \label{sec:algeq}
+When all the equations have been discretized, we obtain for every 
 time-step a non-linear algebraic system, which is solved monolithically using 
 the Newton's method. The entries of the Jacobian matrix are computed 
 numerically and then the resulting linear system is solved with a direct solver 

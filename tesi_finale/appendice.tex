@@ -64,9 +64,7 @@ convergence orders for the different differencing schemes.
 		\input{../img/l2error_test_navierstokes_1d_vl_hre}}
 	\caption[$L^2(\Omega)$ norm of the errors for the 1D test]{$L^2(\Omega)$ 
 	norm of the errors for the 1D test 
-	depending on the number of cells in the grid. The grey lines are the 
-	reference lines for the first-order (lower) and second-order (upper) 
-	convergence.}
+	depending on the number of cells in the grid. The grey lines are the reference lines parallel to a first order convergence (the lower one) and a second order convergence (the upper one).}
 	\label{fig:1d_err}
 \end{figure}
 \begin{table}
@@ -99,10 +97,10 @@ convergence orders for the different differencing schemes.
 \end{table}
 
 In this test, at $Re=1$, all the methods behave similarly, as we 
-can see in Table~\ref{tab:1d_lre}, with the second-order convergence for the 
+can see in Table~\ref{tab:1d_lre}, with the second order convergence for the 
 velocity also using the upwind method. Probably, in this one-dimensional 
-configuration, the second-order diffusive term is dominating. From 
-Table~\ref{tab:1d_hre} we observe instead that the TVD methods keep the second-order 
+configuration, the second order diffusive term is dominating. From 
+Table~\ref{tab:1d_hre} we observe instead that the TVD methods keep the second order 
 convergence for the velocity and increase the rate also for the pressure, while 
 the upwind method decreases them. With the finest grid we observe from 
 Figure~\ref{fig:1d_err} that with the TVD methods the errors are three orders of 
@@ -159,9 +157,7 @@ convergence orders for the different differencing schemes.
 		\input{../img/l2error_test_navierstokes_kovasznay_vl_hre}}
 	\caption[$L^2(\Omega)$ norm of the errors for the Kovasznay 
 	test]{$L^2(\Omega)$ norm of the errors for the 
-	Kovasznay test depending on the number of cells in the grid. The grey 
-	lines are the reference lines for the first-order (lower) and second-order 
-	(upper) convergence.}
+	Kovasznay test depending on the number of cells in the grid. The grey lines are the reference lines parallel to a first order convergence (the lower one) and a	second order convergence (the upper one).}
 	\label{fig:kov_err}
 \end{figure}
 \begin{table}

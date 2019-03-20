@@ -2,7 +2,7 @@
 In this chapter we present the equations that used to model the 
 free-flow and the porous-medium flow. For the free-flow we start 
 considering the incompressible Navier-Stokes equations to simulate laminar 
-flows, then we move to the RANS equations with the $k\text{-}\omega$ 
+flows, then we move to the Reynolds Averaged Navier-Stokes (RANS) equations with the $k\text{-}\omega$ 
 model as a turbulence model. For the porous-medium 
 flow our choice is the Forchheimer's law, which is an extension of the more 
 common Darcy's law to higher Reynolds numbers.
@@ -65,7 +65,7 @@ We want to deal with incompressible fluids with a constant density that is not
 related to the pressure through a state equation. Thus, the 
 energy equation becomes decoupled from the others and we can exclude it from 
 the system. 
-Notice that with this assumption $p$ is no more the thermodynamic pressure.
+Notice that, with this assumption, $p$ is no longer the thermodynamic pressure.
 Using these assumptions from the balance equations 
 \eqref{eq:masscons} and \eqref{eq:2newton} we obtain the Navier-Stokes 
 equations:
@@ -76,7 +76,7 @@ equations:
 \mathbf{v}) + \frac{1}{\varrho}\nabla p  -\mathbf{g} = \mathbf{0}&
 \end{align}
 All the computations needed to obtain these equations can be found in any book 
-of fluid mechanics, for example in \cite{main:vermal}. The continuity equations 
+of fluid mechanics, for example in \cite{main:vermal}. The continuity equation 
 reduces to an incompressibility constraint \eqref{eq:nsmass} that is enforced 
 in the momentum equation through the pressure that acts as a Lagrangian 
 multiplier. The second term of the momentum equation \eqref{eq:nsmom} is 
@@ -184,10 +184,10 @@ of the fluid.
 They cover a wide spectrum of length scales, in which we can identify 
 three distinct bands; in the first one, corresponding to large scales, 
 comparable to the size of the domain, there is an injection of kinetic energy 
-and eddies are generated. Then there is an intermediate band in which the 
+and eddies are generated. Then, there is an intermediate band in which the 
 convection is dominant and eddies shrink without a significant loss of energy. 
 The third band corresponds to the smallest scales at which eddies are present. 
-Indeed, once they reach a certain size, the effect of viscosity starts to 
+In fact, once they reach a certain size, the effect of viscosity starts to 
 be relevant and the kinetic energy of the eddies is dissipated
 into internal thermal energy. So, globally, energy is transferred from the 
 large 
@@ -212,7 +212,7 @@ Then according to \cite{turbo:kolmogorov} it can be obtained that
 	\frac{l_0}{l_D} \sim Re^\frac{3}{4}.
 \end{equation}
 If we want to perform a reliable simulation of a turbulent flow using the 
-Navier-Stokes equations \eqref{eq:nsmass}-\eqref{eq:nsmom} we need a grid with 
+Navier-Stokes equations \eqref{eq:nsmass}-\eqref{eq:nsmom}, we need a grid with 
 a spatial resolution sufficient to resolve all the eddies until the smallest 
 ones, otherwise we would neglect the important information about the viscous 
 dissipation of these structures. Assuming to have a domain of size comparable 
@@ -396,7 +396,7 @@ The first term has the same form of $\tau$ if we consider the mean velocity
 field, 
 the only difference is that the dynamic viscosity $\mu$ is substituted by a 
 turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term is needed 
-to model correctly also the isotropic part of $\tau_R$, indeed:
+to model the isotropic part of $\tau_R$ correctly, as seen below:
 \begin{equation} \label{eq:tracciatau}
 tr(\tau_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
 -\varrho \sum_{i=1}^{dim} \overline{(v_i')^2} = -2\varrho k,
@@ -442,7 +442,7 @@ all the entries of the Reynolds stress tensor, but in this way a large set of
 equations is obtained and consequently the required computational effort 
 increases. See \cite{main:pope} or \cite{main:vermal} for more information.
 
-From now, on the overbar used to denote averaged quantities will be 
+From now, on the over-bar used to denote averaged quantities will be 
 neglected in order to simplify the notation.
 
 \subsubsection{Zero-equations models}
@@ -532,7 +532,7 @@ the wall. This can be done easily for flat walls and it brings also
 computational advantages, because we can avoid to have very small cells near 
 the wall that resolve the viscous sublayer.
 
-During the years, many variants of this model have been developed, for example 
+Over the years, many variants of this model have been developed, for example 
 the \emph{RNG}~$k\text{-}\varepsilon$ model, which is derived with a different 
 procedure with the purpose of improving the equation for
 $\varepsilon$, or the \emph{low-$Re$}~$k\text{-}\varepsilon$ model, which 
@@ -756,7 +756,7 @@ There are models to compute it in the case of simple geometries, for example
 through the Carman-Kozeny equation (see \cite{forch:nield}). 
 %
 \subsubsection{Forchheimer's law}
-There exist many generalization of the Darcy's law, for example to multiphase 
+There exist many generalizations of Darcy's law, for example to multiphase 
 and multicomponent flows, to non-Newtonian fluids or, as in this case, to 
 higher Reynolds numbers. The 
 extension that we are interested in is the following Forchheimer's law:
@@ -765,8 +765,7 @@ extension that we are interested in is the following Forchheimer's law:
 	|\mathbf{v}|\mathbf{v} = - \frac{1}{\mu} \mathbf{K}(\nabla p - \varrho 
 	\mathbf{g} ),
 \end{equation}
-where the second term is added to the Darcy's law in order to take into account 
-also possible inertial effects. $C_F$ is a non-dimensional coefficient which is 
+where the second term is added to the Darcy's law in order to take into account any possible inertial effect. $C_F$ is a non-dimensional coefficient which is 
 here taken equal to $0.55$, even if there exist many different corrections (see 
 \cite{forch:nield} and \cite{forch:tesi}).
 
@@ -801,8 +800,8 @@ porous-medium domain, then
 is the interface between them.
 
 Following \textcite{paper:mosthaf}, we would like to have conditions such that 
-the interface could be as close as possible to the local thermodynamic 
-equilibrium, which, however, can not be rigorously achieved because of the 
+the interface could follow local thermodynamic 
+equilibrium as closely as possible. However, this can not be rigorously achieved due to the 
 different model concepts in the two subdomains. Since we are dealing with 
 single-phase, single-component isothermal flows, we only have to impose the 
 mechanical equilibrium, for which we need:
@@ -827,8 +826,7 @@ mechanical equilibrium, for which we need:
 		\mathbf{n}]_\text{ff} = 
 		- [p\mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
 	\end{equation}
-	that may result in a jump of the pressure at the interface, even if it is 
-	usually a continuous thermodynamic variable,
+	that may result in a jump of the pressure at the interface, although it is typically a continuous thermodynamic variable,
 	\item a condition for the tangential component of the velocity in the 
 	free-flow and in particular we use the one proposed by \textcite{inter:bj}:
 	\begin{equation}
