@@ -901,12 +901,11 @@ $V_L$ (see Figure~\ref{fig:cctpfa}) and apply the Gauss's divergence theorem:
 \end{equation}
 The Forchheimer's law \eqref{eq:forch2} is non-linear, so we use the Newton's 
 method in order to compute the velocity, i.e. the flux over the boundary 
-$\partial 
-V_L$:
+$\partial V_L$:
 \begin{align}
-	\mathbf{J}_f(\mathbf{v}^k) \delta \mathbf{v}^{k+1} = &-\mathbf{f}(\mathbf{v}^k), \quad \text{$\forall k\geq 0$ until 
+	\mathbf{J}_f(\mathbf{v}_k) \delta \mathbf{v}_{k+1} = &-\mathbf{f}(\mathbf{v}_k), \quad \text{$\forall k\geq 0$ until 
 	convergence}\\
-	\mathbf{v}^{k+1} = &\;\mathbf{v}^k + \delta \mathbf{v}^{k+1},
+	\mathbf{v}_{k+1} = &\;\mathbf{v}_k + \delta \mathbf{v}_{k+1},
 \end{align}
 where
 \begin{equation} \label{eq:resforch}
@@ -921,7 +920,7 @@ and $\mathbf{J}_f(\mathbf{v})$ is its Jacobian matrix:
 C_F\sqrt{\mathbf{K}}\frac{\varrho}{\mu}\big(|\mathbf{v}|\mathbb{1} + 
 \frac{1}{|\mathbf{v}|}{\mathbf{v}\mathbf{v}^\mathrm{T}}\big).
 \end{equation}
-We use as initial guess $\mathbf{v}^0$ the velocity computed with the Darcy's 
+We use as initial guess $\mathbf{v}_0$ the velocity computed with the Darcy's 
 law \eqref{eq:darcy}.
 
 The evaluation of \eqref{eq:resforch} and \eqref{eq:jacforch} over $\partial 
@@ -1034,12 +1033,45 @@ and, rearranging the terms, we obtain
 which can be used as a Dirichlet condition for the tangential component of the 
 velocity.
 %
-\section{The resulting algebraic equations} \label{sec:algeq}
+\section{Resulting algebraic equations} \label{sec:algeq}
+%When all the equations have been discretized, we obtain for every 
+%time-step a non-linear algebraic system, which is solved monolithically using 
+%the Newton's method. The entries of the Jacobian matrix are computed 
+%numerically and then the resulting linear system is solved with a direct solver 
+%using the library UMFPACK. The convergence criterium is based on the increment. 
+%The time-step size is variable since at each new time iteration it is chosen 
+%multiplying the previous time-step size by a factor depending on how fast the 
+%convergence of the Newton's method at the previous time iteration was.
 When all the equations have been discretized, we obtain for every 
-time-step a non-linear algebraic system, which is solved monolithically using 
-the Newton's method. The entries of the Jacobian matrix are computed 
-numerically and then the resulting linear system is solved with a direct solver 
-using the library UMFPACK. The convergence criterium is based on the increment. 
+time-step a non-linear algebraic system:
+\begin{equation}
+	\mathbf{F}(\mathbf{x}^n) = \mathbf{0} \quad \forall n\geq 1,
+\end{equation}
+where $\mathbf{x}^n$ is the vector containing all the degrees of freedom of all the unknowns at the time-step $t^n$. This system is then solved monolithically using the Newton's method:
+\begin{align}
+\label{eq:linnew}\mathbf{J}_F(\mathbf{x}^n_k) \delta \mathbf{x}^n_{k+1} = &-\mathbf{F}(\mathbf{x}_k^n), \quad \text{$\forall k\geq 0$ until 
+	convergence}\\
+\mathbf{x}^n_{k+1} = &\;\mathbf{x}^n_k + \delta \mathbf{x}^n_{k+1},
+\end{align}
+starting from the solution at the previous time-step as initial guess $\mathbf{x}_0^n = \mathbf{x}^{n-1}$.
+$\mathbf{J}_F$ is the Jacobian matrix of $\mathbf{F}$. Its entries are computed numerically using centred finite differences:
+\begin{equation}
+[\mathbf{J}_F]_{ij} = \frac{F_i(x_j + \varepsilon) - F_i(x_j - \varepsilon)}{2\varepsilon},
+\end{equation}
+where $\varepsilon=\num{e-8}|x_j|$. The convergence criterium is based on the relative shift: given a relative shift vector $\mathbf{s}$, whose components are computed as
+\begin{equation}
+	s_i = \frac{[\delta \mathbf{x}^n_{k+1}]_i}{([\mathbf{x}^n_{k+1}]_i + [\mathbf{x}^n_{k}]_i) / 2},
+\end{equation}
+and a tolerance $tol$, for example equal to $\num{e-5}$, we stop to iterate when
+\begin{equation}
+	|\!|\mathbf{s}|\!|_\infty < tol,
+\end{equation}
+where $|\!| \cdot |\!|_	\infty$ denotes the norm of the maximum:
+\begin{equation}
+	|\!|\mathbf{s}|\!|_\infty = \max_i |s_i|.
+\end{equation}
+Finally the linear system \eqref{eq:linnew} is solved with a direct solver, using the library UMFPack.
+
 The time-step size is variable since at each new time iteration it is chosen 
-multiplying the previous time-step size by a factor depending on how fast the 
-convergence of the Newton's method at the previous time iteration was.
+multiplying the previous time-step size by a factor depending on how many iterations were required for the 
+convergence of the Newton's method at the previous time iteration.

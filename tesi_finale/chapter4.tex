@@ -1,13 +1,20 @@
 \chapter{Numerical results} \label{chap:results}
-In this chapter we present the numerical results. The convergence of higher 
-order methods applied to the Navier-Stokes equations is tested, first in space, 
+In this chapter we present the numerical results.
+
+At first, we perform some verifications of the methods developed for the Navier-Stokes equations.
+
+The convergence of higher 
+order methods is tested, first in space, 
 then in time. After that, another spatial comparison test between the upwind 
 method 
 and the TVD methods is performed, using a channel flow. Next, the results 
 from the backward facing step test using RANS equations are shown and 
-compared to those from the CFL3D code from \cite{web:nasa}. Afterwards, a 
-turbulent 
-flow through a channel with two small cavities is studied and, at last, it is 
+compared to those from the CFL3D code from \cite{web:nasa}. Finally, a 
+turbulent flow through a channel with two small cavities is studied.
+
+A second set of tests concerns the coupling with the porous-medium flow. We consider the flow with two cavities and study the influence of the permeability on the flow pattern.
+
+ and, at last, it is 
 coupled
 with a porous-medium flow, analysing the changes for several values of permeability of the porous-medium.
 %
@@ -75,7 +82,7 @@ and $\nu=\num{e-3}$ are tested, that correspond respectively to $Re=1$ and
 $Re=\num{e3}$. In Figure~\ref{fig:sin_err}, the errors computed are reported 
 depending on the square root of the number of cells, while in 
 Table~\ref{tab:sin_conv} we can compare directly the 
-convergence orders for different differencing schemes.
+order of convergence for different differencing schemes.
 \begin{figure}
 	\centering
 	\subfloat[Upwind, $Re = 1$]{
@@ -91,7 +98,7 @@ convergence orders for different differencing schemes.
 	\subfloat[Van Leer, $Re = \num{e3}$]{
 		\input{../img/l2error_test_navierstokes_sincos_vl_hre}\label{fig:sin_err_vl_hre}}
 	\caption[$L^2(\Omega)$ norm of the errors for the Sin-Cos 
-	test]{$L^2(\Omega)$norm of the errors 
+	test]{$L^2(\Omega)$ norm of the errors 
 	for the Sin-Cos 
 	test depending on the square root of the number of cells in the grid. 
 	The grey lines are the reference lines parallel to a first order convergence (the lower one) and a
@@ -135,14 +142,14 @@ We observe, as expected, a better behaviour of the TVD methods with respect to
 the upwind method. In Table~\ref{tab:sin_lre}, we can see that, at $Re=1$, the 
 formers show a full second order convergence for the velocity, while for the pressure the
 rate is a bit lower; the latter, instead, shows a first order convergence for 
-all the variables. At 
+all variables. At 
 $Re=\num{e3}$, a slight decrease of the rates of the TVD methods occurs also 
 for 
 the velocities, but they remain higher then the ones of the upwind method. In 
 Table~\ref{tab:sin_hre}, we observe a convergence order of 1 for the pressure 
 using the Van Leer flux limiter, but, looking at 
 Figure~\ref{fig:sin_err_vl_hre}, we can 
-see that the global trend points to a convergence of higher order. Moreover it 
+see that the global trend points to a convergence of higher order. Moreover, it 
 can be observed how, thanks to the faster convergence, on the same grid the 
 absolute values of the errors reach smaller values using the TVD methods. 
 Between the Min-Mod and Van Leer flux limiters it is hard to say which one 
@@ -218,8 +225,7 @@ $\num{40x40}$ cells, in the last refinement the error with the BDF2 method does
 not decrease anymore. This happens because the grid is too coarse and the 
 spatial error becomes dominant over the temporal one, so that, even with small 
 time-steps, we can not improve the solution.
-Refining the grid, the spatial error is reduced and the temporal convergence 
-order is restored entirely for the pressure and almost for the velocity.
+Refining the grid, the spatial error is reduced and the temporal order of convergence is restored entirely for the pressure and almost for the velocity.
 \begin{figure}
 	\centering
 	\subfloat{\input{../img/time_convergence_p_report}}
@@ -393,11 +399,11 @@ differences
 are in the region inside the cavity, where a recirculation occurs. The upwind 
 method, with its numerical diffusion, smooths the profile, while the TVD 
 methods produce more accurate results, even if they do not match exactly the 
-reference solution. Further, when looking at the $L^2(\Omega)$ norm of the errors 
-reported in 
+reference solution.
+Further, when looking at the $L^2(\Omega)$ norm of the absolute errors reported in 
 Table~\ref{tab:errdeep}, we see that the upwind method has again the largest error, 
 but the difference with the other schemes is reduced with respect to the 
-previous case of shallow cavities.
+previous case of shallow cavities. This is due to the wider recirculation region with respect to the previous case, which is critical for the accuracy of all the methods because it shows local extrema for the velocity.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rough_domain_highstep2.pdf}
@@ -485,7 +491,7 @@ Figure~\ref{fig:bfscomp}).
 
 According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that a second order implicit method for the advancement in time is used.
 
-Thus we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T = \SI{30}{s}$. It can be observed that, after approximately $t=\SI{20}{s}$, the solution stabilizes at a steady state. As initial conditions we set
+Thus, we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T = \SI{30}{s}$. It can be observed that, after approximately $t=\SI{20}{s}$, the solution stabilizes at a steady state. As initial conditions we set
 \begin{equation}
 p=p_\text{ext} \quad \forall \mathbf{x} \in \Omega, \quad \mathbf{v} = [u_\text{init},0]^\mathrm{T} \quad u_\text{init} = \begin{cases}
 u_\text{in} \quad&\text{if $x\leq 0$}\\
@@ -585,10 +591,12 @@ cavities, as it is used in Subsection~\ref{subsec:roughchannel} to study the \em
 Navier-Stokes equations. Now we use the RANS equations with the 
 $k\text{-}\omega$ that we tested in the previous section using the backward 
 facing step case.
-Since we use a structured grid and we need very small cells next to walls that 
-have different orientations in order to resolve the viscous sub-layer, we 
-decide to consider a simple configuration with only two cavities, in order not 
-to increase too much the computational effort.
+%
+In order to resolve the viscous sub-layer, we need very small cells next to the walls, that in this case are not flat but have different orientations. Since we are using a structured grid, the flexibility of employing local refinements in order not to increase the computational effort too much is limited, thus we decide to consider a simple configuration with only two cavities.
+%Since we use a structured grid and we need very small cells next to walls that 
+%have different orientations in order to resolve the viscous sub-layer, we 
+%decide to consider a simple configuration with only two cavities, in order not 
+%to increase the computational effort too much.
 
 We start our analysis from the free-flow, studying the pattern of the velocity 
 field and, in particular, how, without the porous-medium, the two cavities 
