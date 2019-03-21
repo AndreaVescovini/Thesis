@@ -273,7 +273,7 @@ $\Delta t=\SI{5e-3}{s}$, then it is adapted as explained in
 Section~\ref{sec:algeq}, allowing a maximum time-step of $\SI{0.1}{s}$. 
 At first we set $\nu=\SI{5e-4}{m^2/s}$, so that $Re=\num{2e3}$. Since we do not 
 have an analytical solution for this problem, we compute a \emph{reference 
-solution} using the upwind method over a grid six times finer.
+solution} using the upwind method over a grid six times finer (see Figure~\ref{fig:roughchannelgrid}).
 
 In Figure~\ref{fig:linecompshallow} we compare the profiles of the magnitude 
 of the velocity along a cross-section near the end of the channel, at 
@@ -300,6 +300,18 @@ upwind method is at least one order of magnitude larger than the others.
 	rough channel test with shallow cavities at $t=T$. $Re=\num{2e3}$. 
 	Van Leer flux limiter.}
 	\label{fig:roughchannelvl}
+\end{figure}
+% Nuova figura:
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth, trim={0 0 0 1.5cm}, clip]{rough_channel_one_step_arrows.png}
+	\caption[Magnitude of the velocity in the rough channel test with schallo cavities around the last cavity]{Magnitude of the velocity $[\si{m/s}]$ in the rough channel test with shallow cavities, around the last cavity, at $t=T$, in the reference case. $Re=\num{2e3}$. The arrows are not scaled.}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{rough_channel_grid.pdf}
+	\caption[Grid comparison in the rough channel test]{Comparison of the grids used in the rough channel test. In black the grid used for the reference solution, with cell sizes $\SI{16.7x3.3}{mm}$, in blue the grid used in the other simulations, with cell sizes $\SI{100x20}{mm}$.}
+	\label{fig:roughchannelgrid}
 \end{figure}
 \begin{figure}
 	\centering
@@ -518,13 +530,20 @@ Performing a sensitivity analysis in order to choose a suitable grid, we observe
 	\item too refined cells in the $y$-direction in the area with the 
 	recirculation do not improve the solution in a relevant way.
 \end{itemize}
-So, in the following analysis, we choose a grid made of $\num{119x70}$ cells, employing gradings up to 1.25 in order to have small cells near the walls, as it is required by the $k\text{-}\omega$ model.
+So, in the following analysis, we choose a grid made of $\num{119x70}$ cells, employing gradings up to 1.25 in order to have small cells near the walls, as it is required by the $k\text{-}\omega$ model. In Figure~\ref{fig:bfsgrid} we can see the grid in the region around the step.
 
 \begin{figure} %mettere in paraview frecce 2d
 	\centering
 	\includegraphics[width=\textwidth]{bfs_glimphs2.png}
 	\caption[Velocity field after the backward facing step]{Velocity field $[\si{m/s}]$ after the backward facing step at $t=T$. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
 	\label{fig:bfsarrows}
+\end{figure}
+%nuova immagine:
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{bfs_grid.png}
+	\caption[Velocity field and grid around the backward facing step]{Velocity field $[\si{m/s}]$ and grid around the backward facing step at $t=T$. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
+	\label{fig:bfsgrid}
 \end{figure}
 \begin{figure}
 	\centering
@@ -779,8 +798,8 @@ $v$ component of the velocity spreads and
 moves a bit ahead, as it can be seen in Figure~\ref{fig:coupled_vel_split}.
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{coupled_first_cavity_report.png}
-	\caption[Velocity field near the end of the first cavity in the coupled problem]{Velocity field [$\si{m/s}$] near the end of the first cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$, at $t=T$. A portion of fluid enters into the porous-medium. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\includegraphics[width=\textwidth]{coupled_first_cavity_report_labels.png}
+	\caption[Velocity field near the end of the first cavity in the coupled problem]{Velocity field [$\si{m/s}$] near the end of the first cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$, at $t=T$. A portion of fluid enters into the porous-medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupled_arrows}
 \end{figure}
 \begin{figure}
@@ -803,7 +822,37 @@ the first cavity, so this effect does not seem to influence the free-flow
 notably (see Figure~\ref{fig:coupledsecondcav}).
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{coupled_second_cavity_report.png}
-	\caption[Velocity field near the beginning of the second cavity in the coupled problem]{Velocity field near the beginning of the second cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\includegraphics[width=\textwidth]{coupled_second_cavity_report_labels.png}
+	\caption[Velocity field near the beginning of the second cavity in the coupled problem]{Velocity field near the beginning of the second cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupledsecondcav}
+\end{figure}
+
+It is interesting to evaluate the mass flow rate $\dot{m}$ across the interface between the free-flow and the porous-medium flow. In particular, we compute, at $t=T$, the amount of mass that goes from the free-flow region to the porous-medium per unit of time as: \begin{equation}
+	\dot{m} = \int_{\Gamma_\text{int}} \max \{\varrho \mathbf{v} \cdot \mathbf{n}, 0 \} \; dA,
+\end{equation}
+where $\mathbf{n}$ is the outward unit vector normal to $\partial \Omega_\text{ff}$. From Table~\ref{tab:mass} and Figure~\ref{fig:mass} we can observe a relevant increase when the permeability is greater than $\SI{e-8}{m^2}$ approximately, so we find the same threshold value of the previous analysis.
+\begin{table}
+	\centering
+	\[
+	\begin{array}{cc}
+	\toprule
+	\mathrm{K} \; [\si{m^s}] & \dot{m} \; [\si{kg/s}]\\
+	\midrule
+	\num{3.1e-12} & \num{6.401e-4}\\
+	\num{3.1e-9} & \num{7.673e-4}\\
+	\num{3.1e-8} & \num{1.389e-3}\\
+	\num{1.55e-7} & \num{2.271e-3}\\
+	\num{3.1e-7} & \num{2.690e-3}\\
+	\num{3.1e-6} & \num{4.207e-3}\\
+	\bottomrule
+	\end{array}
+	\]
+	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
+	\label{tab:mass}
+\end{table}
+\begin{figure}
+	\centering
+	\input{../img/mass_exchange}
+	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
+	\label{fig:mass}	
 \end{figure}

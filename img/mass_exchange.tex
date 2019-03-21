@@ -1,0 +1,31 @@
+% This file was created by matlab2tikz.
+%
+\begin{tikzpicture}
+
+\begin{axis}[%
+width=0.951\widthsei,
+height=0.75\widthsei,
+at={(0\widthsei,0\widthsei)},
+scale only axis,
+xmode=log,
+xmin=1e-12,
+xmax=0.00001,
+xlabel={$\mathrm{K} \; [m^2]$},
+ymin=0.0005,
+ymax=0.0045,
+ylabel={$\dot{m} \; [\si{kg/s}]$},
+axis background/.style={fill=white},
+xmajorgrids,
+ymajorgrids
+]
+\addplot [color=black, line width=1.0pt, mark=o, mark options={solid, black}, forget plot]
+  table[row sep=crcr]{%
+3.1e-06	0.00420710161565\\
+3.1e-07	0.002690450574475\\
+1.55e-07	0.00227104284972\\
+3.1e-08	0.0013892852915599\\
+3.1e-09	0.0007673545670522\\
+3.1e-12	0.000648090673435001\\
+};
+\end{axis}
+\end{tikzpicture}%
