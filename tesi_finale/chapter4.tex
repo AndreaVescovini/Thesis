@@ -1,20 +1,20 @@
 \chapter{Numerical results} \label{chap:results}
 In this chapter we present the numerical results.
-%
 At first, we perform some verifications of the methods developed for the Navier-Stokes equations.
-%
 The convergence of higher order methods is tested, first in space, 
 then in time. After that, another spatial comparison test between the upwind 
 method 
-and the TVD methods is performed, using a channel flow. Next, the results 
+and the TVD methods is performed, using a channel flow. Eventually, the results 
 from the backward facing step test using RANS equations are shown and 
 compared to those from the CFL3D code from \cite{web:nasa}. 
-Afterwards, a turbulent flow through a channel with two small cavities is studied,
+%Afterwards, a turbulent flow through a channel with two small cavities is studied,
 %.Finally, a turbulent flow through a channel with two small cavities is studied.
-%A second set of tests concerns the coupling with the porous-medium flow. We consider the flow with two cavities and study the influence of the permeability on the flow pattern.
+A second set of tests concerns the coupling with the porous-medium flow. We consider a turbulent flow through a channel with two cavities separated by a porous-medium and we study the influence of the permeability on the flow pattern.
+%Then, we modify the domain in order to have deeper cavities.
+% At last, we consider a channel with a porous obstacle.
 %
-and, at last, it is coupled
-with a porous-medium flow, analysing the changes for several values of permeability of the porous-medium.
+%and, at last, it is coupled
+%with a porous-medium flow, analysing the changes for several values of permeability of the porous-medium.
 %
 \section{Navier-Stokes tests}
 \subsection{Space convergence} \label{subsec:conv}
@@ -52,9 +52,9 @@ a two-dimensional unit domain $\Omega=(0,1)^2$, with the following source terms:
 so that, choosing $\varrho=1$, the analytical solution, depicted in 
 Figure~\ref{fig:sincosexact}, is given by
 \begin{align}
-\label{eq:uexsin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\\
-	v_\text{ex}(x,y) &= \sin(x)\cos(y)\\
-\label{eq:pexsin}	p_\text{ex}(x,y) &= -\frac{\cos(2x)+\sin(2y)}{4}
+\label{eq:uexsin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y),\\
+	v_\text{ex}(x,y) &= \sin(x)\cos(y),\\
+\label{eq:pexsin}	p_\text{ex}(x,y) &= -\frac{\cos(2x)+\sin(2y)}{4}.
 \end{align}
 Dirichlet boundary conditions for the velocity are applied on the whole 
 boundary $\partial \Omega$ using the exact solution. Because of this choice, 
@@ -165,8 +165,8 @@ error of the solution of the Navier-Stokes equations:
 	|\!|\phi_\text{ex}-\phi_h|\!|_{L^\infty(0,T;L^2(\Omega))} = \esssup_{t \in 
 	(0,T)} |\!|\phi_\text{ex}(t) - \phi_h(t) |\!|_{L^2(\Omega)}, 
 \end{equation}
-where $\esssup$ denotes the \emph{essential supremum}, i.e. for a function 
-$f:\Omega\rightarrow\mathbb{R}$
+where $\esssup$ denotes the \emph{essential supremum}, that for a function 
+$f:\Omega\rightarrow\mathbb{R}$ is defined as
 \begin{equation}
 	\esssup_\Omega f = \inf \{\text{$M \in \mathbb{R}$ : $ |f(x)| \leq 
 	M$ a.e. in $\Omega$} \}.
@@ -199,23 +199,23 @@ h &= 0,\\
 \end{align}
 so that, choosing $\varrho=1$, the analytical solution is given by
 \begin{align}
-\label{eq:uexunssin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\sin(2t)\\
-v_\text{ex}(x,y) &= \sin(x)\cos(y)\sin(2t)\\
+\label{eq:uexunssin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\sin(2t),\\
+v_\text{ex}(x,y) &= \sin(x)\cos(y)\sin(2t),\\
 \label{eq:pexunssin}	p_\text{ex}(x,y) &= 
--\frac{\cos(2x)+\sin(2y)}{4}\sin^2(2t)
+-\frac{\cos(2x)+\sin(2y)}{4}\sin^2(2t).
 \end{align}
 It is equal to \eqref{eq:uexsin}--\eqref{eq:pexsin}, used in the steady test 
 for the space convergence, except for the modulation over time. We choose 
 $\nu=0.1$, so that $Re=10$. Dirichlet boundary conditions for the velocity are 
 applied on the whole boundary $\partial \Omega$ using the exact solution. 
-The pressure is again fixed  at one point in order to match the exact solution 
+The pressure is again fixed  at one point in order to match the particular exact solution 
 \eqref{eq:pexunssin}.
 
 The problem is solved seven times subdividing the time interval $(0,T)$ into 
 uniform time-steps and each time doubling their number, starting from a 
 discretization with a
 single time-step. Uniform grids of $\num{40x40}$ and $\num{80x80}$ cells are 
-employed and as a differencing scheme the TVD method with the Van Leer flux 
+employed and, as a differencing scheme, the TVD method with the Van Leer flux 
 limiter \eqref{eq:vl} is used. From Figure~\ref{fig:timeerr}, we observe that, 
 as expected, the BE method shows a first order convergence, while the BDF2 
 method is of second order. Moreover we notice that, with a grid of 
@@ -268,7 +268,7 @@ neglected.
 \subsubsection{Shallow cavities}
 In the case of shallow cavities we use the domain in Figure~\ref{fig:roughdom} 
 and we employ a uniform grid of $\num{95x50}$ cells. The problem is then solved 
-over the time interval ($0,T$), with $T=\SI{10}{s}$; the initial time-step is 
+over the time interval ($0,T$), with $T=\SI{10}{s}$. The initial time-step is 
 $\Delta t=\SI{5e-3}{s}$, then it is adapted as explained in 
 Section~\ref{sec:algeq}, allowing a maximum time-step of $\SI{0.1}{s}$. 
 At first we set $\nu=\SI{5e-4}{m^2/s}$, so that $Re=\num{2e3}$. Since we do not 
@@ -545,7 +545,7 @@ So, in the following analysis, we choose a grid made of $\num{119x70}$ cells, em
 	\caption[Velocity field and grid around the backward facing step]{Velocity field $[\si{m/s}]$ and grid around the backward facing step at $t=T$. $Re_H=\num{3.6e4}$. The arrows are not scaled.}
 	\label{fig:bfsgrid}
 \end{figure}
-\begin{figure}
+\begin{figure}[t]
 	\centering
 	\input{../img/bfs_fin_cf_report}
 	\caption[Friction coefficient in the backward facing step test]{Friction coefficient at the bottom of the channel after the backward facing step at $t=T$. The reattachment length is the distance at which it becomes positive after its global minimum.}
@@ -620,7 +620,7 @@ field and, in particular, how, without the porous-medium, the two cavities
 influence each other.
 After choosing a configuration such that this influence is minimized, we take 
 into account the effect of a porous-medium, to see how its presence affects the 
-whole flow field.
+whole flow field,. We consider both the cases of shallow cavities and deep cavities.
 %
 \subsection{Cavities mutual influence}
 In this first test we simulate only the free-flow, solving the RANS equations  \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega} in the domain $\Omega_\text{ff}$ depicted in Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
@@ -632,11 +632,11 @@ no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary 
 \begin{equation}
 	p = p_{ext} = \SI{1.1e5}{\pascal}.
 \end{equation}
-The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow is almost uniform in the upper part of the domain so that we can exploit the symmetry boundary conditions. The first portion of the lower wall is flat, in order to let the flow develop, then there are the two cavities of height $h=\SI{0.1}{m}$ and length $\SI{0.5}{m}$, spaced by a tunable distance $d$.
+The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow is almost uniform in the upper part of the domain so that we can exploit the symmetry boundary conditions. The first portion of the lower wall is flat, in order to let the flow develop, then there are the two shallow cavities of height $h=\SI{0.1}{m}$ and length $\SI{0.5}{m}$, spaced by a tunable distance $d$.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=\textwidth]{cavities_domain_axis.pdf}
-	\caption[Free-flow domain $\Omega_\text{ff}$ in the cavities problem]{Free-flow domain $\Omega_\text{ff}$ in the cavities problem. The distance $d$ is varied from $\SI{0.05}{m}$ to $\SI{2}{m}$. For convenience we set the origin of the $x$-axis at the $\Gamma_\text{in}$ and the origin of the $y$-axis at the bottom of the cavities.}
+	\caption[Free-flow domain $\Omega_\text{ff}$ in the cavities problem]{Free-flow domain $\Omega_\text{ff}$ in the cavities problem. The distance $d$ is varied from $\SI{0.05}{m}$ to $\SI{2}{m}$. For convenience we set the origin of the $x$-axis at $\Gamma_\text{in}$ and the origin of the $y$-axis at the bottom of the cavities.}
 	\label{fig:singledomain}
 \end{figure}
 
@@ -660,7 +660,7 @@ while we set in the whole domain $\Omega_\text{ff}$ $p=p_\text{ext}$, $k=k_\text
 
 Performing a sensitivity analysis, we choose a grid made of $\num{377x50}$ cells for the case of $d=\SI{1}{m}$. It is important to have small uniform cells in the region of the cavities, so we employ gradings of 1.1 in the $x$-direction in the inlet and outlet portions of the channel, where we can afford to have longer cells. In the $y$-direction we employ instead a grading of 1.2 in the region above the cavities. As a result, the cell size around the two cavities is $\SI{5x3.3}{mm}$. When $d<\SI{1}{m}$ also the cells between the cavities are uniform, while when $d\geq \SI{1}{m}$ a slight symmetric grading of 1.025 is employed.
 
-At a first glance the behaviour of the fluid in the two cavities is very 
+At a first glance, the behaviour of the fluid in the two cavities is very 
 similar, there is not any strong influence of the first one on the second one 
 and the pattern of the velocity field is the same, as we see in Figure~\ref{fig:veld1}. 
 %aggiungere cenno a quali recirculations ci sono e mettere le freccette 
@@ -740,10 +740,10 @@ thickness of the boundary layer as we move in the $x$-direction.
 	\label{fig:kd1}
 \end{figure}
 %
-\subsection{Coupled problem}
+\subsection{Coupled problem with shallow cavities}
 In this second test we simulate the same situation as in the previous 
 single-domain test, 
-choosing a distance between the cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the free-flow with the simulation of a flow inside a porous-medium that fills the space between 
+choosing a distance between the two shallow cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the free-flow with the simulation of a flow inside a porous-medium that fills the space between 
 the cavities, as it is shown in Figure~\ref{fig:multidomain}. In this way, we 
 have two domains, $\Omega_\text{ff}$ and $\Omega_\text{pm}$, that are in contact through the 
 interface $\Gamma_\text{int}$. The considered fluid is always isothermal, single-phase and single-component and gravity is neglected, as in the previous cases.
@@ -763,8 +763,8 @@ We employ the same time discretization and the same grid we used before in $\Ome
 $\Omega_\text{pm}$ in a conforming way.
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{cavities_multidomain.pdf}
-	\caption[Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem]{Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem. The subdomain $\Omega_\text{pm}$ is introduced between the cavities.}
+	\includegraphics[width=\textwidth]{cavities_multidomain_new.pdf}
+	\caption[Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem with shallow cavities]{Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem with shallow cavities. The subdomain $\Omega_\text{pm}$ is introduced between the cavities.}
 	\label{fig:multidomain}
 \end{figure}
 
@@ -775,17 +775,17 @@ the cavities (see Figure~\ref{fig:coupled_vel_3}).
 \begin{figure}
 	\centering
 	\input{../img/cavities_coupled_velx_report}
-	\caption[Profiles of the $u$ component of the velocity at $y=h$ in the coupled cavities problem]{Profiles of the $u$ component of the velocity at $y=h$ in the coupled cavities problem for several values of permeability, at $t=T$. $Re = \num{6e5}$.}
+	\caption[Profiles of the $u$ component of the velocity at $y=h$ in the coupled problem with shallow cavities]{Profiles of the $u$ component of the velocity at $y=h$ in the coupled problem with shallow cavities for several values of permeability, at $t=T$. $Re = \num{6e5}$.}
 	\label{fig:md_wall_velocities}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_vel_3_report.png}
-	\caption[Magnitude of the velocity field in the coupled problem]{Magnitude of the velocity field $[\si{m/s}]$ for $K=\SI{3.1e-9}{m^2}$, at $t=T$. $Re=\num{6e5}$.}
+	\caption[Magnitude of the velocity field in the coupled problem with shallow cavities]{Magnitude of the velocity field $[\si{m/s}]$ in the coupled problem with shallow cavities, with $\mathrm{K}=\SI{3.1e-9}{m^2}$, at $t=T$. $Re=\num{6e5}$.}
 	\label{fig:coupled_vel_3}
 \end{figure}
 
-Starting from $K=\SI{3.1e-8}{m^2}$, we observe some changes in the velocity 
+Starting from $\mathrm{K}=\SI{3.1e-8}{m^2}$, we observe some changes in the velocity 
 profile and increasing the permeability those changes are enhanced.
 The increase of the maximum velocity in correspondence of the first cavity can 
 be due to the reduction of the \emph{wall} behaviour of the porous-medium. The 
@@ -799,13 +799,13 @@ moves a bit ahead, as it can be seen in Figure~\ref{fig:coupled_vel_split}.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_first_cavity_report_labels.png}
-	\caption[Velocity field near the end of the first cavity in the coupled problem]{Velocity field [$\si{m/s}$] near the end of the first cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$, at $t=T$. A portion of fluid enters into the porous-medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\caption[Velocity field near the end of the first cavity in the coupled problem with shallow cavities]{Velocity field [$\si{m/s}$] near the end of the first cavity in the coupled problem with shallow cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$, at $t=T$. A portion of fluid enters into the porous-medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupled_arrows}
 \end{figure}
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_split_comparison_report.png}
-	\caption[$v$ component of the velocity near the end of the first cavity in the coupled problem]{$v$ component of the velocity [$\si{m/s}$] near the end of the first cavity in the free-flow domain $\Omega_\text{ff}$, $t=T$. $K = \SI{3.1e-7}{m^2}$ on the left and $K = \SI{3.1e-9}{m^2}$ on the right. $Re=\num{6e5}$.}
+	\caption[$v$ component of the velocity near the end of the first cavity in the coupled problem with shallow cavities]{$v$ component of the velocity [$\si{m/s}$] near the end of the first cavity in the free-flow domain $\Omega_\text{ff}$, $t=T$. $\mathrm{K} = \SI{3.1e-7}{m^2}$ on the left and $\mathrm{K} = \SI{3.1e-9}{m^2}$ on the right. $Re=\num{6e5}$.}
 	\label{fig:coupled_vel_split}
 \end{figure}
 
@@ -823,36 +823,137 @@ notably (see Figure~\ref{fig:coupledsecondcav}).
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_second_cavity_report_labels.png}
-	\caption[Velocity field near the beginning of the second cavity in the coupled problem]{Velocity field near the beginning of the second cavity in the coupled problem with $K=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\caption[Velocity field near the beginning of the second cavity in the coupled problem with shallow cavities]{Velocity field near the beginning of the second cavity in the coupled problem with shallow cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupledsecondcav}
 \end{figure}
 
-It is interesting to evaluate the mass flow rate $\dot{m}$ across the interface between the free-flow and the porous-medium flow. In particular, we compute, at $t=T$, the amount of mass that goes from the free-flow region to the porous-medium per unit of time as: \begin{equation}
-	\dot{m} = \int_{\Gamma_\text{int}} \max \{\varrho \mathbf{v} \cdot \mathbf{n}, 0 \} \; dA,
+%It is interesting to evaluate the mass flow rate $\dot{m}$ across the interface between the free-flow and the porous-medium flow. In particular, we compute, at $t=T$, the amount of mass that goes from the free-flow region to the porous-medium per unit of time as:
+%\begin{equation}
+%	\dot{m} = \int_{\Gamma_\text{int}} \max \{\varrho \mathbf{v} \cdot \mathbf{n}, 0 \} \; dA,
+%\end{equation}
+%where $\mathbf{n}$ is the outward unit vector normal to $\partial \Omega_\text{ff}$. From Table~\ref{tab:mass} and Figure~\ref{fig:mass} we can observe a relevant increase when the permeability is greater than $\SI{e-8}{m^2}$ approximately, so we find the same threshold value of the previous analysis.
+%\begin{table}
+%	\centering
+%	\[
+%	\begin{array}{cc}
+%	\toprule
+%	\mathrm{K} \; [\si{m^2}] & \dot{m} \; [\si{kg/s}]\\
+%	\midrule
+%	\num{3.1e-12} & \num{6.401e-4}\\
+%	\num{3.1e-9} & \num{7.673e-4}\\
+%	\num{3.1e-8} & \num{1.389e-3}\\
+%	\num{1.55e-7} & \num{2.271e-3}\\
+%	\num{3.1e-7} & \num{2.690e-3}\\
+%	\num{3.1e-6} & \num{4.207e-3}\\
+%	\bottomrule
+%	\end{array}
+%	\]
+%	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability in the coupled test with shallow cavities]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability, in the coupled test with shallow cavities.}
+%	\label{tab:mass}
+%\end{table}
+%\begin{figure}
+%	\centering
+%	\input{../img/mass_exchange}
+%	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability in the coupled test with shallow cavities]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability, in the coupled test with shallow cavities.}
+%	\label{fig:mass}	
+%\end{figure}
+%
+\subsection{Coupled problem with deep cavities}
+We repeat the previous test considering the domain with deep cavities depicted in Figure~\ref{fig:multidomain_deep}, such that $h=\SI{0.3}{m}$. The grid is extended uniformly.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{cavities_multidomain_deep.pdf}
+	\caption[Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem with deep cavities]{Domain change with respect to Figure~\ref{fig:singledomain} for the coupled problem with deep cavities. The subdomain $\Omega_\text{pm}$ is introduced between the cavities.}
+	\label{fig:multidomain_deep}
+\end{figure}
+Using the same model and the same boundary and interface conditions, we want to see if, with a different height of the cavities, the porous-medium flow affects differently the flow field. As before, we vary the permeability of the porous-medium in order to understand which is the threshold value between a permeable and an almost impermeable behaviour.
+
+In Figure~\ref{fig:coupled_vel_deep}, we can see the magnitude of the velocity field in the region around the cavities and the porous-medium. As before, the two cavities show the same recirculation pattern, but it is different from the one that is generated when the cavities are shallow (see Figure~\ref{fig:coupled_vel_3}), because of the different size of the domain. Here, there is a bigger circular eddy touching the right boundary of the cavity and some smaller eddies in the left region of the cavity. 
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{coupled_deep_vel.png}
+	\caption[Magnitude of the velocity field in the coupled problem with deep cavities]{Magnitude of the velocity field $[\si{m/s}]$ in the coupled problem with deep cavities, with $\mathrm{K}=\SI{3.1e-9}{m^2}$, at $t=T$. $Re=\num{6e5}$.}
+	\label{fig:coupled_vel_deep}
+\end{figure}
+
+In Figure~\ref{fig:md_wall_velocities_deep}, we compare the profiles of the $u$ component of the velocity at the position $y=h$, for several values of permeability. With respect to Figure~\ref{fig:md_wall_velocities}, we observe a different profile in correspondence of the cavities, because of the different recirculation pattern inside them. As before, we notice that, as the permeability increases, the maximum velocity in correspondence of the first cavity increases, the minimum velocity above the beginning of the porous-medium decreases and the velocity above the end of the porous-medium increases. The threshold value for the permeability of approximately $\SI{e-8}{m^2}$ seems to be still valid. With respect to the previous test case, we observe that the value of the velocity before the second cavity, for $5 < x < 5.5$, increases faster. In fact, when $\mathrm{K} = \SI{3.1e-7}{m^2}$, it is greater than $\SI{0.3}{m/s}$, while in the previously, for the same value of permeability, it was approximately $\SI{0.27}{m/s}$. This fact could be due to a smaller amount of fluid exchanged with the porous-medium, or at least to differently distributed exchanges along the interface.
+\begin{figure}
+	\centering
+	\input{../img/cavities_coupled_velx_deep}
+	\caption[Profiles of the $u$ component of the velocity at $y=h$ in the coupled problem with deep cavities]{Profiles of the $u$ component of the velocity at $y=h$ in the coupled problem with deep cavities for several values of permeability, at $t=T$. $Re = \num{6e5}$.}
+	\label{fig:md_wall_velocities_deep}
+\end{figure}
+
+In Figure~\ref{fig:coupled_first_deep} we see the velocity field around the first cavity. A portion of flow enters into the porous-medium near its upper-left corner, then it exits from above as in the case of shallow cavities.
+The section of $\Gamma_\text{int}$ such that $y<h/2$ is characterized by a more complex behaviour for what concerns the flow direction. In fact, because of the multiple eddies, the exchange of fluid occurs both from the free-flow region to the porous-medium and vice versa.
+In Figure~\ref{fig:coupledsecondcav_deep} we see the velocity field around the second cavity. Here, the flow pattern across the interface is analogous to the one in the case of shallow cavities, depicted in Figure~\ref{fig:coupledsecondcav}.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{cav_deep_first3_labels.png}
+	\caption[Velocity field around the first cavity in the coupled problem with deep cavities]{Velocity field [$\si{m/s}$] around the first cavity in the coupled problem with deep cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$, at $t=T$. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\label{fig:coupled_first_deep}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{cav_deep_second_labels.png}
+	\caption[Velocity field around the second cavity in the coupled problem with deep cavities]{Velocity field around the second cavity in the coupled problem with deep cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\label{fig:coupledsecondcav_deep}
+\end{figure}
+
+It is interesting to evaluate the mass flow rate $\dot{m}$ across the interface between the free-flow and the porous-medium flow. In particular, we compute, at $t=T$, the amount of mass that goes from the free-flow region to the porous-medium per unit of time as:
+\begin{equation}
+\dot{m} = \int_{\Gamma_\text{int}} \max \{\varrho \mathbf{v} \cdot \mathbf{n}, 0 \} \; dA,
 \end{equation}
-where $\mathbf{n}$ is the outward unit vector normal to $\partial \Omega_\text{ff}$. From Table~\ref{tab:mass} and Figure~\ref{fig:mass} we can observe a relevant increase when the permeability is greater than $\SI{e-8}{m^2}$ approximately, so we find the same threshold value of the previous analysis.
+where $\mathbf{n}$ is the outward unit vector normal to $\partial \Omega_\text{ff}$. Notice that, being the fluid incompressible and imposing no-flow conditions on the lower boundary of the porous-medium $\Gamma_\text{base}$, the net mass flow rate across $\Gamma_\text{int}$ is zero.
+
+In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and deep cavities. In both the situations we observe a relevant increase of the mass flow rate when the permeability is approximately greater than $\SI{e-8}{m^2}$, so the same threshold value that we found in the previous analysis. $\dot{m}$ is always greater in the case of deep cavities than in the case of shallow cavities. In Table~\ref{tab:mass} we compare the values and we compute the ratio $\dot{m}_\text{deep} / \dot{m}_\text{shallow}$, that results to be between $1.3$ and $1.5$ for every value of permeability. The ratio between the measure of the $\Gamma_\text{int}$ is $1.6 / 1.2 = 1.\bar{3}$, so it is likely that the difference in the mass flow rate between the two cases is simply due to the different extension of the interface.
+\begin{figure}
+	\centering
+	\input{../img/mass_exchange_comp}
+	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
+	\label{fig:mass}	
+\end{figure}
 \begin{table}
 	\centering
 	\[
-	\begin{array}{cc}
+	\begin{array}{cccc}
 	\toprule
-	\mathrm{K} \; [\si{m^s}] & \dot{m} \; [\si{kg/s}]\\
+	\mathrm{K} \; [\si{m^2}] & \dot{m}_\text{deep} \; [\si{kg/s}] & \dot{m}_\text{shallow} \; [\si{kg/s}] & \dot{m}_\text{deep} / \dot{m}_\text{shallow}\\
 	\midrule
-	\num{3.1e-12} & \num{6.401e-4}\\
-	\num{3.1e-9} & \num{7.673e-4}\\
-	\num{3.1e-8} & \num{1.389e-3}\\
-	\num{1.55e-7} & \num{2.271e-3}\\
-	\num{3.1e-7} & \num{2.690e-3}\\
-	\num{3.1e-6} & \num{4.207e-3}\\
+	\num{3.1e-12} & \num{9.455e-4} & \num{6.401e-4} & 1.477\\
+	\num{3.1e-9} & \num{1.083e-3} & \num{7.673e-4} & 1.411\\
+	\num{3.1e-8} & \num{1.812e-3} & \num{1.389e-3} & 1.304\\
+	\num{1.55e-7} & \num{3.063e-3} & \num{2.271e-3} & 1.349\\
+	\num{3.1e-7} & \num{3.805e-3} & \num{2.690e-3} & 1.414\\
+%	\num{3.1e-6} & \num{4.207e-3}\\
 	\bottomrule
 	\end{array}
 	\]
 	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
 	\label{tab:mass}
 \end{table}
-\begin{figure}
-	\centering
-	\input{../img/mass_exchange}
-	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
-	\label{fig:mass}	
-\end{figure}
+
+%\begin{table}
+%	\centering
+%	\[
+%	\begin{array}{cc}
+%	\toprule
+%	\mathrm{K} \; [\si{m^2}] & \dot{m} \; [\si{kg/s}]\\
+%	\midrule
+%	\num{3.1e-12} & \num{9.455e-4}\\
+%	\num{3.1e-9} & \num{1.083e-3}\\
+%	\num{3.1e-8} & \num{1.812e-3}\\
+%	\num{1.55e-7} & \num{3.063e-3}\\
+%	\num{3.1e-7} & \num{3.805e-3}\\
+%	\bottomrule
+%	\end{array}
+%	\]
+%	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability in the coupled test with deep cavities]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability, in the coupled test with deep cavities.}
+%	\label{tab:mass_deep}
+%\end{table}
+%\begin{figure}
+%	\centering
+%	\input{../img/mass_exchange_deep}
+%	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability in the coupled test with deep cavities]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability, in the coupled test with deep cavities.}
+%	\label{fig:mass_deep}	
+%\end{figure}

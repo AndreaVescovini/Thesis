@@ -26,7 +26,7 @@ phenomena.
 
 With this tool, we have studied a coupled model made of a free-flow and a 
 porous-medium flow, focusing in particular on the effects that a rough
-interface, with small cavities, has on the flow field.
+interface, with shallow or deep cavities, has on the flow field.
 At first, we have considered only the free-flow and we have studied how the 
 velocity is affected by the presence of two cavities at the interface.
 In particular, we have investigated which is the distance between the cavities such that the variation in the flow field, 
@@ -43,26 +43,30 @@ influence each other and we have placed a porous-medium between them, in order
 to analyse how its presence affects the flow field. We have observed that, 
 for values of permeability greater than $\SI{e-8}{m^2}$, the flow field in the 
 free-flow shows noticeable differences when compared to a case without a 
-porous-medium. In particular, not only the fact that the flow can enter into 
+porous-medium, both in the case of the shallow cavities and deep cavities.
+In particular, not only the fact that the flow can enter into 
 the porous-medium has an effect, but also the Beaver-Joseph-Saffman slip 
-condition that was imposed at the interface between the two subdomains affects the flow dynamics. The 
-presence of eddies in the cavities influences the flow in the 
-porous-medium, because in correspondence of the corner eddy it can enter also 
+condition that was imposed at the interface between the two subdomains affects the flow dynamics.
+The presence of eddies in the cavities influences the flow in the 
+porous-medium, because in correspondence of the corner eddies it can enter also 
 from a direction opposite to the one of the main flow. However, when this 
 happens, the values of the velocity are relatively small and thus this 
 behaviour does not affect the free-flow as it happens when the flow enters the 
-porous-medium at the end of a cavity.
+porous-medium at the end of a cavity. At last, we have evaluated the mass flow rate from the free-flow region to the porous-medium. We have noticed a relevant increase for values of permeability greater than $\SI{e-10}{m^2}$. Comparing the cases of shallow and deep cavities, the mass flow rate has shown to be proportional to the measure of the interface.
 %
 \section{Future developments}
 Future developments to this thesis can be devoted to the investigation of more 
 complex models, involving multiphase, multi-component and non-isothermal 
 models. Exploiting the accuracy of high-resolution methods, a more reliable 
-prediction of the evaporation rate from a wet soil could be performed. Moreover it could be interesting to study other types of \emph{rough} interfaces, for example to see if a smooth interface described by a sinusoidal function could behave differently with respect to the one we have analysed.
+prediction of the evaporation rate from a wet soil could be performed. Moreover it could be interesting to study other types of \emph{rough} interfaces, for example to see if a smooth interface described by a sinusoidal function could behave differently with respect to those we have analysed.
 
 In this work the TVD methods have been adopted only in the momentum equation, 
 but, in particular with non-isothermal models with non-constant density, from 
 the numerical point of view it could be important to analyse their 
 application to the continuity equation.
+
+From the point of view of the coupling, the interface conditions could be adapted in order to employ other finite volumes discretization schemes in the porous-medium, including, for example, a Multi Point Flux Approximation (MPFA).
+Moreover, iterative algorithms to decouple the two subdomains could be taken into account and compared to the monolithic approach that we have used.
 
 Within the \DUMUX framework a possibility to improve the feasibility of the 
 simulations could be to employ an adaptive algorithm in order to refine the grid 
