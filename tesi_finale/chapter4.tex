@@ -9,7 +9,7 @@ from the backward facing step test using RANS equations are shown and
 compared to those from the CFL3D code from \cite{web:nasa}. 
 %Afterwards, a turbulent flow through a channel with two small cavities is studied,
 %.Finally, a turbulent flow through a channel with two small cavities is studied.
-A second set of tests concerns the coupling with the porous-medium flow. We consider a turbulent flow through a channel with two cavities separated by a porous-medium and we study the influence of the permeability on the flow pattern.
+A second set of tests concerns the coupling with the porous-medium flow. First, we consider a turbulent flow through a channel with two cavities separated by a porous-medium and we study the influence of the permeability on the flow pattern. Then, we study a flow in a channel with a porous obstacle.
 %Then, we modify the domain in order to have deeper cavities.
 % At last, we consider a channel with a porous obstacle.
 %
@@ -601,8 +601,9 @@ because the whole pattern is shifted.
 %	me non usa una staggered grid.
 %\end{itemize}
 \FloatBarrier
-\section{Free-flow and porous-medium flow coupling: cavities problem}
-In this section our goal is to study the behaviour of a coupled system with turbulent free-flow and 
+\section{Free-flow and porous-medium flow coupling}
+\subsection{Cavities problem}
+In this subsection our goal is to study the behaviour of a coupled system with turbulent free-flow and 
 porous-medium flow, that are in contact by means of a rough interface, exploiting the benefit of high resolution methods. A first approximation of this kind of interface can be obtained with a series of little
 cavities, as it is used in Subsection~\ref{subsec:roughchannel} to study the \emph{rough channel} with the 
 Navier-Stokes equations. Now we use the RANS equations with the 
@@ -622,15 +623,15 @@ After choosing a configuration such that this influence is minimized, we take
 into account the effect of a porous-medium, to see how its presence affects the 
 whole flow field,. We consider both the cases of shallow cavities and deep cavities.
 %
-\subsection{Cavities mutual influence}
+\subsubsection{Cavities mutual influence}
 In this first test we simulate only the free-flow, solving the RANS equations  \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega} in the domain $\Omega_\text{ff}$ depicted in Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
-condition on the left boundary $\Gamma_\text{in}$:
+conditions on the left boundary $\Gamma_\text{in}$:
 \begin{equation}
 	\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad u_\text{in} = \SI{1}{m/s},
 \end{equation}
 no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary conditions on the upper boundary $\Gamma_\text{sym}$ and outflow boundary conditions on the right boundary $\Gamma_\text{out}$, fixing the value of the pressure:
 \begin{equation}
-	p = p_{ext} = \SI{1.1e5}{\pascal}.
+	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
 \end{equation}
 The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow is almost uniform in the upper part of the domain so that we can exploit the symmetry boundary conditions. The first portion of the lower wall is flat, in order to let the flow develop, then there are the two shallow cavities of height $h=\SI{0.1}{m}$ and length $\SI{0.5}{m}$, spaced by a tunable distance $d$.
 \begin{figure}[ht]
@@ -740,7 +741,7 @@ thickness of the boundary layer as we move in the $x$-direction.
 	\label{fig:kd1}
 \end{figure}
 %
-\subsection{Coupled problem with shallow cavities}
+\subsubsection{Coupled problem with shallow cavities}
 In this second test we simulate the same situation as in the previous 
 single-domain test, 
 choosing a distance between the two shallow cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the free-flow with the simulation of a flow inside a porous-medium that fills the space between 
@@ -858,7 +859,7 @@ notably (see Figure~\ref{fig:coupledsecondcav}).
 %	\label{fig:mass}	
 %\end{figure}
 %
-\subsection{Coupled problem with deep cavities}
+\subsubsection{Coupled problem with deep cavities}
 We repeat the previous test considering the domain with deep cavities depicted in Figure~\ref{fig:multidomain_deep}, such that $h=\SI{0.3}{m}$. The grid is extended uniformly.
 \begin{figure}
 	\centering
@@ -932,7 +933,6 @@ In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and d
 	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability.}
 	\label{tab:mass}
 \end{table}
-
 %\begin{table}
 %	\centering
 %	\[
@@ -957,3 +957,38 @@ In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and d
 %	\caption[Mass flow rate across $\Gamma_\text{int}$ depending on the permeability in the coupled test with deep cavities]{Mass flow rate from the free-flow region to the porous-medium across $\Gamma_\text{int}$, depending on the permeability, in the coupled test with deep cavities.}
 %	\label{fig:mass_deep}	
 %\end{figure}
+\subsection{Obstacle problem}
+In this subsection we study the behaviour of
+%an isothermal, single-phase, single-component
+a turbulent flow in a channel with a porous obstacle of height $h=\SI{0.1}{m}$ on the lower boundary, as depicted in Figure~\ref{fig:obstacle_domain}. We solve the RANS equations \eqref{eq:ransmass}-\eqref{eq:ransmom} with the $k\text{-}\omega$ turbulence model \eqref{eq:komegak}-\eqref{eq:komegaomega} in the subdomain $\Omega_\text{ff}$ and the continuity equation for a porous-medium flow \eqref{eq:pmcontinuity}, exploiting the Forchheimer's law \eqref{eq:forch}, in the subdomain $\Omega_\text{pm}$. We neglect the gravity contributions.
+\begin{figure}
+	\centering
+%	\includegraphics[width=\textwidth]{obstacle_domain.pdf}
+	\caption[Domain for the obstacle problem]{Domain for the obstacle problem.}
+	\label{fig:obstacle domain}
+\end{figure}
+We impose inflow boundary conditions on the left boundary $\Gamma_\text{in}$:
+\begin{equation}
+\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad u_\text{in} = \SI{1}{m/s},
+\end{equation}
+no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary conditions on the upper boundary $\Gamma_\text{sym}$ and outflow boundary conditions on the right boundary $\Gamma_\text{out}$, fixing the value of the pressure:
+\begin{equation}
+	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
+\end{equation}
+On the interface $\Gamma_\text{int}$, we impose the coupling conditions described in Section~\ref{sec:coupling}, while on the boundary $\Gamma_\text{base}$ we impose no-flow conditions.
+The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We simulate the time interval $(0,T) $, with $T=\SI{30}{s}$, such that the solution reaches an equilibrium, and we use and initial time-step $\Delta t = \SI{e-4}{s}$. As initial condition we set:
+\begin{equation}
+	\mathbf{v} = [u_\text{init}, 0]^\mathrm{T} \quad \forall \mathbf{x} \in \Omega_\text{ff}, \quad u_\text{init} =
+	\begin{cases}
+	u_\text{in} \quad&\text{if $x\leq 0 \lor x > \SI{1}{m}$}\\
+	\frac{7}{6}u_\text{in} \quad&\text{if $0 \leq x \leq \SI{1}{m}$}\\
+	\end{cases},
+\end{equation}
+\begin{equation}
+	p = p_\text{ext} \quad \forall \mathbf{x} \in \Omega_\text{ff} \cup \Omega_\text{pm},
+\end{equation}
+\begin{equation}
+	k = k_\text{in}, \; \omega = \omega_\text{in} \quad \forall \mathbf{x} \in \Omega_\text{ff}.
+\end{equation}
+The factor $7/6$ ensures that the flow rate is uniform along the channel.
+We choose a grid made of $\num{280x82}$ cells, employing gradings up to $1.2$ in order ho have refined cells near the walls. In particular, the size of the cells in the region around the upper-left corner of the obstacle shows to affect significantly the results. 
