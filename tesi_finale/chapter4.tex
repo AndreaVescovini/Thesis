@@ -624,13 +624,13 @@ whole flow field,. We consider both the cases of shallow cavities and deep cavit
 %
 \subsection{Cavities mutual influence}
 In this first test we simulate only the free-flow, solving the RANS equations  \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega} in the domain $\Omega_\text{ff}$ depicted in Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
-condition on the left boundary $\Gamma_\text{in}$:
+conditions on the left boundary $\Gamma_\text{in}$:
 \begin{equation}
 	\mathbf{v} = \mathbf{v}_\text{in} = [u_\text{in}, 0]^\mathrm{T}, \quad u_\text{in} = \SI{1}{m/s},
 \end{equation}
 no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary conditions on the upper boundary $\Gamma_\text{sym}$ and outflow boundary conditions on the right boundary $\Gamma_\text{out}$, fixing the value of the pressure:
 \begin{equation}
-	p = p_{ext} = \SI{1.1e5}{\pascal}.
+	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
 \end{equation}
 The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow is almost uniform in the upper part of the domain so that we can exploit the symmetry boundary conditions. The first portion of the lower wall is flat, in order to let the flow develop, then there are the two shallow cavities of height $h=\SI{0.1}{m}$ and length $\SI{0.5}{m}$, spaced by a tunable distance $d$.
 \begin{figure}[ht]
