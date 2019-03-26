@@ -459,7 +459,7 @@ previous case of shallow cavities. This is due to the wider recirculation region
 	\label{tab:errdeep}
 \end{table}
 %
-\section{RANS test: backward facing step}
+\section{RANS test: backward facing step} \label{sec:bfs}
 The backward facing step is a widely-used test configuration, in which a 
 turbulent flow in a channel incurs separation because of a sudden enlargement 
 in the flow domain. We can see that in Figure~\ref{fig:bfsarrows} there are a 
@@ -704,7 +704,7 @@ portion that instead goes up, as we observed in Figure~\ref{fig:vel_split}.
 	\centering
 	\includegraphics[width=0.7\textwidth]{cavities_vel_split_report.png}
 	\caption[$v$ component of the velocity near end of a cavity in the cavities 
-	problem]{$v$ component of the velocity $\si{m/s}$ near end of a cavity at 
+	problem]{$v$ component of the velocity $[\si{m/s}]$ near end of a cavity at 
 	$t=T$. It can be observed that the flow splits. $Re = \num{6e5}$.}
 	\label{fig:vel_split}
 \end{figure}
@@ -824,7 +824,7 @@ notably (see Figure~\ref{fig:coupledsecondcav}).
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_second_cavity_report_labels.png}
-	\caption[Velocity field near the beginning of the second cavity in the coupled problem with shallow cavities]{Velocity field near the beginning of the second cavity in the coupled problem with shallow cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\caption[Velocity field near the beginning of the second cavity in the coupled problem with shallow cavities]{Velocity field $[\si{m/s}]$ near the beginning of the second cavity in the coupled problem with shallow cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. Some flow enters into the porous medium. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupledsecondcav}
 \end{figure}
 
@@ -897,7 +897,7 @@ In Figure~\ref{fig:coupledsecondcav_deep} we see the velocity field around the s
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{cav_deep_second_labels.png}
-	\caption[Velocity field around the second cavity in the coupled problem with deep cavities]{Velocity field around the second cavity in the coupled problem with deep cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
+	\caption[Velocity field around the second cavity in the coupled problem with deep cavities]{Velocity field $[\si{m/s}]$ around the second cavity in the coupled problem with deep cavities, with $\mathrm{K}=\SI{3.1e-7}{m^2}$ at $t=T$. The dashed line is the interface $\Gamma_\text{int}$. The length of the arrows is not scaled. $Re=\num{6e5}$.}
 	\label{fig:coupledsecondcav_deep}
 \end{figure}
 
@@ -960,12 +960,13 @@ In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and d
 \subsection{Obstacle problem}
 In this subsection we study the behaviour of
 %an isothermal, single-phase, single-component
-a turbulent flow in a channel with a porous obstacle of height $h=\SI{0.1}{m}$ on the lower boundary, as depicted in Figure~\ref{fig:obstacle_domain}. We solve the RANS equations \eqref{eq:ransmass}-\eqref{eq:ransmom} with the $k\text{-}\omega$ turbulence model \eqref{eq:komegak}-\eqref{eq:komegaomega} in the subdomain $\Omega_\text{ff}$ and the continuity equation for a porous-medium flow \eqref{eq:pmcontinuity}, exploiting the Forchheimer's law \eqref{eq:forch}, in the subdomain $\Omega_\text{pm}$. We neglect the gravity contributions.
+a turbulent flow in a channel with a porous obstacle of height $h=\SI{0.1}{m}$ on the lower boundary, as depicted in Figure~\ref{fig:obstacle_domain}. We want to analyse how the porous-medium affects the flow field, considering several possible values of permeability.
+We solve the RANS equations \eqref{eq:ransmass}-\eqref{eq:ransmom} with the $k\text{-}\omega$ turbulence model \eqref{eq:komegak}-\eqref{eq:komegaomega} in the subdomain $\Omega_\text{ff}$ and the continuity equation for a porous-medium flow \eqref{eq:pmcontinuity}, exploiting the Forchheimer's law \eqref{eq:forch}, in the subdomain $\Omega_\text{pm}$. We neglect the gravity contributions.
 \begin{figure}
 	\centering
-%	\includegraphics[width=\textwidth]{obstacle_domain.pdf}
+	\includegraphics[width=\textwidth]{obstacle_domain2.pdf}
 	\caption[Domain for the obstacle problem]{Domain for the obstacle problem.}
-	\label{fig:obstacle domain}
+	\label{fig:obstacle_domain}
 \end{figure}
 We impose inflow boundary conditions on the left boundary $\Gamma_\text{in}$:
 \begin{equation}
@@ -976,7 +977,7 @@ no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary 
 	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
 \end{equation}
 On the interface $\Gamma_\text{int}$, we impose the coupling conditions described in Section~\ref{sec:coupling}, while on the boundary $\Gamma_\text{base}$ we impose no-flow conditions.
-The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We simulate the time interval $(0,T) $, with $T=\SI{30}{s}$, such that the solution reaches an equilibrium, and we use and initial time-step $\Delta t = \SI{e-4}{s}$. As initial condition we set:
+The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We start considering a permeability $\mathrm{K}=\SI{e-9}{m^2}.$ We simulate the time interval $(0,T) $, with $T=\SI{30}{s}$, such that the solution reaches an equilibrium, and we use an initial time-step $\Delta t = \SI{e-4}{s}$. As initial condition we set:
 \begin{equation}
 	\mathbf{v} = [u_\text{init}, 0]^\mathrm{T} \quad \forall \mathbf{x} \in \Omega_\text{ff}, \quad u_\text{init} =
 	\begin{cases}
@@ -991,4 +992,61 @@ The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosi
 	k = k_\text{in}, \; \omega = \omega_\text{in} \quad \forall \mathbf{x} \in \Omega_\text{ff}.
 \end{equation}
 The factor $7/6$ ensures that the flow rate is uniform along the channel.
-We choose a grid made of $\num{280x82}$ cells, employing gradings up to $1.2$ in order ho have refined cells near the walls. In particular, the size of the cells in the region around the upper-left corner of the obstacle shows to affect significantly the results. 
+Performing a sensitivity analysis, we choose a grid made of $\num{280x82}$ cells, employing gradings up to $1.2$ in order ho have refined cells near the walls. 
+The size of the cells in the region around the upper-left corner of the obstacle shows to affect significantly the solution. In fact, looking at Figure~\ref{fig:obstacle_grid}, we can see how the pattern of the velocity field changes for three different grids.
+\begin{figure}
+	\centering
+	\subfloat[]{\includegraphics[width=0.32\textwidth]{obstacle_grid4.png}\label{fig:grid4}}\hspace{0.008\textwidth}
+	\subfloat[]{\includegraphics[width=0.32\textwidth]{obstacle_grid3.png}\label{fig:grid3}}\hspace{0.008\textwidth}
+	\subfloat[]{\includegraphics[width=0.32\textwidth]{obstacle_grid2.png}\label{fig:grid2}}
+	\caption[short text]{Magnitude of the velocity field $[\si{m/s}]$ near the beginning of the porous-medium, at $t=T$, considering a grid of
+	\protect\subref{fig:grid4} $\num{207x52}$ cells, with minimum cell size at the obstacle corner equal to $\SI{3.3x4.4}{mm}$, 
+	\protect\subref{fig:grid3} $\num{242x68}$ cells, with minimum cell size at the obstacle corner equal to $\SI{2x2.7}{mm}$,
+	\protect\subref{fig:grid2} $\num{280x82}$ cells, with minimum cell size at the obstacle corner equal to $\SI{1.4x2}{mm}$.	
+	$Re=\num{6e5}$.}
+	\label{fig:obstacle_grid}
+\end{figure}
+
+In Figure~\ref{fig:obstacle_begin}, we can see the velocity field near the beginning of the porous obstacle. At the frontal face of the porous-medium, a small portion of the main flow enters into the obstacle, while the left amount of fluid recirculates near the bottom of the channel. At the corner of the porous-medium, the flow is deflected towards an higher region, so that, at the upper surface of the obstacle, a recirculation is generated and the velocity at the porous wall is negative.
+In Figure~\ref{fig:obstacle_end}, we can see, instead, the velocity field near the end of the obstacle. The velocity pattern is analogous to the one generated by a backward facing step, as studied in Section~\ref{sec:bfs}. There is a small amount of fluid exiting from the porous-medium, but it does not seem to affect the eddies in the region after the obstacle.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{obstacle_begin_vel_labels.png}
+	\caption[Velocity field near the beginning of the obstacle in the obstacle problem]{Velocity field $[\si{m/s}]$ near the beginning of the obstacle in the obstacle problem, with $\mathrm{K} = \SI{e-9}{m^2}$ at $t=T$.
+	The dashed line is the interface.
+	The length of the arrows is not scaled. $Re = \num{6e5}$.}
+	\label{fig:obstacle_begin}
+\end{figure}
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{obstacle_end_vel2_labels.png}
+	\caption[Velocity field near the end of the obstacle in the obstacle problem]{Velocity field $[\si{m/s}]$ near the end of the obstacle in the obstacle problem, with $\mathrm{K} = \SI{e-9}{m^2}$ at $t=T$.
+	The dashed line is the interface.
+	The length of the arrows is not scaled. $Re = \num{6e5}$.}
+	\label{fig:obstacle_end}
+\end{figure}
+
+Now we analyse how a change in the permeability of the porous obstacle influences the flow field, considering a range from $\SI{e-11}{m^2}$ to $\SI{e-8}{m^2}$.
+
+In Figure~\ref{fig:obstacle_diff} we can see the magnitude of the difference between the velocity field when $\mathrm{K}=\SI{e-8}{m^2}$ and $\mathrm{K}=\SI{e-11}{m^2}$. We observe that the most relevant differences are near the beginning of the obstacle, arising from the upper-left corner. Near the end of the obstacle, instead, the flow field is approximately the same.
+\begin{figure}
+	\centering
+	\includegraphics[width=\textwidth]{obstacle_diff.png}
+	\caption[Magnitude of the difference of the velocity field in the obstacle problem considering two values of permeability]{Magnitude of the difference of the velocity field $[\si{m/s}]$ in the obstacle problem between the cases $\mathrm{K}=\SI{e-8}{m^2}$ and $\mathrm{K}=\SI{e-11}{m^2}$.}
+	\label{fig:obstacle_diff}
+\end{figure}
+\begin{figure}
+	\centering
+	\subfloat[$u$ component]{\includegraphics[width=0.4\textwidth]{obstacle_pm_diff_x.png}}\hspace{2cm}
+	\subfloat[$v$ component]{\includegraphics[width=0.4\textwidth]{obstacle_pm_diff_y.png}}
+	\caption[Difference of the velocity field at the beginning of the porous obstacle between two values of permeability]{Components of the difference $\mathbf{v}_8 - \mathbf{v}_{11}$ $[\si{m/s}]$ at the beginning of the porous obstacle, where $\mathbf{v}_n$ is the velocity field computed considering a permeability $\mathrm{K}=10^{-n}\;\si{m^2}$.}
+	\label{fig:obstacle_pm_diff}
+\end{figure}
+\begin{figure}
+	\centering
+	\input{../img/obstacle_velx}
+	\caption[Profiles of the $u$ component of the velocity above the porous obstacle]{Profiles of the $u$ component of the velocity at $y=h$, i.e. above the porous obstacle, which occupies the region $4.5 < x < 5.5$. $t=T$, $Re=\num{6e5}$.}
+	\label{fig:obstacle_velx}
+\end{figure}
+In Figure~\ref{fig:obstacle_diff} we observe the components of the same velocity difference, at the beginning of the porous-medium domain. The area around the upper-left corner is the one with the greatest difference. In particular, when $\mathrm{K} = \SI{e-8}{m^2}$, both components of the velocity are higher, so that more fluid coming from the free-flow region \emph{crosses} the corner of the porous obstacle and exits from above.
+In Figure~\ref{fig:obstacle_velx}, the profiles of the $u$ component of the velocity along the section at $y=h$, i.e. above the obstacle, are reported for different values of permeability. We observe negative values starting from $x=4.5$, corresponding to the recirculation above the porous-medium. As $\mathrm{K}$ increases, the minimum value of $u$ and the reattachment length, i.e. the point where the velocities becomes positive, increase. It is likely that, as a more relevant amount of fluid \emph{crosses} the corner of the porous-medium, the area where the flow is not only one point but is extended. As a result, the recirculation il slightly shifted in the flow direction, with the consequent increase of the reattachment length.
