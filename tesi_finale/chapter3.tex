@@ -1,8 +1,8 @@
 \chapter{Numerical model} \label{chap:discretization} %discretized equations?
-In this chapter we describe the methods that we have used to discretize the mathematical model. 
+In this chapter we describe the methods that we have chosen to discretize the mathematical model. 
 For the spatial discretization we use the finite volumes method, which allows 
 to solve flow problems efficiently, guaranteeing the conservation of mass also locally. See 
-\cite{fv:leveque} for a more general description.
+\cite{fv:leveque} for a general description.
 In the free-flow region, we discretize the equations using the staggered grid 
 concept, while in the porous-medium we employ a cell-centred approach with a 
 Two Point Flux Approximation (TPFA).
@@ -22,7 +22,7 @@ dissipation rate, at the same positions in the grid, spurious modes in the
 pressure solution may arise, leading to wrong results. In the context of finite 
 volumes, a possible solution to 
 this issue 
-is to store the variables in a \emph{staggered} fashion, putting 
+is to represent the variables in a \emph{staggered} fashion, putting 
 the degrees of freedom related to scalar variables, particularly the 
 pressure, at the centre of the cells 
 and those related to vectorial variables on the faces, aligned to the faces 
@@ -43,16 +43,16 @@ Navier-Stokes equations in a two-dimensional domain.
 	\label{fig:staggrid}
 \end{figure}
 
-This approach is known also as Marker and Cell (MAC), as it was called in its 
+This approach is known also as Marker and Cell (MAC), as it was names in its 
 first appearance in a paper by \textcite{stagg:orig}, within a finite 
 differences framework. A more recent description can be found in 
 \cite{main:vermal}.
 
-Another advantage of this discretization method is that on the boundary we have 
+Another advantage of this discretization method is that on the boundary we have naturally 
 the degrees of freedom of the normal component of the velocity, so it is easier 
 to impose boundary and interface conditions with respect to the case where all the degrees of freedom are stored at the cell centres.
 
-For the sake of simplicity we consider now a two-dimensional domain with 
+For the sake of simplicity we focus our attention on the two-dimensional case, where the velocity vector is 
 $\mathbf{v} = [u, v]^{\mathrm{T}}$.
 %
 \subsubsection{Continuity equation}
@@ -368,7 +368,7 @@ the same control volume  $V_p = [x_{i-1},x_i] \times [y_{j-1},y_j]$:
 \subsection{Linear differencing schemes} \label{subsec:diffscheme}
 The choice of the scheme for the approximation of a transported field is of 
 great importance for both the accuracy and the stability of the solution of the 
-problem. In general this decision has to be taken for every convective term. We have found it both in the discretization of the Navier-Stokes equations
+problem. In general this decision has to be taken for every convective term, in our case in the discretization of the Navier-Stokes equations
 and of the turbulence model equations. As already mentioned, an 
 important property that the scheme should have is the \emph{transportativeness} 
 (see \cite{main:vermal}), i.e. it should take into account the direction of the 
@@ -381,13 +381,13 @@ point of view instead we can introduce the following dimensionless number, the \
 \begin{equation}
 	Pe = \frac{|u| h}{2\nu},
 \end{equation}
-where $h$ denotes the cell width. When the grid is too coarse or the viscosity 
+where $h$ denotes the cell width. It discriminates between stable and unstable discretization for a given flow: when the grid is too coarse or the viscosity 
 is too low $Pe\rightarrow\infty$, and this can lead to a loss of stability of 
 the numerical method (see for example \cite{main:quarteroni}).
 
-In the following we will list the most immediate options for linear schemes, 
+In the following we will list the most straight-forward options for linear schemes, 
 referring to the 
-convective term of the equation~\eqref{eq:stagu} for the $x$-component of the 
+convective term of the equation~\eqref{eq:stagu} for the $u$ component of the 
 velocity. Here we consider uniform grids, with positive 
 transporting velocity according to 
 Figure~\ref{fig:superscripts}, but all the schemes can be generalized to the 
@@ -415,7 +415,7 @@ of second order, but, being symmetric, it does not have the transportativeness
 property. Indeed it can be shown that, when $Pe > 1$, it is not stable.
 %
 \subsubsection{Upwind scheme}
-In opposition to the CD scheme, the upwind scheme consists in using only the 
+Opposed to the CD scheme, the upwind scheme consists in using only the 
 upstream value:
 \begin{equation} \label{eq:upwind}
 	u^* = u^U.
@@ -535,7 +535,7 @@ should dampen the flux contribution in regions of the domain where it
 could produce oscillations. It is chosen non-negative in order to preserve the 
 sign of the flux and it depends on the variable $r$, that is defined as the 
 ratio between two consecutive differences of the solution. The non-linearity 
-can not be avoided, in fact it was proved by \textcite{tvd:godunov} that any 
+cannot be avoided, in fact it was proved by \textcite{tvd:godunov} that any 
 monotonicity preserving linear scheme can be at most first order accurate.
 
 Exploiting the approximation \eqref{eq:tvdformula} to solve a problem like
@@ -729,7 +729,7 @@ in the factor $r$ defined in \eqref{eq:tvdformula}.
 The idea is that if the grid is not uniform, the distances between $u^D$ and 
 $u^U$ and between $u^U$ and $u^{FU}$ might be different, as it is represented 
 in Figure~\ref{fig:nonunifli}. In this situation the formula 
-\eqref{eq:tvdformula} can not be used directly, because the degree of freedom 
+\eqref{eq:tvdformula} cannot be used directly, because the degree of freedom 
 $u^{FU}$ is not at the position 
 $u^{FU^*}$, where it would be if the grid was uniform, with cell sizes equal to 
 the distance between $u^U$ and $u^D$, i.e. at the position upstream with 

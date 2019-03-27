@@ -1,5 +1,5 @@
 \chapter{Governing equations} \label{chap:equations} %mathematical model?
-In this chapter we present the equations that used to model the 
+In this chapter we present the equations that we have used to model the 
 free-flow and the porous-medium flow. For the free-flow we start 
 considering the incompressible Navier-Stokes equations to simulate laminar 
 flows, then we move to the Reynolds Averaged Navier-Stokes (RANS) equations with the $k\text{-}\omega$ 
@@ -32,10 +32,10 @@ and the first law of thermodynamics:
 \end{equation}
 for any material volume $V$. In equation \eqref{eq:2newton} vector 
 $\mathbf{b}$ represents possible external volume forces per unit of mass, for 
-example the gravity $\mathbf{g}$. $\sigma$ is the Cauchy stress tensor 
+example the gravity $\mathbf{g}$, $\sigma$ is the Cauchy stress tensor 
 and 
 $\mathbf{n}$ is the outward unit vector normal to the surface $\partial V$ of 
-$V$, while in equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
+$V$. In equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
 heat added to the fluid and $\dot{W}$ is the net rate of work done on the fluid.
 
 For viscous fluids we can identify two contributions in the Cauchy stress 
@@ -63,11 +63,11 @@ Moreover we define the kinematic viscosity
 
 We want to deal with incompressible fluids with a constant density that is not 
 related to the pressure through a state equation. Thus, the 
-energy equation becomes decoupled from the others and we can exclude it from 
+energy equation can be decoupled from the others and we can exclude it from 
 the system. 
 Notice that, with this assumption, $p$ is no longer the thermodynamic pressure.
 Using these assumptions from the balance equations 
-\eqref{eq:masscons} and \eqref{eq:2newton} we obtain the Navier-Stokes 
+\eqref{eq:masscons} and \eqref{eq:2newton} we obtain the incompressible Navier-Stokes 
 equations:
 \begin{align}
 \label{eq:nsmass} \nabla \cdot \mathbf{v} = 0&\\
@@ -88,7 +88,7 @@ viscosity.
 When the equations \eqref{eq:nsmass} and \eqref{eq:nsmom} are solved in a 
 bounded domain $\Omega_\text{ff}$, suitable conditions have to be provided at 
 the boundary $\partial \Omega_\text{ff}$, depending on the situation that we 
-want to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
+want to model. Common choices, adopted also in the test cases in Chapter~\ref{chap:results}, are the following:
 \begin{itemize}
 	\item on inflow boundaries, Dirichlet conditions are imposed to the 
 	velocity:
@@ -117,8 +117,8 @@ want to model. Common choices, adopted also in Chapter~\ref{chap:results}, are:
 \end{itemize}
 Moreover it is usually useful to take advantage of symmetries in the flow 
 field, 
-when they are known because of the domain and of the other boundary conditions. 
-For example, in order to model a flow in a pipe, we can impose the following 
+when they are known because of the domain and of the boundary conditions. 
+For example, to model a flow in a channel, we can impose the following 
 symmetry conditions along the centre of the domain and consider only half of it:
 \begin{equation}
 \nabla p \cdot \mathbf{n} = 0, \quad \nabla v_t \cdot \mathbf{n} = 0, \quad
@@ -129,7 +129,7 @@ where $v_t$ an $v_n$ are the tangential and normal components of the velocity.
 \subsubsection{Reynolds number}
 If we consider the non-dimensional form of equation \eqref{eq:nsmom}, scaling 
 the lengths by a reference quantity $L$ and the velocities by a reference 
-quantity $U$, and if we neglect the gravity, we obtain
+quantity $U$, and neglecting gravity, we obtain
 \begin{equation} \label{eq:momnondim}
 	\frac{\partial{\tilde{\mathbf{v}}}}{\partial \tilde{t}} + \tilde{\nabla} 
 	\cdot (\tilde{\mathbf{v}} \tilde{\mathbf{v}}^\mathrm{T}) - \tilde{\nabla} 
@@ -137,13 +137,13 @@ quantity $U$, and if we neglect the gravity, we obtain
 	\tilde{\nabla} 
 	\tilde{p} = 0,
 \end{equation}
-where the non-dimensional number $Re$ that multiplies the viscous term is the 
+where $\tilde{\cdot}$ denotes non-dimensional quantities. The non-dimensional number $Re$ that multiplies the viscous term is the 
 Reynolds number and it is defined as:
 \begin{equation}
 Re = \frac{UL}{\nu}.
 \end{equation}
-This quantity plays an important role in the behaviour of the solution of the 
-Navier-Stokes equations since it expresses the ratio between the inertia forces 
+This quantity plays an important role characterising the behaviour of the solution of the 
+Navier-Stokes equations, since it expresses the ratio between the inertial forces 
 and the viscous forces. This can be easily seen in equation 
 \eqref{eq:momnondim} since, when $Re\gg 1$, the viscous term loses 
 importance with respect to the advective one and vice versa.
@@ -166,7 +166,7 @@ behaviour, that shows space and time fluctuations of the physical quantities
 related to the flow, as we can see in Figure~\ref{fig:fluctuations}. Due to 
 this complexity, turbulence is usually studied with 
 a statistical approach, relying on the theory developed by Kolmogorov 
-in 1941 \cite{turbo:kolmogorov}. A wider description of turbulence can be 
+in 1941 \cite{turbo:kolmogorov}. A complete description of turbulence can be 
 found for example in \cite{main:pope}, \cite{main:wilcox} or 
 \cite{main:davidson}.
 \begin{figure}[ht]
@@ -179,12 +179,11 @@ found for example in \cite{main:pope}, \cite{main:wilcox} or
 
 The first thing that can be observed in a turbulent flow is the presence of 
 many three-dimensional eddies, that enhance the dispersive and mixing 
-properties 
-of the fluid. 
+properties of the flow. 
 They cover a wide spectrum of length scales, in which we can identify 
 three distinct bands; in the first one, corresponding to large scales, 
 comparable to the size of the domain, there is an injection of kinetic energy 
-and eddies are generated. Then, there is an intermediate band in which the 
+and eddies are generated. Then, there is an intermediate band in which 
 convection is dominant and eddies shrink without a significant loss of energy. 
 The third band corresponds to the smallest scales at which eddies are present. 
 In fact, once they reach a certain size, the effect of viscosity starts to 
@@ -205,20 +204,20 @@ the Richardson energy cascade (Figure~\ref{fig:cascade}).
 
 \subsubsection{Simulation of turbulent flows}
 From the Kolmogorov theory we can obtain useful information for the simulation 
-of turbulent flows. Let us indicate with $l_0$ the length scale at which the 
+of turbulent flows. Let us indicate with $l_0$ the length scale at which 
 eddies are generated and with $l_D$ the length scale at which they dissipate. 
-Then according to \cite{turbo:kolmogorov} it can be obtained that
+Then, according to \cite{turbo:kolmogorov}, it can be obtained that
 \begin{equation} \label{eq:scaleratio}
 	\frac{l_0}{l_D} \sim Re^\frac{3}{4}.
 \end{equation}
 If we want to perform a reliable simulation of a turbulent flow using the 
 Navier-Stokes equations \eqref{eq:nsmass}-\eqref{eq:nsmom}, we need a grid with 
 a spatial resolution sufficient to resolve all the eddies until the smallest 
-ones, otherwise we would neglect the important information about the viscous 
+ones, otherwise we would neglect important information about the viscous 
 dissipation of these structures. Assuming to have a domain of size comparable 
 to $l_0$, then we need a size of the cells of the grid not bigger than $l_D$ and
 from \eqref{eq:scaleratio} we deduce that we need at least $Re^\frac{3}{4}$ 
-cells in each of the three dimensions of a domain. Because of the fluctuating 
+cells in each of the three dimensions of the domain. Because of the fluctuating 
 behaviour of turbulence, we always have to perform unsteady simulations, so let 
 us denote with $t_0$ the characteristic time of evolution of the eddies at 
 $l_0$ and with $t_D$ the characteristic time of evolution of the eddies at 
@@ -226,7 +225,7 @@ $l_D$. Again from \cite{turbo:kolmogorov} we have that
 \begin{equation}
 \frac{t_0}{t_D} \sim Re^\frac{1}{2}.
 \end{equation}
-The total number of operations needed in a simulation $N$ can be considered 
+The total number of ``operations'' $N$ needed in a simulation can be considered 
 proportional to:
 \begin{equation}
 	N \sim  N_t N_\text{elem},
@@ -258,13 +257,13 @@ field, avoiding to simulate all the eddies but without forgetting to take into
 account their effect. In engineering applications this is the most common way 
 to simulate turbulent flows because it is cheap and usually the mean 
 information is enough for many applications, but we must not forget that 
-the obtained result is not the flow field as it appears in realty.
+the obtained result is not the flow field as it appears in reality.
 In case that more detail is needed, another approach is given by the Large 
 Eddy Simulations (LES), that consist in applying a filter to the Navier-Stokes 
-equation that let resolve the eddies until a certain threshold.
+equation that let us resolve the eddies until a certain threshold size.
 
-The first move towards the RANS equations is to decompose each instantaneous 
-quantity in the sum of a mean value and a fluctuation: 
+The first step towards the RANS equations is to decompose each instantaneous 
+quantity in the sum of a mean value $\bar{\cdot}$ and a fluctuation $\cdot'$: 
 \begin{equation} \label{eq:decomp}
 \mathbf{v} = \bar{\mathbf{v}} + \mathbf{v}', \quad p = \bar{p} + p'.
 \end{equation}
@@ -309,30 +308,27 @@ represents the diffusive effect of turbulence (see \cite{main:vermal}).
 \subsubsection{Boundary layers} \label{subsec:bl}
 When a fluid flows along a boundary, such as a solid wall, the region near the 
 the wall is called boundary layer and it is important because the 
-viscosity plays an important role there, even in turbulent conditions.
+viscosity plays a major role there, even in turbulent conditions.
 Independently of the flow regime, the no-slip condition imposes a null velocity 
 at the wall and thus a gradient orthogonal to the flow direction. The thickness 
 of the boundary layer $\delta$ is conventionally defined as the position where 
-the velocity 
-reaches the 99\% of its maximum value and different values are observed for 
-different kinds of flow.  See for 
-example \cite{main:pope} or \cite{main:davidson} for a complete description.
+the velocity reaches the 99\% of its maximum value and different values are observed for 
+different kinds of flow.  See for example \cite{bl:schlichting}, \cite{main:pope} or \cite{main:davidson} for a complete description.
+
 \begin{figure}
 	\centering
-	\includegraphics[width=0.8\textwidth]{boundary_layer.png}
+	\includegraphics[width=0.8\textwidth]{boundary_layer_axis.png}
 	\caption[Boundary layer along a flat plate]{Scheme of the evolution of a 
-	boundary layer along a flat plate. Figure source: \cite{tesi:fetzer}.}
+	boundary layer along a flat plate. The origin of the $x$-axis is set at the stagnation point. Figure source: \cite{tesi:fetzer}.}
 	\label{fig:bl}
 \end{figure}
-
-Let us consider a flow over a flat plate as drawn in Figure~\ref{fig:bl}: when 
-the flow reaches the plate a laminar boundary layer starts to develop, inside 
-it a laminar regime holds and it is characterized by a moderate gradient of the 
+Let us consider a flow over a flat plate as depicted in Figure~\ref{fig:bl}: when 
+the flow reaches the plate a laminar boundary layer starts to develop. Initially a laminar regime holds and the layer is characterized by a moderate gradient of the 
 velocity profile at the wall. After a certain distance a turbulent boundary 
 layer starts to grow: it is thicker but the gradient of the velocity at the 
 wall is stronger. We can define a Reynolds number based on the distance from 
 the beginning of the plate and another one based on the boundary layer 
-thickness:
+thickness, respectively
 \begin{equation}
 Re_x = \frac{u^\infty x}{\nu}, \quad Re_\delta = \frac{u^\infty 
 	\delta}{\nu},
@@ -340,8 +336,8 @@ Re_x = \frac{u^\infty x}{\nu}, \quad Re_\delta = \frac{u^\infty
 where $u^\infty$ is the maximum velocity far from the wall.
 
 For the laminar boundary layer the profile can be computed analytically 
-through the Blasius equation, which is obtained using dimensional arguments. 
-The thickness grows as the square root of $x$:
+through the Blasius equation, which is obtained using dimensional arguments (see \cite{bl:schlichting}). 
+The thickness grows as the square root $x$, i.e. the distance from the stagnation point:
 \begin{equation}
 \delta(x) = 4.9 \frac{x}{\sqrt{Re_x}} = 4.91\sqrt{\frac{x 
 		\nu}{u^\infty}}.
@@ -358,7 +354,7 @@ different regions can be identified:
 \begin{itemize}
 	\item near the wall, for approximately $y^+ < 5$, a small laminar viscous 
 	sublayer is 
-	always present and it can not be neglected. In this area the viscous 
+	always present and it cannot be neglected. In this area the viscous 
 	stresses are dominant over the Reynolds stresses and the velocity profile 
 	can be approximated with a linear relation:
 	\begin{equation}
@@ -376,8 +372,7 @@ different regions can be identified:
 	\end{equation}
 	where $\kappa$ is the von K\'arm\'an constant,
 	\item at last there is an external region, in which the behaviour depends 
-	on 
-	the real situation.	
+	on the external flow field.	
 \end{itemize}
 Be aware that the numbers given above as bounds for $y^+$ are not universal but 
 are very problem-dependent.
@@ -386,8 +381,8 @@ The quantity $\tau_R$ is a symmetric tensor with $dim \times dim$ entries, so
 in three 
 dimensions we have 6 new unknowns that need to be modelled in order to close 
 the problem, this procedure is known as turbulence modelling.
-In 1877 Boussinesq proposed that $\tau_R$ could be similar to the viscous 
-stress tensor:
+In 1877 \textcite{ipo:boussinesq} suggested that $\tau_R$ could be similar to the viscous 
+stress tensor, thus expressed as
 \begin{equation} \label{eq:bouss}
 \tau_R = 2\mu_t \bar{\mathbf{S}} - 
 \frac{2}{3}\varrho k \mathbb{1}.
@@ -396,12 +391,12 @@ The first term has the same form of $\tau$ if we consider the mean velocity
 field, 
 the only difference is that the dynamic viscosity $\mu$ is substituted by a 
 turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term is needed 
-to model the isotropic part of $\tau_R$ correctly, as seen below:
+to model the isotropic part of $\tau_R$ correctly:
 \begin{equation} \label{eq:tracciatau}
 tr(\tau_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
 -\varrho \sum_{i=1}^{dim} \overline{(v_i')^2} = -2\varrho k,
 \end{equation}
-where $k$ is the turbulent kinetic energy and it is defined as
+where $k$ is the turbulent kinetic energy defined as
 \begin{equation}
 k = \frac{1}{2} \sum_{i=1}^{dim} \overline{(v_i')^2},
 \end{equation}
@@ -422,14 +417,14 @@ where we have introduced an effective kinematic viscosity
 \begin{equation}
 	\nu_\text{eff} = \nu + \nu_t, \quad \nu_t = \frac{\mu_t}{\varrho}.
 \end{equation}
-Since for incompressible fluids we have erased the thermodynamic relation 
+Since for incompressible fluids we have removed the thermodynamic relation 
 between $\varrho$ and $p$, we can consider as unknown a generalized pressure 
 $p_\text{gen}$ such that:
 \begin{equation}
 p_\text{gen} = \bar{p} + \frac{2}{3}\varrho k,
 \end{equation}
-reducing the unknowns to $\nu_t$ alone, for which we can employ different 
-turbulence models to estimate it.
+reducing the unknowns to $\nu_t$ alone, which can be estimated using different 
+turbulence models.
 
 The idea of the Boussinesq hypothesis \eqref{eq:bouss} comes partially from an 
 analogy 
@@ -530,7 +525,7 @@ is common to use a wall function such as the one given by the boundary layer
 theory \eqref{eq:loglaw} in order to compute the velocities at the cells near 
 the wall. This can be done easily for flat walls and it brings also 
 computational advantages, because we can avoid to have very small cells near 
-the wall that resolve the viscous sublayer.
+the wall to resolve the viscous sublayer.
 
 Over the years, many variants of this model have been developed, for example 
 the \emph{RNG}~$k\text{-}\varepsilon$ model, which is derived with a different 
@@ -570,7 +565,7 @@ The term
 \begin{equation}
 \frac{\sigma_d}{\omega} \nabla k \cdot \nabla \omega
 \end{equation}
-is new. It is related to cross-diffusion and its activation depends on the 
+is a new addition with respect to \eqref{eq:epsilon}. It is related to cross-diffusion and its activation depends on the 
 direction of the gradients of $k$ and $\omega$:
 \begin{equation}
 \sigma_d =
@@ -585,7 +580,7 @@ The turbulent viscosity $\nu_t$ is obtained as
 \nu_t = \frac{k}{\tilde{\omega}}, \quad \tilde{\omega} = \max \Bigg\{ \omega, 
 C_\text{lim} \sqrt{ 2\frac{\mathbf{S}\cdot\mathbf{S}}{\beta^*}} \Bigg\}.
 \end{equation}
-The model is closed with the following coefficients:
+The model is closed with the following empirical coefficients:
 \begin{equation}
 	\beta^* = \frac{9}{100}, \quad \sigma^* = \frac{3}{5}, \quad \alpha = 
 	\frac{13}{25}, \quad \beta = \frac{177}{2500}, \quad \sigma = \frac{1}{2}, 
@@ -619,7 +614,7 @@ As boundary conditions, we have:
 	\item on inflow boundaries, Dirichlet conditions are set both for $k$ and 
 	$\omega$. According to \cite{ko:ansys}, the following formulas can be used:
 	\begin{equation} \label{eq:koic}
-		k = \frac{3}{2} (|\!|\mathbf{v}|\!|_\text{in} I)^2, \quad \omega = 		
+		k = \frac{3}{2} (|\!|\mathbf{v}_\text{in}|\!|	 I)^2, \quad \omega = 		
 		\frac{100k^{1/2}}{7C_\mu^{1/4}L},
 	\end{equation}
 	where $\mathbf{v}_\text{in}$ is the inflow velocity and $I$ is a 
@@ -646,14 +641,14 @@ As boundary conditions, we have:
 \section{Porous-medium flow} \label{sec:pm}
 According to \cite{forch:nield} a porous-medium is ``a material consisting of a 
 solid matrix with an interconnected void''. The void spaces are called 
-\emph{pores} and they allow a fluid to go through the material. We consider the 
+\emph{pores} and they allow a fluid to flow through the material. We consider the 
 solid matrix to be fixed, neglecting the fluid-structure interaction. Examples 
 of porous-media are sand, wood, soil, 
 sandstone and ceramics.
 
 To simulate flow through a porous medium theoretically we could use 
 the standard fluid dynamics equations at the pore scale, but this approach is
-extremely expensive because of the strict spatial and temporal requirement of a direct numerical simulation in such a complex domain. Moreover, from the point of view of applications, the knowledge of the model variables inside the pores is often useless, considering also the fact that at this level they are very irregular and also it is hard to get measurements of them.
+extremely expensive because of the strict spatial and temporal requirement of a direct numerical simulation in such a complex domain. Moreover, from the point of view of applications, the knowledge of the model variables at such level of detail is often useless, considering also the fact that at this scale they are very irregular and, also, it is hard to get measurements of them.
 What is usually done is to 
 upscale the description of the flow by considering averaged quantities within a 
 Representative Elementary volume (REV), thus considering the 
@@ -730,6 +725,7 @@ reduces to
 \end{equation}
 %
 \subsection{Momentum equation}
+According to the assumptions, we can obtain different laws.
 \subsubsection{Darcy's law}
 For the momentum equation the most common choice is the Darcy's law:
 \begin{equation} \label{eq:darcy}
@@ -743,7 +739,7 @@ inertial effect can be neglected.
 
 It was first obtained experimentally by Henry Darcy in 1856, who discovered a 
 proportionality between the flow rate and the pressure drop across a uniform 
-porous-medium. After that there have been many tries to derive it analytically, 
+porous-medium. After that there have been many attempts to derive it analytically, 
 starting from the Navier-Stokes equations and using volume averaging techniques 
 with different assumptions made, see for example \cite{volaver:ithakerdarcy}. 
 Moreover it can be obtained through a homogenization procedure if the 
@@ -759,7 +755,7 @@ through the Carman-Kozeny equation (see \cite{forch:nield}).
 There exist many generalizations of Darcy's law, for example to multiphase 
 and multicomponent flows, to non-Newtonian fluids or, as in this case, to 
 higher Reynolds numbers. The 
-extension that we are interested in is the following Forchheimer's law:
+extension that we are interested in is the so called Forchheimer's law \cite{forch:1901}, that reads:
 \begin{equation} \label{eq:forch}
 	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} 
 	|\mathbf{v}|\mathbf{v} = - \frac{1}{\mu} \mathbf{K}(\nabla p - \varrho 
@@ -770,7 +766,7 @@ here taken equal to $0.55$, even if there exist many different corrections (see
 \cite{forch:nield} and \cite{forch:tesi}).
 
 As reported by \textcite{forch:nield}, the equation was originally proposed by 
-\textcite{forch:1901}, but the dependence on $\sqrt{\mathbf{K}}$ was introduced 
+Forchheimer in 1901, but the dependence on $\sqrt{\mathbf{K}}$ was later introduced 
 by \textcite{forch:ward}. \textcite{volaver:withakerforch} 
 derived it with the volume averaging  starting from the Navier-Stokes equations.
 
@@ -800,8 +796,8 @@ porous-medium domain, then
 is the interface between them.
 
 Following \textcite{paper:mosthaf}, we would like to have conditions such that 
-the interface could follow local thermodynamic 
-equilibrium as closely as possible. However, this can not be rigorously achieved due to the 
+the interface could be as close as possible to local thermodynamic 
+equilibrium. However, this cannot be rigorously achieved due to the 
 different model concepts in the two subdomains. Since we are dealing with 
 single-phase, single-component isothermal flows, we only have to impose the 
 mechanical equilibrium, for which we need:
@@ -826,7 +822,7 @@ mechanical equilibrium, for which we need:
 		\mathbf{n}]_\text{ff} = 
 		- [p\mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
 	\end{equation}
-	that may result in a jump of the pressure at the interface, although it is typically a continuous thermodynamic variable,
+	that may result in a jump of the pressure at the interface, although pressure is typically a continuous thermodynamic variable,
 	\item a condition for the tangential component of the velocity in the 
 	free-flow and in particular we use the one proposed by \textcite{inter:bj}:
 	\begin{equation}
@@ -849,7 +845,7 @@ mechanical equilibrium, for which we need:
 		\{1, 
 		\dots, dim-1\},
 	\end{equation}
-	so we neglect the velocity in the porous-medium since it is very small with 
+	so we neglect the tangential velocity in the porous-medium since it is very small with 
 	respect to the one in the free-flow region, thus obtaining the 
 	Beavers-Joseph-Saffman (BJS) condition:
 	\begin{equation} \label{eq:bjs}

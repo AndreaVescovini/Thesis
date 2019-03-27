@@ -7,11 +7,9 @@ drying rate of an adjacent wet porous-medium like a soil, as studied by
 \textcite{tesi:mosthaf}, \textcite{intro:davarzani} and \textcite  
 {tesi:fetzer}.
 Although systems like this are very common,	they involve
-%This kind of system, in spite of its simplicity, involves
 many different physical phenomena that act at 
-different scales and
-due to concerns of scales and the complexity of the phenomena,
-%Thus
+different scales and,
+due to the variety of time and space scales involved and the complexity of the phenomena,
 a reliable prediction of the evaporation rates is still a challenge. In Figure~\ref{fig:intro} we can 
 see a schematic representation of the mechanisms that play a role in such a 
 situation, where both transport and thermal effects can be relevant. 
@@ -41,7 +39,7 @@ total land area is affected by salinization.
 %The part of the soil which is most involved in this problem is the one near the 
 %surface, hence it is important to study the interactions between the free-flow 
 %and the porous-medium flow that occur there.
-The section of a soil profile which is most affected by salinization is the one near the surface, hence the importance of studying the interactions between the free-flow and the porous-medium flow that occur there.
+The section of soil which is most affected by salinization is the one near the surface, hence the importance of studying the interactions between the free-flow and the porous-medium flow that occur there.
 For example, \textcite{intro:salinization} have investigated the application of kinetic 
 approaches to describe the salt precipitation in a coupled system.
 \begin{figure}
@@ -56,7 +54,7 @@ approaches to describe the salt precipitation in a coupled system.
 	\label{fig:intro2}
 \end{figure}
 
-Switching to a technical framework, Proton Exchange Membrane (PEM) fuel cells 
+Switching to technical applications, Proton Exchange Membrane (PEM) fuel cells 
 represent a possible alternative power source that, in particular, could be 
 used for transportation. In their design, transport and diffusion phenomena 
 through gas channels and gas diffusers play an important role in the 
@@ -74,7 +72,7 @@ water could flood the catalyst layers, with the result of an inhibition of the
 reactions.
 Because of the complex and compact geometry of PEM fuel cells, it is generally 
 difficult and expensive to take measurements, thus mathematical and numerical 
-models are helpful in order to better understand the mechanical, thermal and 
+models are helpful to better understand the mechanical, thermal and 
 chemical phenomena that take place and this way improve the cell performances 
 and lifetime.
 
@@ -89,7 +87,7 @@ In order to study these processes we focus on
 the case of the evaporation from a porous material and we consider
 a system that 
 involves two subdomains: the upper one with a free-flow and the lower one 
-occupied by a porous-medium, as it is represented in Figure~\ref{fig:intro}.
+occupied by a porous-medium, represented in Figure~\ref{fig:intro}.
 At the interface between the two subdomains there is exchange of mass, momentum 
 and energy.
 
@@ -147,7 +145,7 @@ imposition of thermodynamic equilibrium. \textcite{intro:davarzani}, instead, fo
 turbulent flows, in \cite{tesi:fetzer} several turbulence models are tested and 
 possible simplifications in the implementation of interface conditions are 
 considered. The effects of turbulence, as well as the non-linear inertial 
-effects of the Navier-Stokes equations, are sometimes neglected, for 
+effects of the Navier-Stokes equations, are sometimes neglected for 
 simplicity, 
 but to model natural systems they must be included as they
 %play an important role in most of the situations.
@@ -161,7 +159,7 @@ Rough interfaces have been taken into account also in \cite{intro:kuzbek} and \c
 Theoretical results about the well-posedness can be found in \cite{intro:disca}, for the Stokes/Darcy problem, and in \cite{intro:disca2009}, for the Navier-Stokes/Darcy problem. They are based on classical results for saddle-point problems. Regarding the numerical aspects, many different methods have been employed in literature. In \cite{intro:disca2009} several finite elements choices are considered, in \cite{tesi:mosthaf} the box method is used, while in \cite{tesi:fetzer} the same box method is compared to a combined staggered and collocated finite volumes method. In \cite{intro:disca} an iterative algorithm is proposed in order to decouple the two subdomains, while in \cite{intro:rybak} a temporal decoupling strategy is used.
 
 \section{Content of the thesis}
-In this thesis the focus is on the improvement, from the numerical point of view, of the free-flow model with respect to \cite{tesi:fetzer} and on the further investigation of the effects given by a rough interface between the two subdomains.
+In this thesis the focus is on the improvement, from the numerical point of view, of the free-flow model with respect to \cite{tesi:fetzer} and on the further investigation of the effects of a rough interface between the two subdomains.
 
 When the flow is in a turbulent regime, turbulent eddies develop near the interface and 
 they cascade through consecutively smaller scales until the kinetic energy 
@@ -189,7 +187,7 @@ been derived with the purpose of providing a solution with a second order
 accuracy, but without any risk of numerical oscillations. They are called also 
 high resolution methods \cite{tvd:monotonicity}.
 
-Using this tool, we study a coupled system involving a turbulent free-flow and a porous-medium flow, considering an isothermal, single-phase, single-component fluid. It is a simplified model with respect to the one employed in \cite{tesi:fetzer} to study evaporation processes, but it allows to focus on the fluid mechanical phenomena that occur at the interface. In particular, being in nature the soil surface intrinsically rough, it is important to investigate the effects given by a rough interface, to obtain a deeper understanding of the flow behaviour in this situation. 
+Using this tool, we study a coupled system involving a turbulent free-flow and a porous-medium flow, considering an isothermal, single-phase, single-component fluid. It is a simplified model with respect to the one employed in \cite{tesi:fetzer} to study evaporation processes, but it allows to focus on the fluid mechanical phenomena that occur at the interface. In particular, being the soil surface intrinsically rough in nature, it is important to investigate the effects given by a rough interface, to obtain a deeper understanding of the flow behaviour in this situation. 
 
 The thesis is organized as follows. In Chapter~\ref{chap:equations}, the equations employed in the models will be 
 presented, with particular attention to the free-flow equations. In 
@@ -199,7 +197,7 @@ in Chapter~\ref{chap:results}, the numerical results will be shown. In
 particular, we will
 %see the application of the TVD methods to the Navier-Stokes 
 %equations in comparison to 
-compare the results obtained with the TVD methods with those obtained
+compare the results obtained with the TVD methods with those obtained with
 the first order upwind scheme. Then, two tests 
 involving turbulent flows are presented and, finally, more complex scenarios involving 
 a rough interface, consisting of cavities or porous obstacles, between a 
