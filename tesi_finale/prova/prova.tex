@@ -1,0 +1,108 @@
+% !TEX encoding = UTF-8 Unicode
+% !TEX TS-program = pdflatex
+ \documentclass[%
+ 	12pt,
+ 	a4paper,
+	twoside, openright
+%	oneside, openany
+]{book}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[british, italian]{babel}
+\usepackage{lmodern}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{xspace}% per i colori
+\usepackage{tocbibind}%per aggiungere toc, listoffig, listoftab alla toc
+\usepackage{graphicx}
+\graphicspath{{../../img/}}
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=newest}
+\pgfplotsset{plot coordinates/math parser=false}
+%\usepackage{pgfgantt} %gantbar (mai usata..)
+%\usepackage{pdflscape} % forse inutile
+\usepackage{subfig} % per posizionare tante figure
+\usepackage{bbold} % per \mathbb
+\usepackage{booktabs} % per i filetti delle tabelle
+%\usepackage[font=small]{caption} % font diverso nelle didascalie
+\usepackage[section]{placeins} % ridefinisce section inserendo un \FloatBarrier
+\usepackage{emptypage} % pagina tutta bianca a fine capitolo
+\usepackage{pdfpages} % per inserire pdf
+\usepackage[separate-uncertainty=true]{siunitx} % per le unitàdi misura
+\usepackage[autostyle]{csquotes} % per la bibliografia
+\usepackage[style=alphabetic,maxbibnames=99,maxcitenames=2,backend=biber]{biblatex}%styles:
+% numeric,trad-plain
+%\usepackage[bindingoffset=4mm]{geometry} % aggiunge spazio per la rilegatura
+\usepackage{fancyhdr} % per le testatine
+\pagestyle{fancy}
+\renewcommand{\chaptermark}[1]{\markboth{\chaptername\ \thechapter\ -\ #1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection\ -\ #1}}
+\fancyhf{}
+\fancyhead[RO]{\slshape\nouppercase{\rightmark}}%twoside
+\fancyhead[LE]{\slshape\nouppercase{\leftmark}}%twhoside	
+%\fancyhead[C]{\slshape\nouppercase{\leftmark}}%oneside
+\fancyfoot[C]{\thepage}
+\setlength{\headheight}{14.5pt}
+\PassOptionsToPackage{hyphens}{url}
+\usepackage{hyperref} % va caricato per ultimo
+\hypersetup{%
+	pdfpagemode={UseOutlines},
+	bookmarksopen,
+	pdfstartview={FitH},
+	hidelinks
+}
+\pdfminorversion=7 % per togliere il warning delle immagini
+\pdfsuppresswarningpagegroup=1 % warning per due immagini pdf in una pagina
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+\renewcommand*{\pagenumbering}[1]{} % per mettere un'unica numerazione
+
+\newlength{\figwidth}\setlength{\figwidth}{0.39\textwidth}
+\newlength{\widthsette}\setlength{\widthsette}{0.7\textwidth}
+\newlength{\widthsei}\setlength{\widthsei}{0.6\textwidth}
+\newlength{\roughwidth}\setlength{\roughwidth}{0.9\textwidth}
+\newlength{\roughheight}\setlength{\roughheight}{\roughwidth}
+\newlength{\bfshalfwidth}\setlength{\bfshalfwidth}{0.41\textwidth}
+\newlength{\bfsheight}\setlength{\bfsheight}{0.4\textwidth}
+
+\makeatletter
+\newcommand{\addemptysup}{\@ifnextchar^{}{^{}}}
+\makeatother
+
+\newcommand{\RUD}{R_{U,D}\addemptysup}
+\newcommand{\RFUU}{R_{FU,U}\addemptysup}
+\newcommand{\xU}{x_{U}\addemptysup}
+\newcommand{\xD}{x_{D}\addemptysup}
+\newcommand{\xFU}{x_{FU}\addemptysup}
+
+\emergencystretch=1em % per gli overfull hbox nella bibliografia.
+\addbibresource{../bibliotesi.bib}
+
+\DeclareMathOperator{\esssup}{ess\,sup}
+
+\begin{document}
+\selectlanguage{british}
+\frontmatter
+%\pagenumbering{Roman}
+\includepdf[pages=-]{Frontespizio-sss.pdf}
+\chapter{Abstract}
+\input{lorem}
+\tableofcontents
+\listoffigures
+\mainmatter
+\chapter{Intro}
+\input{lorem}
+\begin{figure}
+\centering
+\input{../../img/tvd_region_modified_hou_final_report}
+\caption[short text]{text}
+\end{figure}
+\appendix
+\renewcommand{\chaptername}{Appendix}
+\chapter{App}
+\input{lorem}
+\backmatter
+\printbibliography[heading=bibintoc]
+\end{document}
