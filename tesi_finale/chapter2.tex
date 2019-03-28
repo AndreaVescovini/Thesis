@@ -697,7 +697,11 @@ where $\chi(\mathbf{x})$ is the characteristic function of the void space:
 For simplicity we will assume to have porous-media with constant porosity. In 
 natural materials usually $\varphi$ is not greater then $0.6$, but for some 
 artificial materials, such as metallic foams, $\varphi$ could be almost $1$.
-We will also consider only single-phase, single-component flows.
+
+When two or more fluids flow through the pores, for example liquid water and gaseous air, we have a \emph{multiphase} flow system. According to \cite{main:helmig}, the term \emph{phase} denotes each of the distinct fluids that are separated by a sharp interface, across which discontinuities in fluid properties exist. A phase can be a pure substance or a mixture of substances with uniform chemical structure and physical properties, so a phase is a homogeneous system. Different phases, instead, can present different physical properties and thermodynamic variables.
+In general, multiple liquid phases can coexist, for example water and oil, but only one gaseous phase is possible because gases are always miscible.
+Each chemical substance a phase is made of is called \emph{component}. Each component can be present in different phases in different physical states, for example water in a liquid phase and water vapour is a gaseous phase, and phases may exchange components by phase transitions processes, like vaporization or condensation.
+In the following, we will limit our description and test cases to single-phase, single-component flows.
 %
 \subsection{Continuity equation}
 The governing equations for a porous-medium at the REV scale can be computed 
