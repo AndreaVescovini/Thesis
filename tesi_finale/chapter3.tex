@@ -421,7 +421,7 @@ upstream value:
 	u^* = u^U.
 \end{equation}
 It is a simple, widely used and robust scheme as it has the transportativeness 
-property, but its accuracy is only of first order, in fact it introduces in the 
+property, but its accuracy is only of first order, indeed it introduces in the 
 solution an important amount of numerical diffusion that smooths the gradients. 
 %
 \subsubsection{Hybrid scheme}
@@ -456,7 +456,7 @@ u^* = \frac{3u^U - u^{FU}}{2}.
 \end{equation}
 %
 \subsubsection{An example}
-We can see the behaviour of the CD, Upwind and QUICK methods when they are 
+We test the behaviour of the CD, Upwind and QUICK methods when they are 
 applied to a one-dimensional scalar conservation law:
 \begin{align}
 	\label{eq:1dconslaw} \frac{\partial \phi}{\partial t} + \frac{\partial 
@@ -470,7 +470,7 @@ left to right. The equation~\eqref{eq:1dconslaw} can be discretized with finite
 volumes storing the degrees of freedom at the ends of each cells, as it is in 
 the staggered grid concept. Then the differencing schemes presented above can 
 be applied to the discretization of the transport term, while for the temporal 
-discretization we can use the Backward Euler method (see 
+discretization we use the Backward Euler method (see 
 Subsection~\ref{subsec:time}).
 \begin{figure}[t]
 	\centering
@@ -490,11 +490,11 @@ gradient, but produce oscillations for $x<0.5$.
 \subsection{TVD methods} \label{subsec:tvd}
 Total Variation Diminishing (TVD) methods belong to a category of methods 
 called \emph{high resolution methods} \cite{tvd:monotonicity}, that address the problem of computing a 
-solution without any oscillation and with an higher order accuracy, second 
+solution without any oscillation and with higher order accuracy, second 
 order in this case. They were originally developed for scalar conservation laws 
 of the type:
 \begin{align}
-	\label{eq:conslaw} &\frac{\partial \phi}{\partial t} + \frac{\partial f(x) 
+	\label{eq:conslaw} &\frac{\partial \phi}{\partial t} + \frac{\partial f(\phi) 
 	}{\partial x} = 0. 
 %\quad t>0 \quad x 
 %	\in 
@@ -517,8 +517,7 @@ where $\phi^n$ is the numerical solution at the time-step $t^n$. In
 \cite{tvd:monotonicity} it has been proved that a TVD scheme is 
 \emph{monotonicity preserving}, i.e. it does not create new 
 local extrema, local minima are non-decreasing and local maxima are 
-non-increasing. This is the desirable property that we would like to have in 
-order avoid the creation of solutions containing overshoots and undershoots, 
+non-increasing. This is the desirable property that we would like to have to avoid the creation of solutions containing overshoots and undershoots, 
 as it happens using the higher order methods presented in the previous 
 subsection.
 
@@ -533,7 +532,7 @@ u^* = u^U + \frac{1}{2}\psi(r)(u^D - u^U), \quad r =
 The flux includes a function $\psi$ called \emph{flux limiter}, which 
 should dampen the flux contribution in regions of the domain where it 
 could produce oscillations. It is chosen non-negative in order to preserve the 
-sign of the flux and it depends on the variable $r$, that is defined as the 
+sign of the flux and it depends on the variable $r$, defined as the 
 ratio between two consecutive differences of the solution. The non-linearity 
 cannot be avoided, in fact it was proved by \textcite{tvd:godunov} that any 
 monotonicity preserving linear scheme can be at most first order accurate.
@@ -542,12 +541,12 @@ Exploiting the approximation \eqref{eq:tvdformula} to solve a problem like
 \eqref{eq:conslaw} and imposing the TVD condition \eqref{eq:tvdcondition} on 
 the solution, we obtain the following bounds for the flux limiter function:
 \begin{align}
-\notag \psi(r) = 0 \quad &\text{if} \quad r < 0\\
-\psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 \leq r \leq 1\\
-\notag \psi(r) \leq 2 \quad &\text{if} \quad r > 2
+\notag \psi(r) = 0 \quad &\text{if} \quad r < 0,\\
+\psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 0 \leq r \leq 1,\\
+\notag \psi(r) \leq 2 \quad &\text{if} \quad r > 2.
 \end{align}
 Notice that when $r<0$ we are in presence of a local maximum or minimum, 
-because it means that the differences between the upstream and downstream nodes 
+because the differences between the upstream and downstream nodes 
 and the one between the far upstream and upstream nodes have opposite signs. 
 When this happens, $\psi$ is set to zero, so only the first order upwind 
 contribution is employed in the approximation of $u^*$.
@@ -574,7 +573,7 @@ LUD scheme \eqref{eq:lud}, in the following way:
 where $\theta(r)$ is a parameter such that $0 \leq \theta(r) \leq 1,\; \forall 
 r>0$, while $\psi_{CD}$ and $\psi_{LUD}$ are the linear flux limiter functions 
 that can be associated to the schemes CD and LUD rearranging the 
-approximations \eqref{eq:cd} and \eqref{eq:lud}:
+approximations \eqref{eq:cd} and \eqref{eq:lud} in the general TVD form expressed by \eqref{eq:tvdformula}:
 \begin{gather}
 	\psi_{CD}(r) = 1 \quad \forall r,\\
 	\psi_{LUD}(r) = r \quad \forall r.
@@ -582,11 +581,11 @@ approximations \eqref{eq:cd} and \eqref{eq:lud}:
 Thus, adding these requirements to the previous ones, we 
 obtain the following bounds for the flux limiter function of a TVD method:
 \begin{align}
-\psi(r) = 0 \quad &\text{if} \quad r < 0 \notag \\
+\psi(r) = 0 \quad &\text{if} \quad r < 0, \notag \\
 \label{eq:tvdbounds} r \leq \psi(r) \leq \min \{2r, 1\} \quad &\text{if} \quad 
 0 
-\leq r \leq 1\\
-1 \leq \psi(r) \leq \min \{r, 2 \} \quad &\text{if} \quad r > 2 \notag
+\leq r \leq 1,\\
+1 \leq \psi(r) \leq \min \{r, 2 \} \quad &\text{if} \quad r > 2. \notag
 \end{align}
 In Figure~\ref{fig:tvdregion} they are reported in a $\psi-r$ diagram known 
 also as Sweby's diagram.
@@ -623,7 +622,7 @@ Sweby's diagram:
 	\begin{cases}
 	\dfrac{r^2+r}{r^2+1} \quad &\text{if $r\geq 0$}\\[2ex]
 	0 \quad &\text{if $r<0$}
-	\end{cases}
+	\end{cases}.
 	\end{equation}
 	It is a smooth function that instead goes to 1 as $r \rightarrow \infty$.
 %
@@ -679,10 +678,9 @@ Sweby's diagram:
 \end{figure}
 
 It is not easy to compare the different flux limiters in order to find the 
-best one. Generally the Van Alabada and the Min-Mod can be a bit less accurate 
+best one. Generally the Van Alabada and the Min-Mod can be slightly less accurate 
 since $\psi \rightarrow 1$ as $r \rightarrow \infty$, while a scheme like the 
-Superbee can produce sharper gradients, but sometimes the convergence can be a 
-bit slower. In particular, according to \cite{tvd:sweeby}, it is said to be \emph{overcompressive}, i.e. it may turn sine waves into square waves. The UMIST instead has a 
+Superbee can produce sharper gradients, but sometimes the convergence can be slower. In particular, according to \cite{tvd:sweeby}, it is said to be \emph{overcompressive}, i.e. it may turn sine waves into square waves. The UMIST instead has a 
 more complex function, so its evaluation can be more expensive. However their 
 performances should be compared case by case.
 
@@ -705,7 +703,7 @@ reported in Chapter~\ref{chap:results}.
 \end{figure}
 %
 \subsubsection{Non-uniform grids}
-The theory of TVD methods presented above holds for structured grids. In order 
+The theory of TVD methods presented above holds for structured uniform grids. In order 
 to deal with Cartesian non-uniform grids, that, for example, employ a grading, we 
 have to generalize it considering the information about the distances between 
 the degrees of freedom involved in the approximation. The generalization has 
@@ -760,7 +758,7 @@ r = \frac{u^U - u^{FU^*}}{u^D - u^U}, \quad u^{FU^*} \approx u^{FU} +
 \end{equation}
 
 \textcite{nonunif:hou} introduced a different and more rigorous approach. The 
-idea in order to improve those described above was derived to consider not only 
+idea in order to improve the approximations described above was to consider not only 
 the distances between the degrees of freedom, but also the sizes of the cells 
 around them. Let us consider for example a non-uniform staggered grid as in 
 Figure~\ref{fig:hou}.
@@ -780,7 +778,7 @@ u^* = u^U + \frac{1}{\RUD} \psi(r) (u^D - u^U),
 u^{FU}}{x^U - x^{FU}} \cdot \frac{x^D - x^U}{u^D - u^U}.
 \end{equation}
 $\RUD$ takes into account the sizes of the upstream and downstream 
-staggered cells, while $r$ is modified into ratio between an approximation of 
+staggered cells, while $r$ is modified into the ratio between an approximation of 
 the gradients. Notice that if the grid is uniform $\RUD = 2$, as in the uniform 
 formula \eqref{eq:tvdformula}.
 
@@ -794,7 +792,7 @@ r \leq \psi(r) \leq \min \bigg \{\frac{\RFUU}{\RFUU - 1}, 1 \bigg \} \quad
 \notag 1 \leq \psi(r) \leq \min \{r,\RUD \} \quad &\text{if} \quad r > 2
 \end{align}
 In Figure~\ref{fig:tvdregionhou} we can see the modified TVD region; with 
-respect to Figure~\ref{fig:tvdregion}, the upper bounds are changed.
+respect to Figure~\ref{fig:tvdregion}, the upper bounds have changed.
 \begin{figure}[t]
 	\centering
 	\input{../img/tvd_region_modified_hou_final_report}
@@ -803,50 +801,56 @@ respect to Figure~\ref{fig:tvdregion}, the upper bounds are changed.
 	\cite{nonunif:hou}.}
 	\label{fig:tvdregionhou}
 \end{figure} 
-At last the flux limiter functions \eqref{eq:vl}--\eqref{eq:mclim} have to be 
+At last, the flux limiter functions \eqref{eq:vl}--\eqref{eq:mclim} have to be 
 generalized in order to fit into these new bounds.
 %
 \subsection{Time discretization} \label{subsec:time}
-The RANS equations have to be discretized in time. Let us consider a 
-generic unknown $\phi$ that could be a component of the velocity, the turbulent 
-kinetic energy $k$ or its specific dissipation rate $\omega$. After having 
-performed the spatial discretization, we obtain equations of the following kind:
+The RANS equations have to be discretized in time.
+Let us consider a vector $\boldsymbol{\phi}$ containing all the degrees of freedom of the components of the velocity $\mathbf{v}$, of the turbulent kinetic energy $k$ and of its specific dissipation rate $\omega$.
+After having performed the spatial discretization, we obtain the following system of Ordinary Differential Equations (ODEs):
 \begin{equation} \label{eq:timegen}
-\frac{\partial \phi}{\partial t} = f(\phi, t),
+\frac{d \boldsymbol{\phi}}{dt} = \mathbf{f}(\boldsymbol{\phi}, t),
 \end{equation}
-where we have included in the function $f$ at the right-hand side all the terms 
+%Let us consider a 
+%generic unknown $\phi$ that could be a component of the velocity, the turbulent 
+%kinetic energy $k$ or its specific dissipation rate $\omega$.
+%After having 
+%performed the spatial discretization, we obtain equations of the following kind:
+%\begin{equation} \label{eq:timegen}
+%\frac{\partial \phi}{\partial t} = f(\phi, t),
+%\end{equation}
+where we have included in the function $\mathbf{f}$ at the right-hand side all the terms 
 except the time derivative. We introduce a discretization of the time 
-interval $[0, T]$ into $N_t$ uniform time-steps, such that $\Delta t = T/Nt$ is 
-the time-step size and $t^n=n\Delta t, \; n=0,\dots,N_t$. Let $\phi^n$ be the 
+interval $(0, T)$ into $N_t$ uniform time-steps, such that $\Delta t = T/Nt$ is 
+the time-step size and $t^n=n\Delta t, \; n=0,\dots,N_t$. Let $\boldsymbol{\phi}^n$ be the 
 numerical solution at the time $t^n$. In order to 
-discretize in time the equation \eqref{eq:timegen}, we have employed two 
-implicit schemes, so that at every iteration $f$ will depend on $\phi$ and $t$ 
+discretize in time the equations \eqref{eq:timegen}, we have employed two 
+implicit schemes, so that at every iteration $\mathbf{f}$ will depend on $\boldsymbol{\phi}$ and $t$ 
 at the current time-step and not at the previous one.
 %
 \subsubsection{Backward Euler method}
 The Backward Euler (BE) method (or implicit Euler method) consists in 
 approximating the time derivative with a backward finite difference:
 \begin{equation} \label{eq:be}
-\frac{\partial \phi}{\partial t} \approx \frac{	\phi^n-\phi^{n-1}}{\Delta 
-	t} = f(\phi^n, t^n).
+\frac{d \boldsymbol{\phi}}{d t} \approx \frac{\boldsymbol{\phi}^n-\boldsymbol{\phi}^{n-1}}{\Delta 
+	t} = \mathbf{f}(\boldsymbol{\phi}^n, t^n).
 \end{equation}
 It is a first order method in terms of convergence and it is 
 unconditionally stable, so no particular attention must be paid to the choice 
 of $\Delta t$ in order to guarantee the stability. Of course an initial 
-condition $\phi^0$ must be provided.
+condition $\boldsymbol{\phi}^0$ must be provided.
 %
 \subsubsection{BDF2 method}
 The Backward Differencing Formula 2 (BDF2) method consists in approximating the 
 time derivative with a backward finite difference of second order:
 \begin{equation} \label{eq:bdf2}
-\frac{\partial \phi}{\partial t} \approx 
-\frac{3\phi^n-4\phi^{n-1}+\phi^{n-2}}{2\Delta t} = f(\phi^n, t^n).
+\frac{d \boldsymbol{\phi}}{d t} \approx 
+\frac{3\boldsymbol{\phi}^n-4\boldsymbol{\phi}^{n-1}+\boldsymbol{\phi}^{n-2}}{2\Delta t} = \mathbf{f}(\boldsymbol{\phi}^n, t^n).
 \end{equation}
 It is of second order in terms of convergence and it is 
 unconditionally stable too. It is a two-step method because it requires two 
 initial conditions; this is a problem at the very first time step because we 
-would need to know $\phi^{-1}$. This issue is usually solved performing one 
-iteration with a one-step method, the BE usually, and then starting with the 
+would need to know $\boldsymbol{\phi}^{-1}$. This issue is usually solved performing the first time-step with a one-step method, the BE usually, and then starting with the 
 BDF2 from the second iteration. This procedure does not affect the overall 
 convergence order, because a single step of a first order one-step method 
 introduces a local truncation error that is of second order.
@@ -861,11 +865,11 @@ $\Delta t^n=t^n-t^{n-1}, \; n=1,\dots,N_t$, then the scheme becomes:
 %= f(\phi^n, t^n)
 %\end{multline}
 \begin{multline} \label{eq:bdf2gen}
-\frac{\partial \phi}{\partial t} \approx \phi^n\bigg( \frac{1}{\Delta t^n + 
-	\Delta t^{n-1}} + \frac{1}{\Delta t^n}\bigg) - \phi^{n-1} \frac{\Delta t^n 
-	+ \Delta t^{n-1}}{\Delta t^n \Delta t^{n-1}} \;+ \\+ \phi^{n-2} 
+\frac{d \boldsymbol{\phi}}{d t} \approx \boldsymbol{\phi}^n\bigg( \frac{1}{\Delta t^n + 
+	\Delta t^{n-1}} + \frac{1}{\Delta t^n}\bigg) - \boldsymbol{\phi}^{n-1} \frac{\Delta t^n 
+	+ \Delta t^{n-1}}{\Delta t^n \Delta t^{n-1}} \;+ \\+ \boldsymbol{\phi}^{n-2} 
 \frac{\Delta 
-	t^n}{\Delta t^{n-1} (\Delta t^n + \Delta t^{n-1})} = f(\phi^n,t^n).
+	t^n}{\Delta t^{n-1} (\Delta t^n + \Delta t^{n-1})} = \mathbf{f}(\boldsymbol{\phi}^n,t^n).
 \end{multline}
 See \cite{main:matenum} for more detailed information about time discretization 
 methods.
@@ -874,7 +878,7 @@ methods.
 \section{Porous-medium flow}
 In the porous-medium region $\Omega_\text{pm}$ we have to solve only a steady 
 scalar equation, with the pressure as a primary variable, where, due to the 
-incompressibility of the fluid, the time derivative is not present:
+incompressibility of the fluid, the time derivative is not present. It is obtained substituting the velocity computed with \eqref{eq:forch2} into \eqref{eq:cellcentred}: 
 \begin{align}
 \label{eq:cellcentred}	\nabla \cdot \mathbf{v} = 0&\\
 \label{eq:forch2}	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} 
@@ -899,13 +903,13 @@ $V_L$ (see Figure~\ref{fig:cctpfa}) and apply the Gauss's divergence theorem:
 \int_{V_L} \nabla \cdot \mathbf{v} \; dV = \int_{\partial V_L} \mathbf{v} \cdot 
 \mathbf{n} \; dA.
 \end{equation}
-The Forchheimer's law \eqref{eq:forch2} is non-linear, so we use the Newton's 
-method in order to compute the velocity, i.e. the flux over the boundary 
+The Forchheimer's law \eqref{eq:forch2} is non-linear, so locally we use the Newton's 
+method to compute the velocity, i.e. the flux over the boundary 
 $\partial V_L$:
 \begin{align}
-	\mathbf{J}_f(\mathbf{v}_k) \delta \mathbf{v}_{k+1} = &-\mathbf{f}(\mathbf{v}_k), \quad \text{$\forall k\geq 0$ until 
+	\label{eq:forchnewton} \mathbf{J}_f(\mathbf{v}_k) \delta \mathbf{v}_{k+1} = &-\mathbf{f}(\mathbf{v}_k), \quad \text{$\forall k\geq 0$ until 
 	convergence}\\
-	\mathbf{v}_{k+1} = &\;\mathbf{v}_k + \delta \mathbf{v}_{k+1},
+	\label{eq:forchnewton2} \mathbf{v}_{k+1} = &\;\mathbf{v}_k + \delta \mathbf{v}_{k+1},
 \end{align}
 where
 \begin{equation} \label{eq:resforch}
@@ -961,7 +965,7 @@ derived exploiting a decomposition of the vector
 \begin{equation}
 \mathbf{d}_{L,\sigma}=\mathbf{x}_\sigma - \mathbf{x}_L,
 \end{equation}
-based the co-normal vector $\mathbf{Kn}_L$. Moreover it 
+based on the co-normal vector $\mathbf{Kn}_L$. Moreover it 
 can be shown that this approximation is consistent only if the grid is 
 $\mathbf{K}$-orthogonal, i.e. if $\mathbf{Kn}_L$ is parallel to $\mathbf{d}_{L, \sigma}$. 
 See \cite{tesi:wolff} for further details.
@@ -975,11 +979,14 @@ $v$ are respectively the tangential and normal component of the velocity to the
 interface, and that the porous-medium occupies the lower subdomain. In 
 Figure~\ref{fig:coupledcells} the degrees of freedom of two cells touching 
 the interface are represented. The superscripts $^\text{if}$ and $^\text{c}$ 
-denote respectively the interface and the internal part of the cells. The 
-degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ will be 
-useful in the following computations, but are fictitious. Let us suppose also 
-that the permeability in the porous-medium is isotropic, so that we can 
-consider it a positive scalar.
+denote respectively the interface and the internal part of the cells.
+The degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ are additional with respect to the staggered and cell-centred approaches, respectively, but they are fictitious,
+%The degrees of freedom $u_\text{ff}^\text{if}$ and $p_\text{pm}^\text{if}$ will be 
+%useful in the following computations, but are fictitious,
+i.e. there is no equation associated to them, but their value is used only to impose the interface conditions.
+Let us suppose also that the permeability in the porous-medium is isotropic,
+so that we can consider it a positive scalar.
+
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{coupled_cells_axis.pdf}
@@ -988,14 +995,13 @@ consider it a positive scalar.
 	are fictitious.}
 	\label{fig:coupledcells}
 \end{figure}
-
 For the continuity of mass fluxes \eqref{eq:contmass} we use the velocity of 
 the free-flow at the interface $v_\text{ff}^\text{if}$ to express the flux 
 across the boundary of the porous-medium.
 
 For the continuity of normal stresses \eqref{eq:coupnormalstress} the key point 
-is the approximation of $p_\text{pm}^\text{if}$. This is done reverting 
-the Forchheimer's law \eqref{eq:forch2}, approximating the derivative of $p$ 
+is the approximation of $p_\text{pm}^\text{if}$. This is done exploiting 
+the Forchheimer's law \eqref{eq:forch2} and approximating the derivative of $p$ 
 with a finite difference:
 \begin{equation}
 	p_\text{pm}^\text{if} = 
@@ -1009,15 +1015,17 @@ with a finite difference:
 where $y^\text{if}$ and $y^\text{c}_\text{pm}$ denote respectively the coordinates along the $y$-axis of $p^\text{if}_\text{pm}$ and $p^\text{c}_\text{pm}$.
 $\mathrm{K}$ and $\mu$ are evaluated at the centre of the porous-medium cell. 
 Then, $p_\text{pm}^\text{if}$ is applied at the right-hand side of 
-\eqref{eq:coupnormalstress} and it is thus used as a flux across 
+\eqref{eq:coupnormalstress} and it is thus used as a
+%flux across 
+natural boundary condition on
 $\Gamma_\text{int}$.
 
 The Beavers-Joseph-Saffman condition \eqref{eq:bjs} can be rewritten as
-\begin{equation}
+\begin{equation} \label{eq:bj2}
 	u = \frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} \frac{\partial u}{\partial 
 	y} \quad \text{on $\Gamma_\text{int}$}.
 \end{equation}
-It is then discretized as
+Equation \eqref{eq:bj2} is then discretized as
 \begin{equation} \label{eq:bjsdisc}
 	u_\text{ff}^\text{if} = \frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} 
 	\frac{u_\text{ff}^\text{c} - 
@@ -1056,13 +1064,15 @@ where $\mathbf{x}^n$ is the vector containing all the degrees of freedom of all 
 starting from the solution at the previous time-step as initial guess $\mathbf{x}_0^n = \mathbf{x}^{n-1}$.
 $\mathbf{J}_F$ is the Jacobian matrix of $\mathbf{F}$. Its entries are computed numerically using centred finite differences:
 \begin{equation}
-[\mathbf{J}_F]_{ij} = \frac{F_i(x_j + \varepsilon) - F_i(x_j - \varepsilon)}{2\varepsilon},
+[\mathbf{J}_F]_{ij} = \frac{F_i([\mathbf{x}_k^n]_j + \varepsilon) - F_i([\mathbf{x}_k^n]_j - \varepsilon)}{2\varepsilon},
 \end{equation}
-where $\varepsilon=\num{e-8}|x_j|$. The convergence criterium is based on the relative shift: given a relative shift vector $\mathbf{s}$, whose components are computed as
+where $\varepsilon=\num{e-8}|[\mathbf{x}_k^n]_j|$.
+Notice that the evaluation of the residuals $F_i$ related to the degrees of freedom in the porous-medium involves the application of the Newton's method \eqref{eq:forchnewton}--\eqref{eq:forchnewton2}.
+The convergence criterium is based on the relative shift: given a relative shift vector $\mathbf{s}$, whose components are computed as
 \begin{equation}
 	s_i = \frac{[\delta \mathbf{x}^n_{k+1}]_i}{([\mathbf{x}^n_{k+1}]_i + [\mathbf{x}^n_{k}]_i) / 2},
 \end{equation}
-and a tolerance $tol$, for example equal to $\num{e-5}$, we stop to iterate when
+and a tolerance $tol$, for example equal to $\num{e-5}$, we stop iterating when
 \begin{equation}
 	|\!|\mathbf{s}|\!|_\infty < tol,
 \end{equation}

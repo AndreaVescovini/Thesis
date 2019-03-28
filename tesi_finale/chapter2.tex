@@ -24,7 +24,7 @@ the second Newton's law:
 \begin{equation} \label{eq:2newton}
 \frac{d}{dt} \int_V \varrho \mathbf{v} \; dV = \int_V \varrho \mathbf{b} \; dV 
 + 
-\int_{\partial V} \sigma \mathbf{n} \; dA
+\int_{\partial V} \boldsymbol{\sigma} \mathbf{n} \; dA
 \end{equation}
 and the first law of thermodynamics:
 \begin{equation} \label{eq:firstthermo}
@@ -32,7 +32,7 @@ and the first law of thermodynamics:
 \end{equation}
 for any material volume $V$. In equation \eqref{eq:2newton} vector 
 $\mathbf{b}$ represents possible external volume forces per unit of mass, for 
-example the gravity $\mathbf{g}$, $\sigma$ is the Cauchy stress tensor 
+example the gravity $\mathbf{g}$, $\boldsymbol{\sigma}$ is the Cauchy stress tensor 
 and 
 $\mathbf{n}$ is the outward unit vector normal to the surface $\partial V$ of 
 $V$. In equation \eqref{eq:firstthermo} $\dot{Q}$ is the net rate of 
@@ -41,13 +41,13 @@ heat added to the fluid and $\dot{W}$ is the net rate of work done on the fluid.
 For viscous fluids we can identify two contributions in the Cauchy stress 
 tensor:
 \begin{equation}
-\sigma = -p\mathbb{1} + \tau,
+\boldsymbol{\sigma} = -p\mathbb{1} + \boldsymbol{\tau},
 \end{equation}
-$-p\mathbb{1}$ is a contribution due to pressure, while $\tau$ is 
+$-p\mathbb{1}$ is a contribution due to pressure, while $\boldsymbol{\tau}$ is 
 the viscous stress tensor, for which the constitutive relation of Newtonian 
 fluids is used:
 \begin{equation}
-\tau = 2\mu \mathbf{S} + 
+\boldsymbol{\tau} = 2\mu \mathbf{S} + 
 \lambda (\nabla \cdot \mathbf{v}) \mathbb{1},
 \end{equation}
 where $\mu$ is the dynamic viscosity [$\si{\pascal\second}$], $\lambda$ 
@@ -103,7 +103,7 @@ want to model. Common choices, adopted also in the test cases in Chapter~\ref{ch
 	\item on outflow boundaries, natural boundary conditions are imposed, 
 	resulting in the following prescription for the stress :
 	\begin{equation}
-		\sigma \mathbf{n} = -p\mathbf{n}+2\mu \mathbf{Sn} = \varrho\mathbf{d},
+		\boldsymbol{\sigma} \mathbf{n} = -p\mathbf{n}+2\mu \mathbf{Sn} = \varrho\mathbf{d},
 	\end{equation}
 	where $\mathbf{n}$ is the outward unit vector normal to the surface. 
 	However outflow boundary conditions are usually located where the flow is 
@@ -299,7 +299,7 @@ produces an extra contribution:
 \end{equation}
 The new term
 \begin{equation}
-\tau_R = -\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}
+\boldsymbol{\tau}_R = -\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}
 \end{equation}
 is called Reynolds stress tensor. Mathematically, it expresses the correlation 
 between the components of the instantaneous velocity field, while physically it 
@@ -377,23 +377,23 @@ different regions can be identified:
 Be aware that the numbers given above as bounds for $y^+$ are not universal but 
 are very problem-dependent.
 \subsubsection{Turbulence models}
-The quantity $\tau_R$ is a symmetric tensor with $dim \times dim$ entries, so 
+The quantity $\boldsymbol{\tau}_R$ is a symmetric tensor with $dim \times dim$ entries, so 
 in three 
 dimensions we have 6 new unknowns that need to be modelled in order to close 
 the problem, this procedure is known as turbulence modelling.
-In 1877 \textcite{ipo:boussinesq} suggested that $\tau_R$ could be similar to the viscous 
+In 1877 \textcite{ipo:boussinesq} suggested that $\boldsymbol{\tau}_R$ could be similar to the viscous 
 stress tensor, thus expressed as
 \begin{equation} \label{eq:bouss}
-\tau_R = 2\mu_t \bar{\mathbf{S}} - 
+\boldsymbol{\tau}_R = 2\mu_t \bar{\mathbf{S}} - 
 \frac{2}{3}\varrho k \mathbb{1}.
 \end{equation}
-The first term has the same form of $\tau$ if we consider the mean velocity 
+The first term has the same form of $\boldsymbol{\tau}$ if we consider the mean velocity 
 field, 
 the only difference is that the dynamic viscosity $\mu$ is substituted by a 
 turbulent viscosity $\mu_t$ [$\si{\pascal \second}$]. The second term is needed 
-to model the isotropic part of $\tau_R$ correctly:
+to model the isotropic part of $\boldsymbol{\tau}_R$ correctly:
 \begin{equation} \label{eq:tracciatau}
-tr(\tau_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
+tr(\boldsymbol{\tau}_R) = -tr(\varrho \overline{\mathbf{v}' {\mathbf{v}'}^\mathrm{T}}) = 
 -\varrho \sum_{i=1}^{dim} \overline{(v_i')^2} = -2\varrho k,
 \end{equation}
 where $k$ is the turbulent kinetic energy defined as
@@ -402,7 +402,7 @@ k = \frac{1}{2} \sum_{i=1}^{dim} \overline{(v_i')^2},
 \end{equation}
 while exploiting equation \eqref{eq:ransmass} we get
 \begin{equation}
-	tr(2\mu_t \bar{S}) = 2 \mu_t \sum_{i=1}^{dim} \frac{\partial 
+	tr(2\mu_t \bar{\mathbf{S}}) = 2 \mu_t \sum_{i=1}^{dim} \frac{\partial 
 	\bar{v}_i}{\partial x_i} = 2\mu_t (\nabla \cdot \bar{\mathbf{v}}) = 0.
 \end{equation}
 With this hypothesis $\mu_t$ and $k$ are the only unknowns left and the 
