@@ -1,13 +1,21 @@
 \chapter{Conclusions and outlook}
 \section{Conclusions}
-In this thesis we have worked on the application of the TVD methods for the 
+In this thesis we have dealt with the study of the TVD methods for the 
 approximation of the convective term in the momentum equation of the 
 Navier-Stokes equations and of the RANS equations, within a finite volumes 
-framework. The aim was to use them for the simulation of coupled free-flow and 
-porous-medium flow models, improving the results obtained employing the 
-first order upwind scheme by using a method that introduces less numerical 
-viscosity in the solution, but that, at the same time, guarantees the stability 
-and avoids the creation of unphysical oscillations.
+framework. We implemented them for the simulation of coupled free-flow and 
+porous-medium flow models, with the aim of improving the results obtained by
+standard first order upwind schemes by reducing numerical dissipation 
+in the solution, while guaranteeing stability 
+and avoiding the creation of unphysical oscillations.
+%In this thesis we have worked on the application of the TVD methods for the 
+%approximation of the convective term in the momentum equation of the 
+%Navier-Stokes equations and of the RANS equations, within a finite volumes 
+%framework. The aim was to use them for the simulation of coupled free-flow and 
+%porous-medium flow models, improving the results obtained employing the 
+%first order upwind scheme by using a method that introduces less numerical 
+%viscosity in the solution, but that, at the same time, guarantees the stability 
+%and avoids the creation of unphysical oscillations.
 
 In all the tests that have been performed, we have experienced an increased 
 accuracy of the solution with respect to those obtained when using the first order 
@@ -29,16 +37,16 @@ interface, with cavities or porous obstacles, has on the flow field.
 
 At first, we have considered only the free-flow and we have studied how the 
 velocity is affected by the presence of two cavities at the interface.
-In particular, we have investigated which is the distance between the cavities such that the variation in the flow field, 
-due to the first cavity, does not significantly influence anymore the 
-behaviour around the 
-second one. We have obtained that, for cavities $\SI{0.5}{m}$ long, after a 
+In particular, we have investigated which is the distance between the cavities such that the variation in the flow field 
+due to the first cavity does not influence the 
+behaviour around the second one significantly.
+We have obtained that, for cavities $\SI{0.5}{m}$ long, after a 
 distance equal to one cavity the flow field has recovered the undisturbed configuration it 
-had before the first cavity. However each cavity introduces an increase in the 
+had before the first cavity. However, each cavity introduces an increase in the 
 turbulent kinetic energy, that accelerates the growth of the turbulent 
 boundary layer.
 
-Afterwards we have chosen a distance such that the two cavities do not 
+Then, we have chosen a distance such that the two cavities do not 
 influence each other and we have placed a porous-medium between them, in order 
 to analyse how its presence affects the flow field. We have observed that, 
 for values of permeability greater than $\SI{e-8}{m^2}$, the flow field in the 
@@ -47,7 +55,7 @@ In particular, not only the fact that the flow can enter into
 the porous-medium has an effect, but also the Beaver-Joseph-Saffman slip 
 condition imposed at the interface between the two subdomains affects the flow dynamics.
 The presence of eddies in the cavities influences the flow in the 
-porous-medium, because in correspondence of the corner eddies it can enter also 
+porous-medium, because in correspondence of the corner it can enter also 
 from a direction opposite to the one of the main flow. However, when this 
 happens, the values of the velocity are relatively small and thus this 
 behaviour does not affect the free-flow as it happens when the flow enters the 
@@ -76,16 +84,16 @@ function could behave differently with respect to those we have analysed.
 In this work the TVD methods have been adopted only in the momentum equation, 
 but, in particular with non-isothermal models with non-constant density, from 
 the numerical point of view it could be important to analyse their 
-application to the continuity equation.
+application to the continuity equation as well.
 
 From the point of view of the coupling, the interface conditions could be adapted in order to employ other finite volumes discretization schemes in the porous-medium, including, for example, a Multi Point Flux Approximation (MPFA).
 Moreover, iterative algorithms to decouple the two subdomains could be taken 
-into account and compared to the monolithic approach we have used.
+into account and compared to the monolithic approach we have adopted.
 
 Within the \DUMUX framework a possibility to improve the efficiency of the 
 simulations could be to employ an adaptive algorithm in order to refine the grid 
 only where it is useful. This approach can lead to non-conforming meshes 
 containing hanging nodes, thus a challenge would be the application of the TVD 
-scheme to this case. Moreover a parallelization of the code would be 
+scheme to this case. Moreover, a parallelization of the code would be 
 beneficial for the computational time, but the extended stencil of high order methods 
 requires attention whilst decomposing the domain.
