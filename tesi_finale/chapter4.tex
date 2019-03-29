@@ -1,15 +1,15 @@
 \chapter{Numerical results} \label{chap:results}
 In this chapter we present the numerical results.
-At first, we perform some verifications of the methods developed for the Navier-Stokes equations.
+First, we perform some verification tests of the methods developed for the Navier-Stokes equations.
 The convergence of higher order methods is tested, first in space, 
-then in time. After that, another spatial comparison test between the upwind 
+then in time. After that, another comparison test between the upwind 
 method 
 and the TVD methods is performed, using a channel flow. Eventually, the results 
 from the backward facing step test using RANS equations are shown and 
 compared to those from the CFL3D code from \cite{web:nasa}. 
 %Afterwards, a turbulent flow through a channel with two small cavities is studied,
 %.Finally, a turbulent flow through a channel with two small cavities is studied.
-A second set of tests concerns the coupling with the porous-medium flow. First, we consider a turbulent flow through a channel with two cavities separated by a porous-medium and we study the influence of the permeability on the flow pattern. Then, we study a flow in a channel with a porous obstacle.
+A second set of tests concerns the coupling with the porous-medium flow. First, we consider a turbulent flow through a channel with two cavities separated by a porous-medium and we study the influence of its permeability on the flow pattern. Then, we study a flow in a channel with a porous obstacle.
 %Then, we modify the domain in order to have deeper cavities.
 % At last, we consider a channel with a porous obstacle.
 %
@@ -19,15 +19,15 @@ A second set of tests concerns the coupling with the porous-medium flow. First, 
 \section{Navier-Stokes tests}
 \subsection{Space convergence} \label{subsec:conv}
 We want to test the spatial convergence order of the error of the 
-solution of the Navier-Stokes equations computed in the $L^2(\Omega)$ norm:
+solution of the Navier-Stokes equations computed in the $L^2(\Omega)$ norm as
 \begin{equation}
 	|\!|\phi_\text{ex} - \phi_h|\!|_{L^2(\Omega)} = \int_{\Omega} 
 	(\phi_\text{ex} - 
 	\phi_h)^2 \; dA,
 \end{equation}
-where $\phi$ can be the velocity of the pressure and $\phi_\text{ex}$ and 
+where $\phi$ can denote velocity or pressure and $\phi_\text{ex}$ and 
 $\phi_h$ 
-are the corresponding exact and numerical solution.
+are the corresponding exact and numerical solutions.
 We compare the results obtained with 
 the upwind method \eqref{eq:upwind} and the TVD methods described in 
 Subsection~\ref{subsec:tvd}.\\
@@ -46,8 +46,8 @@ all the quantities appearing in the equations to be non-dimensional.
 Let us solve the equations~\eqref{eq:nssteadymass}--\eqref{eq:nssteadymom} over 
 a two-dimensional unit domain $\Omega=(0,1)^2$, with the following source terms:
 \begin{align}
-	h &= 0,\\
-	\mathbf{f} &= [-2\nu \cos(x) \sin(y), \; 2\nu \cos(y) \sin(x)]^\mathrm{T},
+	h(x,y) &= 0,\\
+	\mathbf{f}(x,y) &= [-2\nu \cos(x) \sin(y), \; 2\nu \cos(y) \sin(x)]^\mathrm{T},
 \end{align}
 so that, choosing $\varrho=1$, the analytical solution, depicted in 
 Figure~\ref{fig:sincosexact}, is given by
@@ -77,8 +77,8 @@ of the numerical solution.
 The problem is solved over a sequence of five uniform grids, starting from 
 $\num{4x4}$ cells and each time halving their sizes. Both the cases of $\nu=1$ 
 and $\nu=\num{e-3}$ are tested, that correspond respectively to $Re=1$ and 
-$Re=\num{e3}$. In Figure~\ref{fig:sin_err}, the errors computed are reported 
-depending on the square root of the number of cells, while in 
+$Re=\num{e3}$. In Figure~\ref{fig:sin_err}, the computed errors are reported 
+as functions of the square root of the number of cells, while in 
 Table~\ref{tab:sin_conv} we can compare directly the 
 order of convergence for different differencing schemes.
 \begin{figure}
@@ -141,21 +141,21 @@ the upwind method. In Table~\ref{tab:sin_lre}, we can see that, at $Re=1$, the
 formers show a full second order convergence for the velocity, while for the pressure the
 rate is a bit lower; the latter, instead, shows a first order convergence for 
 all variables. At 
-$Re=\num{e3}$, a slight decrease of the rates of the TVD methods occurs also 
+$Re=\num{e3}$, a slight decrease of the rates of the TVD methods can be observed also 
 for 
 the velocities, but they remain higher then the ones of the upwind method. In 
 Table~\ref{tab:sin_hre}, we observe a convergence order of 1 for the pressure 
 using the Van Leer flux limiter, but, looking at 
 Figure~\ref{fig:sin_err_vl_hre}, we can 
-see that the global trend points to a convergence of higher order. Moreover, it 
-can be observed how, thanks to the faster convergence, on the same grid the 
-absolute values of the errors reach smaller values using the TVD methods. 
-Between the Min-Mod and Van Leer flux limiters it is hard to say which one 
-performs better. The results are very similar.
+see that the global trend points to a convergence of higher order.
+In this case the ratio between the errors at the last two refinements, reported in Table~\ref{tab:sin_hre}, is misleading, because the error at the second-last refinement is smaller than expected.
+Moreover, it can be observed how, thanks to the faster convergence, on the same grid the 
+absolute values of the errors reach smaller values using the TVD methods.
+The performances of the Min-Mod and Van Leer flux limiters are very similar.
 
 Analogous tests with other analytical solutions are reported in 
 Appendix~\ref{app:conv}. They show always a better convergence of the TVD 
-methods with respect to the upwind method, but in some cases the convergence 
+methods with respect to the upwind method, even of in some cases the convergence 
 order of pressure and velocity behave differently.
 %
 \subsection{Time convergence}
@@ -165,7 +165,7 @@ error of the solution of the Navier-Stokes equations:
 	|\!|\phi_\text{ex}-\phi_h|\!|_{L^\infty(0,T;L^2(\Omega))} = \esssup_{t \in 
 	(0,T)} |\!|\phi_\text{ex}(t) - \phi_h(t) |\!|_{L^2(\Omega)}, 
 \end{equation}
-where $\esssup$ denotes the \emph{essential supremum}, that for a function 
+where $\esssup$ denotes the \emph{essential supremum} that for a function 
 $f:\Omega\rightarrow\mathbb{R}$ is defined as
 \begin{equation}
 	\esssup_\Omega f = \inf \{\text{$M \in \mathbb{R}$ : $ |f(x)| \leq 
@@ -183,7 +183,7 @@ equations~\eqref{eq:nssteadymass}--\eqref{eq:nssteadymom}:
 	\nabla \cdot (\nu \nabla \mathbf{v}) + \frac{1}{\varrho}\nabla p  
 	-\mathbf{f} = \mathbf{0}&
 \end{align}
-Again the gravity is neglected and two possible sources $h$ and $\mathbf{f}$ 
+Again gravity is neglected and two possible sources $h$ and $\mathbf{f}$ 
 are taken into account, moreover all the quantities are considered to be 
 non-dimensional.
 %
@@ -192,19 +192,19 @@ Let us solve the equations~\eqref{eq:nsunsteadymass}--\eqref{eq:nsunsteadymom}
 over a two dimensional unit domain $\Omega=(0,1)^2$ and in the time interval 
 $(0,T)$, with $T=1$. We use the following source terms:
 \begin{align}
-h &= 0,\\
-\mathbf{f} &= 2\Big(\frac{\cos(2t)}{\varrho} + \nu \sin(2t)\Big)[- \cos(x) 
+h(x,y,t) &= 0,\\
+\mathbf{f}(x,y,t) &= 2\Big(\frac{\cos(2t)}{\varrho} + \nu \sin(2t)\Big)[- \cos(x) 
 \sin(y), \; 
 \cos(y) \sin(x)]^\mathrm{T},
 \end{align}
 so that, choosing $\varrho=1$, the analytical solution is given by
 \begin{align}
-\label{eq:uexunssin}	u_\text{ex}(x,y) &= -\cos(x)\sin(y)\sin(2t),\\
-v_\text{ex}(x,y) &= \sin(x)\cos(y)\sin(2t),\\
-\label{eq:pexunssin}	p_\text{ex}(x,y) &= 
+\label{eq:uexunssin}	u_\text{ex}(x,y,t) &= -\cos(x)\sin(y)\sin(2t),\\
+v_\text{ex}(x,y,t) &= \sin(x)\cos(y)\sin(2t),\\
+\label{eq:pexunssin}	p_\text{ex}(x,y,t) &= 
 -\frac{\cos(2x)+\sin(2y)}{4}\sin^2(2t).
 \end{align}
-It is equal to \eqref{eq:uexsin}--\eqref{eq:pexsin}, used in the steady test 
+The solution is equal to \eqref{eq:uexsin}--\eqref{eq:pexsin}, used in the steady test 
 for the space convergence, except for the modulation over time. We choose 
 $\nu=0.1$, so that $Re=10$. Dirichlet boundary conditions for the velocity are 
 applied on the whole boundary $\partial \Omega$ using the exact solution. 
@@ -223,7 +223,7 @@ $\num{40x40}$ cells, in the last refinement the error with the BDF2 method does
 not decrease anymore. This happens because the grid is too coarse and the 
 spatial error becomes dominant over the temporal one, so that, even with small 
 time-steps, we cannot improve the solution.
-Refining the grid, the spatial error is reduced and the temporal order of convergence is restored entirely for the pressure and almost for the velocity.
+Refining the grid, the spatial error is reduced and the temporal order of convergence is restored entirely for the pressure and almost entirely for the velocity.
 \begin{figure}
 	\centering
 	\subfloat{\input{../img/time_convergence_p_report}}
@@ -277,7 +277,7 @@ solution} using the upwind method over a grid six times finer (see Figure~\ref{f
 
 In Figure~\ref{fig:linecompshallow} we compare the profiles of the magnitude 
 of the velocity along a cross-section near the end of the channel, at 
-$x=\SI{8.75}{m}$, i.e. at the middle of the last cavity.  The TVD solutions 
+$x=\SI{8.75}{m}$, i.e. at the centre of the last cavity.  The TVD solutions 
 match the reference case, while the upwind solution shows a small shift, 
 especially in the lower part of the channel, above the cavity. In 
 Table~\ref{tab:errshallow}, we can see the 
@@ -413,7 +413,7 @@ reference solution.
 Further, when looking at the $L^2(\Omega)$ norm of the absolute errors reported in 
 Table~\ref{tab:errdeep}, we see that the upwind method has again the largest error, 
 but the difference with the other schemes is reduced with respect to the 
-previous case of shallow cavities. This is due to the wider recirculation region with respect to the previous case, which is critical for the accuracy of all the methods because it shows local extrema for the velocity.
+previous case of shallow cavities. This is due to the wider recirculation region with respect to the previous case, which is critical for the accuracy of all the methods because there we have local extrema for the velocity.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{rough_domain_highstep2.pdf}
@@ -462,8 +462,7 @@ previous case of shallow cavities. This is due to the wider recirculation region
 \section{RANS test: backward facing step} \label{sec:bfs}
 The backward facing step is a widely-used test configuration, in which a 
 turbulent flow in a channel incurs separation because of a sudden enlargement 
-in the flow domain. We can see that in Figure~\ref{fig:bfsarrows} there are a 
-big recirculation after the step, a smaller eddy near the corner and a very 
+in the flow domain. We see in Figure~\ref{fig:bfsarrows} the big recirculation that arises after the step, a smaller eddy near the corner and a very 
 small 
 eddy precisely at the corner. We want to use this problem in order to test the 
 results that we obtain using the TVD method, with the Van Leer flux limiter 
@@ -499,9 +498,12 @@ component of the velocity along the cross-section at the position $x/H=-4$ as cl
 with a boundary layer thickness of approximately $1.5H$ (see 
 Figure~\ref{fig:bfscomp}).
 
-According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady); in \cite{bfs:cfl3d} it is explained that a second order implicit method for the advancement in time is used.
+According to \cite{web:nasa}, CFL3D is a code for compressible fluids, but it was used at ``essentially incompressible'' conditions, such that the influence of compressibility should be very small. Moreover it is reported that
+%, running unsteady simulations, the solution settles down and becomes reasonably steady (quasi-steady).
+the model is unsteady, but it is solved until quasi-steady solution are obtained.
+In \cite{bfs:cfl3d} it is explained that a second order implicit method for the advancement in time is used.
 
-Thus, we employ the BDF2 method for non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T = \SI{30}{s}$. It can be observed that, after approximately $t=\SI{20}{s}$, the solution stabilizes at a steady state. As initial conditions we set
+Thus, we employ the BDF2 method with non-constant time-steps \eqref{eq:bdf2gen}, starting from $\Delta t = \SI{e-5}{s}$ and simulating until $T = \SI{30}{s}$. It can be observed that, after approximately $t=\SI{20}{s}$, the solution stabilizes at a steady state. As initial conditions we set
 \begin{equation}
 p=p_\text{ext} \quad \forall \mathbf{x} \in \Omega, \quad \mathbf{v} = [u_\text{init},0]^\mathrm{T} \quad u_\text{init} = \begin{cases}
 u_\text{in} \quad&\text{if $x\leq 0$}\\
@@ -515,8 +517,7 @@ simulation is the prediction of the \emph{reattachment length} $l_\text{rea}$,
 i.e. the distance after the step at which the recirculation finishes and thus 
 the $u$ component of the velocity at the bottom of the channel becomes 
 positive. We analyse this length computing the \emph{friction coefficient} 
-$C_f$, that is a non-dimensional form of the stress at the wall, which is 
-defined by:
+$C_f$, that is a non-dimensional indicator of the stress at the wall, defined as
 \begin{equation}
 C_f = \frac{\tau_w}{\frac{1}{2}\varrho U_\text{ref}^2}, \quad \tau_w = \mu \frac{\partial u}{\partial y} \Big|_{y=0}.
 \end{equation}
@@ -525,7 +526,7 @@ $U_\text{ref}$ is the $u$ component of the velocity at the centre of the channel
 Performing a sensitivity analysis in order to choose a suitable grid, we observe that:
 \begin{itemize}
 	\item with a coarse mesh the reattachment length decreases, in particular a refinement of the smallest cell in the $y$-direction is effective.
-	\item too stretched cells increase the number of Newton iteration needed to get the convergence of the problem.
+	\item high aspect ratios in the cells increase the number of Newton iteration needed to get the convergence of the problem.
 	\item the cells in the portion of the channel after the step can be coarsened in the $x$-direction without a great influence on the solution.
 	\item too refined cells in the $y$-direction in the area with the 
 	recirculation do not improve the solution in a relevant way.
@@ -621,7 +622,7 @@ field and, in particular, how, without the porous-medium, the two cavities
 influence each other.
 After choosing a configuration such that this influence is minimized, we take 
 into account the effect of a porous-medium, to see how its presence affects the 
-whole flow field,. We consider both the cases of shallow cavities and deep cavities.
+whole flow field. We consider both the cases of shallow cavities and deep cavities.
 %
 \subsubsection{Cavities mutual influence}
 In this first test we simulate only the free-flow, solving the RANS equations  \eqref{eq:ransmass}-\eqref{eq:ransmom}-\eqref{eq:komegak}-\eqref{eq:komegaomega} in the domain $\Omega_\text{ff}$ depicted in Figure~\ref{fig:singledomain}. It consists of a channel with inflow boundary 
@@ -643,7 +644,7 @@ The height of the channel is $\SI{0.6}{m}$ and it is chosen such that the flow i
 
 We want to see how the flow field in the second cavity is affected by the 
 presence of the first cavity, depending on the distance $d$ between them, that 
-is varied from $\SI{0.05}{m}$ to $\SI{2}{m}$.
+can range from $\SI{0.05}{m}$ to $\SI{2}{m}$.
 
 The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic 
 viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is 
@@ -675,12 +676,11 @@ and the pattern of the velocity field is the same, as we see in Figure~\ref{fig:
 \end{figure}
 In order to better analyse the results of the simulations, we compare the 
 profiles of the $u$ component of the velocity in the first cells above $y=h$. The velocity in these points drives the flow in the cavities, 
-since we start from zero velocity inside them.
+since we start from an initial condition of zero velocity inside them.
 Looking at the profiles in Figure~\ref{fig:velprofile1}, there is a positive 
-peak of the velocity near the centre of each cavity, then, when the wall starts 
-again, there is a negative peak, followed by a
+peak of the velocity near the centre of each cavity, then, after the end of the cavity, there is a negative peak, followed by a
 length of approximately $\SI{0.5}{m}$, hereby referred to as the recovery distance $d_{rec}$.
-In this distance, the flow returns nearly to the dynamics before the cavity, so that the velocity recovers the value that had there.
+In this distance, the flow returns nearly to the dynamics before the cavity, in particular the velocity recovers the value correspondent to $x=\SI{4}{m}$.
 The values in the second 
 cavity are slightly lower than the corresponding ones in the first cavity, but 
 the shape is the same. This confirms the fact that the behaviour of the flow 
@@ -693,10 +693,14 @@ in the two cavities is analogous.
 \end{figure}
 
 The peaks above the cavities are due to the fact that those sections of the 
-profile are not touching the wall, so the wall friction is not highly affecting 
-the velocity as it is in the other sections and this allows the velocity to 
-reach higher values. When a cavity is over and the wall begins, there is a 
-sudden 
+profile are not touching the wall, so the
+%wall friction is not highly affecting the velocity as it is in the
+effect of wall friction is lower with respect to
+other sections and this allows the velocity to 
+reach higher values.
+%When a cavity is over and the wall begins,
+Then, at the end of the cavities, where the wall begins,
+there is a sudden 
 decrease in the velocity because, before the corner of the cavity, the flow is 
 split into a portion that goes down and generates the recirculation and another 
 portion that instead goes up, as we observed in Figure~\ref{fig:vel_split}.
@@ -710,8 +714,7 @@ portion that instead goes up, as we observed in Figure~\ref{fig:vel_split}.
 \end{figure}
 It is likely that this change in the flow direction implies a reduction in the 
 $u$ component of the velocity. After the 
-distance $d_{rec}$, the effect of the wall has restored the boundary layer that 
-there was before the cavity. If the distance between the 
+distance $d_{rec}$, the effect of the wall has restored the boundary layer present before the cavity. If the distance between the 
 cavities is smaller than the recovery distance, i.e. $d < d_{rec}$, the flow in 
 the second cavity will be slower because it will be driven by lower velocities.
 
@@ -726,11 +729,11 @@ depending on the distance between the cavities.
 	\label{fig:velpeaks}
 \end{figure}
 We see that if $d < d_{rec}$ the velocity is affected by the presence of 
-the first cavity, reducing its value. For $d>d_{rec}$ the velocity is 
+the first cavity, which reduces its value. For $d>d_{rec}$ the velocity is 
 slightly decreasing as $d$ increases; this fact can be interpreted as the 
 effect of the turbulence that 
 is generated near the end of the first cavity. As it can be seen in 
-Figure~\ref{fig:kd1}, the turbulent kinetic energy that is produced from the 
+Figure~\ref{fig:kd1}, the turbulent kinetic energy produced from the 
 first cavity is transported towards the second one, leading to an increased 
 thickness of the boundary layer as we move in the $x$-direction.
 \begin{figure}
@@ -745,13 +748,13 @@ thickness of the boundary layer as we move in the $x$-direction.
 In this second test we simulate the same situation as in the previous 
 single-domain test, 
 choosing a distance between the two shallow cavities $d=\SI{1}{m}$, so that they do not influence each other directly. In addition to this, we couple the free-flow with the simulation of a flow inside a porous-medium that fills the space between 
-the cavities, as it is shown in Figure~\ref{fig:multidomain}. In this way, we 
+the cavities, as shown in Figure~\ref{fig:multidomain}. In this way, we 
 have two domains, $\Omega_\text{ff}$ and $\Omega_\text{pm}$, that are in contact through the 
 interface $\Gamma_\text{int}$. The considered fluid is always isothermal, single-phase and single-component and gravity is neglected, as in the previous cases.
 
 We want to analyse the differences that the presence of the porous-medium 
 induces in the flow field with respect to the previous case and study how they 
-change while we vary the permeability.
+change as we vary the permeability.
 
 In the domain $\Omega_\text{ff}$ we solve, as before, the RANS equations with the 
 $k\text{-}\omega$ model, while in the $\Omega_\text{pm}$ we solve the continuity equation
@@ -769,8 +772,8 @@ $\Omega_\text{pm}$ in a conforming way.
 	\label{fig:multidomain}
 \end{figure}
 
-As we did in the previous case, we compare in Figure~\ref{fig:md_wall_velocities} the profiles of the $u$ component of the velocity at the position $y=h$ for several values of permeability. For values lower than $\SI{e-8}{m^2}$, the porous-medium results to be almost impermeable, or at least the flow field in $\Omega_\text{ff}$ is the 
-same that we had in the previous test considering only the free-flow. The maximum velocities in the 
+As we did in the previous case, we compare in Figure~\ref{fig:md_wall_velocities} the profiles of the $u$ component of the velocity at the position $y=h$ for several values of permeability. For values of $\mathrm{K}$ lower than $\SI{e-8}{m^2}$, the porous-medium results to be almost impermeable, or at least the flow field in $\Omega_\text{ff}$ is the 
+same that we had in the previous test considering only the free-flow and impervious boundaries. The maximum velocities in the 
 corner of the porous-medium are some orders of magnitude lower than those in 
 the cavities (see Figure~\ref{fig:coupled_vel_3}).
 \begin{figure}
@@ -792,11 +795,11 @@ The increase of the maximum velocity in correspondence of the first cavity can
 be due to the reduction of the \emph{wall} behaviour of the porous-medium. The 
 flow is allowed to reach higher velocities and it is less forced to reduce 
 its velocity because a more relevant amount of fluid enters into the 
-porous-medium (see Figure~\ref{fig:coupled_arrows}). Then this flow comes out 
+porous-medium (see Figure~\ref{fig:coupled_arrows}). Then this flow exits 
 from the top of $\Omega_\text{pm}$ within approximately the first 
 $\SI{20}{cm}$; in the case of high permeability, this region with a peak in the 
 $v$ component of the velocity spreads and 
-moves a bit ahead, as it can be seen in Figure~\ref{fig:coupled_vel_split}.
+moves a bit to the right, as it can be seen in Figure~\ref{fig:coupled_vel_split}.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{coupled_first_cavity_report_labels.png}
@@ -810,11 +813,11 @@ moves a bit ahead, as it can be seen in Figure~\ref{fig:coupled_vel_split}.
 	\label{fig:coupled_vel_split}
 \end{figure}
 
-After the distance $d_{rec}$, the value of the velocity that was there 
+After the distance $d_{rec}$, the value of the velocity observed 
 before the effect of the cavity is recovered and the boundary layer is 
 restored. With high values of permeability this value is higher than the one 
 with low permeabilities; this is due to the Beavers-Joseph-Saffman condition 
-\eqref{eq:bjs} at the interface, that allows more slip as the permeability 
+\eqref{eq:bjs} at the interface, which allows more slip as the permeability 
 increases. Eventually the behaviour around the 
 second cavity is approximately the same with all the permeabilities. There is a 
 portion of fluid that goes back inside the porous-medium, but, since it comes 
@@ -877,7 +880,7 @@ In Figure~\ref{fig:coupled_vel_deep}, we can see the magnitude of the velocity f
 	\label{fig:coupled_vel_deep}
 \end{figure}
 
-In Figure~\ref{fig:md_wall_velocities_deep}, we compare the profiles of the $u$ component of the velocity at the position $y=h$, for several values of permeability. With respect to Figure~\ref{fig:md_wall_velocities}, we observe a different profile in correspondence of the cavities, because of the different recirculation pattern inside them. As before, we notice that, as the permeability increases, the maximum velocity in correspondence of the first cavity increases, the minimum velocity above the beginning of the porous-medium decreases and the velocity above the end of the porous-medium increases. The threshold value for the permeability of approximately $\SI{e-8}{m^2}$ seems to be still valid. With respect to the previous test case, we observe that the value of the velocity before the second cavity, for $5 < x < 5.5$, increases faster. In fact, when $\mathrm{K} = \SI{3.1e-7}{m^2}$, it is greater than $\SI{0.3}{m/s}$, while in the previously, for the same value of permeability, it was approximately $\SI{0.27}{m/s}$. This fact could be due to a smaller amount of fluid exchanged with the porous-medium, or at least to differently distributed exchanges along the interface.
+In Figure~\ref{fig:md_wall_velocities_deep}, we compare the profiles of the $u$ component of the velocity at the position $y=h$, for several values of permeability. With respect to Figure~\ref{fig:md_wall_velocities}, we observe a different profile in correspondence of the cavities, because of the different recirculation pattern inside them. As before, we notice that, as the permeability increases, the maximum velocity in correspondence of the first cavity increases, the minimum velocity above the beginning of the porous-medium decreases and the velocity above the end of the porous-medium increases. The threshold value for the permeability of approximately $\SI{e-8}{m^2}$ seems to be still valid. With respect to the previous test case, we observe that the value of the velocity before the second cavity, for $5 < x < 5.5$, increases faster. Indeed, when $\mathrm{K} = \SI{3.1e-7}{m^2}$, it is greater than $\SI{0.3}{m/s}$, while in the previous geometry, for the same value of permeability, it was approximately $\SI{0.27}{m/s}$. This fact could be due to a smaller amount of fluid exchanged with the porous-medium, or at least to differently distributed exchanges along the interface.
 \begin{figure}
 	\centering
 	\input{../img/cavities_coupled_velx_deep}
@@ -907,7 +910,7 @@ It is interesting to evaluate the mass flow rate $\dot{m}$ across the interface 
 \end{equation}
 where $\mathbf{n}$ is the outward unit vector normal to $\partial \Omega_\text{ff}$. Notice that, being the fluid incompressible and imposing no-flow conditions on the lower boundary of the porous-medium $\Gamma_\text{base}$, the net mass flow rate across $\Gamma_\text{int}$ is zero.
 
-In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and deep cavities. In both the situations we observe a relevant increase of the mass flow rate when the permeability is approximately greater than $\SI{e-8}{m^2}$, so the same threshold value that we found in the previous analysis. $\dot{m}$ is always greater in the case of deep cavities than in the case of shallow cavities. In Table~\ref{tab:mass} we compare the values and we compute the ratio $\dot{m}_\text{deep} / \dot{m}_\text{shallow}$, that results to be between $1.3$ and $1.5$ for every value of permeability. The ratio between the measure of the $\Gamma_\text{int}$ is $1.6 / 1.2 = 1.\bar{3}$, so it is likely that the difference in the mass flow rate between the two cases is simply due to the different extension of the interface.
+In Figure~\ref{fig:mass} we compare the values in the two cases of shallow and deep cavities. In both the situations we observe a relevant increase of the mass flow rate when the permeability is approximately greater than $\SI{e-8}{m^2}$, so the same threshold value that we found in the previous analysis. $\dot{m}$ is always greater in the case of deep cavities than in the case of shallow cavities. In Table~\ref{tab:mass} we compare the values and we compute the ratio $\dot{m}_\text{deep} / \dot{m}_\text{shallow}$, that results to be between $1.3$ and $1.5$ for every value of permeability. The ratio between the measure of the $\Gamma_\text{int}$ is $1.6 / 1.2 = 1.\bar{3}$, so it is likely that the difference in the mass flow rate between the two cases is simply due to the different surface of the interface.
 \begin{figure}
 	\centering
 	\input{../img/mass_exchange_comp}
@@ -977,7 +980,7 @@ no-slip boundary conditions on the lower boundary $\Gamma_w$, symmetry boundary 
 	p = p_\text{ext} = \SI{1.1e5}{\pascal}.
 \end{equation}
 On the interface $\Gamma_\text{int}$, we impose the coupling conditions described in Section~\ref{sec:coupling}, while on the boundary $\Gamma_\text{base}$ we impose no-flow conditions.
-The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We start considering a permeability $\mathrm{K}=\SI{e-9}{m^2}.$ We simulate the time interval $(0,T) $, with $T=\SI{30}{s}$, such that the solution reaches an equilibrium, and we use an initial time-step $\Delta t = \SI{e-4}{s}$. As initial condition we set:
+The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosity is $\nu=\SI{e-5}{m^2/s}$, so that the Reynolds number is $Re=\num{6e5}$. We start considering a permeability $\mathrm{K}=\SI{e-9}{m^2}.$ We simulate the time interval $(0,T) $, with $T=\SI{30}{s}$, such that the solution reaches an equilibrium, and we use an initial time-step $\Delta t = \SI{e-4}{s}$. As initial conditions we set:
 \begin{equation}
 	\mathbf{v} = [u_\text{init}, 0]^\mathrm{T} \quad \forall \mathbf{x} \in \Omega_\text{ff}, \quad u_\text{init} =
 	\begin{cases}
@@ -993,7 +996,8 @@ The density of the fluid is $\varrho = \SI{1}{kg/m^3}$ and its kinematic viscosi
 \end{equation}
 The factor $7/6$ ensures that the flow rate is uniform along the channel.
 Performing a sensitivity analysis, we choose a grid made of $\num{280x82}$ cells, employing gradings up to $1.2$ in order ho have refined cells near the walls. 
-The size of the cells in the region around the upper-left corner of the obstacle shows to affect significantly the solution. In fact, looking at Figure~\ref{fig:obstacle_grid}, we can see how the pattern of the velocity field changes for three different grids.
+The size of the cells in the region around the upper-left corner of the obstacle shows to affect significantly the solution. Indeed, looking at Figure~\ref{fig:obstacle_grid}, we can see how the pattern of the velocity field changes for three different grids.
+
 \begin{figure}
 	\centering
 	\subfloat[]{\includegraphics[width=0.32\textwidth]{obstacle_grid4.png}\label{fig:grid4}}\hspace{0.008\textwidth}
@@ -1007,7 +1011,7 @@ The size of the cells in the region around the upper-left corner of the obstacle
 	\label{fig:obstacle_grid}
 \end{figure}
 
-In Figure~\ref{fig:obstacle_begin}, we can see the velocity field near the beginning of the porous obstacle. At the frontal face of the porous-medium, a small portion of the main flow enters into the obstacle, while the left amount of fluid recirculates near the bottom of the channel. At the corner of the porous-medium, the flow is deflected towards an higher region, so that, at the upper surface of the obstacle, a recirculation is generated and the velocity at the porous wall is negative.
+In Figure~\ref{fig:obstacle_begin}, we see the velocity field near the beginning of the porous obstacle. At the frontal face of the porous-medium, corresponding to $x=\SI{4.5}{m}$, a small portion of the main flow enters into the obstacle, while the left amount of fluid recirculates near the bottom of the channel. At the corner of the porous-medium, the flow is deflected towards an higher region, so that, above the upper surface of the obstacle, a recirculation is generated and the velocity at the porous wall is negative.
 In Figure~\ref{fig:obstacle_end}, we can see, instead, the velocity field near the end of the obstacle. The velocity pattern is analogous to the one generated by a backward facing step, as studied in Section~\ref{sec:bfs}. There is a small amount of fluid exiting from the porous-medium, but it does not seem to affect the eddies in the region after the obstacle.
 \begin{figure}
 	\centering
@@ -1028,7 +1032,7 @@ In Figure~\ref{fig:obstacle_end}, we can see, instead, the velocity field near t
 
 Now we analyse how a change in the permeability of the porous obstacle influences the flow field, considering a range from $\SI{e-11}{m^2}$ to $\SI{e-8}{m^2}$.
 
-In Figure~\ref{fig:obstacle_diff} we can see the magnitude of the difference between the velocity field when $\mathrm{K}=\SI{e-8}{m^2}$ and $\mathrm{K}=\SI{e-11}{m^2}$. We observe that the most relevant differences are near the beginning of the obstacle, arising from the upper-left corner. Near the end of the obstacle, instead, the flow field is approximately the same.
+In Figure~\ref{fig:obstacle_diff} we see the magnitude of the difference between the velocity field when $\mathrm{K}=\SI{e-8}{m^2}$ and $\mathrm{K}=\SI{e-11}{m^2}$. We observe that the most relevant differences are near the beginning of the obstacle, arising from the upper-left corner. Near the end of the obstacle, instead, the flow field is approximately the same.
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{obstacle_diff.png}
@@ -1048,5 +1052,5 @@ In Figure~\ref{fig:obstacle_diff} we can see the magnitude of the difference bet
 	\caption[Profiles of the $u$ component of the velocity above the porous obstacle]{Profiles of the $u$ component of the velocity at $y=h$, i.e. above the porous obstacle, which occupies the region $4.5 < x < 5.5$. $t=T$, $Re=\num{6e5}$.}
 	\label{fig:obstacle_velx}
 \end{figure}
-In Figure~\ref{fig:obstacle_diff} we observe the components of the same velocity difference, at the beginning of the porous-medium domain. The area around the upper-left corner is the one with the greatest difference. In particular, when $\mathrm{K} = \SI{e-8}{m^2}$, both components of the velocity are higher, so that more fluid coming from the free-flow region \emph{crosses} the corner of the porous obstacle and exits from above.
-In Figure~\ref{fig:obstacle_velx}, the profiles of the $u$ component of the velocity along the section at $y=h$, i.e. above the obstacle, are reported for different values of permeability. We observe negative values starting from $x=4.5$, corresponding to the recirculation above the porous-medium. As $\mathrm{K}$ increases, the minimum value of $u$ and the reattachment length, i.e. the point where the velocities becomes positive, increase. It is likely that, as a more relevant amount of fluid \emph{crosses} the corner of the porous-medium, the area where the flow is not only one point but is extended. As a result, the recirculation il slightly shifted in the flow direction, with the consequent increase of the reattachment length.
+In Figure~\ref{fig:obstacle_diff} we observe the two components of the same velocity difference, at the beginning of the porous-medium domain. The area around the upper-left corner is the one with the greatest difference. In particular, when $\mathrm{K} = \SI{e-8}{m^2}$, both components of the velocity present higher values, so that more fluid coming from the free-flow region ``crosses'' the corner of the porous obstacle and exits from above.
+In Figure~\ref{fig:obstacle_velx}, the profiles of the $u$ component of the velocity along the section at $y=h$, i.e. above the obstacle, are reported for different values of permeability. We observe negative values starting from $x=4.5$, corresponding to the recirculation above the porous-medium. As $\mathrm{K}$ increases, the minimum value of $u$ and the reattachment length, i.e. the point where the velocities becomes positive, increase. It is likely that, as a more relevant amount of fluid crosses the corner of the porous-medium, the area where the flow is deflected is extended. As a result, the recirculation il slightly shifted in the flow direction, with the consequent increase of the reattachment length.
