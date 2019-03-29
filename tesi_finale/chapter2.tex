@@ -41,14 +41,14 @@ heat added to the fluid and $\dot{W}$ is the net rate of work done on the fluid.
 For viscous fluids we can identify two contributions in the Cauchy stress 
 tensor:
 \begin{equation}
-\boldsymbol{\sigma} = -p\mathbb{1} + \boldsymbol{\tau},
+\boldsymbol{\sigma} = -p\mathbf{I} + \boldsymbol{\tau},
 \end{equation}
-$-p\mathbb{1}$ is a contribution due to pressure, while $\boldsymbol{\tau}$ is 
+$-p\mathbf{I}$ is a contribution due to pressure, while $\boldsymbol{\tau}$ is 
 the viscous stress tensor, for which the constitutive relation of Newtonian 
 fluids is used:
 \begin{equation}
 \boldsymbol{\tau} = 2\mu \mathbf{S} + 
-\lambda (\nabla \cdot \mathbf{v}) \mathbb{1},
+\lambda (\nabla \cdot \mathbf{v}) \mathbf{I},
 \end{equation}
 where $\mu$ is the dynamic viscosity [$\si{\pascal\second}$], $\lambda$ 
 is a dilatation factor and $\mathbf{S}$ is the symmetric strain rate tensor:
@@ -385,7 +385,7 @@ In 1877 \textcite{ipo:boussinesq} suggested that $\boldsymbol{\tau}_R$ could be 
 stress tensor, thus expressed as
 \begin{equation} \label{eq:bouss}
 \boldsymbol{\tau}_R = 2\mu_t \bar{\mathbf{S}} - 
-\frac{2}{3}\varrho k \mathbb{1}.
+\frac{2}{3}\varrho k \mathbf{I}.
 \end{equation}
 The first term has the same form of $\boldsymbol{\tau}$ if we consider the mean velocity 
 field, 
@@ -822,7 +822,7 @@ mechanical equilibrium, for which we need:
 	\item the continuity of normal stresses:
 	\begin{equation} \label{eq:coupnormalstress}
 		[(\varrho \mathbf{v} \mathbf{v}^\mathrm{T} - \mu_\text{eff} \nabla 
-		\mathbf{v} + p\mathbb{1}) 
+		\mathbf{v} + p\mathbf{I}) 
 		\mathbf{n}]_\text{ff} = 
 		- [p\mathbf{n}]_\text{pm} \quad \text{on $\Gamma_\text{int}$},
 	\end{equation}

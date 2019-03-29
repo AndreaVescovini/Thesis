@@ -920,8 +920,8 @@ where
 \end{equation}
 and $\mathbf{J}_f(\mathbf{v})$ is its Jacobian matrix:
 \begin{equation} \label{eq:jacforch}
-\mathbf{J}_f(\mathbf{v}) = \mathbb{1} + 
-C_F\sqrt{\mathbf{K}}\frac{\varrho}{\mu}\big(|\mathbf{v}|\mathbb{1} + 
+\mathbf{J}_f(\mathbf{v}) = \mathbf{I} + 
+C_F\sqrt{\mathbf{K}}\frac{\varrho}{\mu}\big(|\mathbf{v}|\mathbf{I} + 
 \frac{1}{|\mathbf{v}|}{\mathbf{v}\mathbf{v}^\mathrm{T}}\big).
 \end{equation}
 We use as initial guess $\mathbf{v}_0$ the velocity computed with the Darcy's 
@@ -1055,7 +1055,7 @@ time-step a non-linear algebraic system:
 \begin{equation}
 	\mathbf{F}(\mathbf{x}^n) = \mathbf{0} \quad \forall n\geq 1,
 \end{equation}
-where $\mathbf{x}^n$ is the vector containing all the degrees of freedom of all the unknowns at the time-step $t^n$. This system is then solved monolithically using the Newton's method:
+where $\mathbf{x}^n \in \mathbb{R}^{N_\text{dof}}$ is the vector containing all the degrees of freedom of all the unknowns at the time-step $t^n$. This system is then solved monolithically using the Newton's method:
 \begin{align}
 \label{eq:linnew}\mathbf{J}_F(\mathbf{x}^n_k) \delta \mathbf{x}^n_{k+1} = &-\mathbf{F}(\mathbf{x}_k^n), \quad \text{$\forall k\geq 0$ until 
 	convergence}\\
@@ -1064,9 +1064,9 @@ where $\mathbf{x}^n$ is the vector containing all the degrees of freedom of all 
 starting from the solution at the previous time-step as initial guess $\mathbf{x}_0^n = \mathbf{x}^{n-1}$.
 $\mathbf{J}_F$ is the Jacobian matrix of $\mathbf{F}$. Its entries are computed numerically using centred finite differences:
 \begin{equation}
-[\mathbf{J}_F]_{ij} = \frac{F_i([\mathbf{x}_k^n]_j + \varepsilon) - F_i([\mathbf{x}_k^n]_j - \varepsilon)}{2\varepsilon},
+[\mathbf{J}_F]_{ij} = \frac{F_i(\mathbf{x}_k^n + \varepsilon_j \mathbf{e}_j) - F_i(\mathbf{x}_k^n - \varepsilon_j \mathbf{e}_j)}{2\varepsilon_j},
 \end{equation}
-where $\varepsilon=\num{e-8}|[\mathbf{x}_k^n]_j|$.
+where $\varepsilon_j=\num{e-8}|[\mathbf{x}_k^n]_j|$ and $\mathbf{e}_j$ is the $j$-th vector of the canonical basis in $\mathbb{R}^{N_\text{dof}}$.
 Notice that the evaluation of the residuals $F_i$ related to the degrees of freedom in the porous-medium involves the application of the Newton's method \eqref{eq:forchnewton}--\eqref{eq:forchnewton2}.
 The convergence criterium is based on the relative shift: given a relative shift vector $\mathbf{s}$, whose components are computed as
 \begin{equation}
