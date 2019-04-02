@@ -3,6 +3,8 @@
 \usecolortheme{dolphin}
 \usefonttheme[onlymath]{serif}
 
+%\pdfminorversion=7 % per togliere il warning delle immagini
+
 \setbeamertemplate{navigation symbols}{} %toglie i navigation symb. basso a dx
 %\setbeamertemplate{mini frames}{} % boh non fa niente
 \renewcommand*{\slideentry}[6]{} % toglie i pallini in alto
@@ -15,14 +17,11 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx}
-%\usepackage{epstopdf} % non penso mi serva a dire la verità
 \usepackage{subfig} % affiancare figure
 \usepackage{caption} % per gestire meglio le didascalie
 \usepackage{pgfplots}
 \pgfplotsset{compat=newest}
 \pgfplotsset{plot coordinates/math parser=false}
-%\usepackage{animate} % a cosa mi serve?
-\usepackage{bbm} % per \mathbb e \mathbbm
 \usepackage{booktabs} % per i filetti delle tabelle
 %\usepackage{wrapfig} % a cosa mi serve?
 \usepackage{appendixnumberbeamer} % numerare da 1 nell'appendice
@@ -89,28 +88,36 @@
 \makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\title
-{A fully implicit higher order staggered grid formulation of the Navier-Stokes 
-equations for coupled flow systems}
-\author[Andrea Vescovini]{Andrea Vescovini\texorpdfstring{\\[1ex]\scriptsize 
-Supervisors: Edward N. Coltman and Melanie Lipp}{Supervisors: Edward N. Coltman 
-and Melanie Lipp}}
+\title{A fully implicit formulation for Navier-Stokes/Darcy coupling}
+\author[Andrea Vescovini]{Andrea Vescovini\texorpdfstring{\\[2.5ex]\scriptsize%
+%		\parbox{2cm}{Supervisor:\\Co-Supervisors:\\~}\hspace{0.1cm}\parbox{4cm}{Prof. Luca Formaggia\\Dr. Anna Scotti\\Prof. Dr.-Ing. Rainer Helmig}}%
+%Supervisor: Prof. Luca Formaggia\\[0.5ex]Co-supervisors: Dr. Anna Scotti and Prof. Dr.-Ing. Rainer Helmig}%
+\begin{tabular}{ll}
+	Supervisor: & Prof. Luca Formaggia\\
+	Co-supervisors: & Dr. Anna Scotti\\
+	& Prof. Dr.-Ing. Rainer Helmig\\
+\end{tabular}}
+{Supervisor: Prof. Luca Formaggia}}
+
 \institute[Politecnico di Milano - Universit\"at Stuttgart]%
 		  {Politecnico di Milano - Universit\"at Stuttgart}%\\%
 %[2ex]\includegraphics[height=1cm, keepaspectratio]{logopoli.png}\hspace{1cm}%
 %	 \includegraphics[height=1cm, keepaspectratio]{logosfb.png}\hspace{1cm}%
 %	 \includegraphics[height=1cm, keepaspectratio]{logostutt.png}}
-\date{18th February 2019}
+\date{16th April 2019}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{document}
 \begin{frame}
+	\vspace{0.3cm}
 	\centering
 	\includegraphics[height=0.9cm, 
 	keepaspectratio]{logopoliblu.png}\hspace{0.5cm}%
 	\includegraphics[height=0.9cm, keepaspectratio]{logosfb.png}\hspace{0.5cm}%
 	\includegraphics[height=0.9cm, keepaspectratio]{logostuttnome.png}
 	\vspace{0.3cm}
+	\setlength\tabcolsep{3pt} % default value: 6pt
 	\maketitle
+	\setlength\tabcolsep{6pt} % default value: 6pt
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Introduction}
@@ -120,7 +127,7 @@ and Melanie Lipp}}
 		evaporation, \dots
 		\begin{figure}
 			\centering
-			\includegraphics[width=0.75\textwidth]{intropicture.png}
+			\includegraphics[width=0.75\textwidth]{intropicture2.png}
 			\caption{\color{gray}T. Fetzer. Coupled Free and Porous-Medium flow 
 			processes affected by Turbulence and Roughness.}
 		\end{figure}
@@ -227,7 +234,7 @@ At the interface $\Gamma_\text{int}$ we apply:
 	\item Continuity of normal stresses:
 	\begin{equation*}
 	[(\varrho \mathbf{v} \mathbf{v}^\mathrm{T} - (\mu + \mu_t) \nabla 
-	\mathbf{v} + p\mathbbm{1}) 
+	\mathbf{v} + p\mathbf{I}) 
 	\mathbf{n}]_\text{ff} = 
 	- [p\mathbf{n}]_\text{pm}
 	\end{equation*}
@@ -321,23 +328,23 @@ u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Differencing schemes - 1D conservation law}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\vspace{-0.5cm}
-\begin{align*}
-	u_t + u_x = 0 \quad &\forall x \in (0, 1), \; \forall t \in (0, 0.5)\\
-	u(x, 0) = 0 \quad &\forall x \in (0, 1)\\
-	u(0, t) = 1 \quad &\forall t \in (0, 0.5)
-\end{align*}
-\vspace{-1cm}
-\begin{figure}
-	\centering
-	\input{../img/1Dconslaw}
-\end{figure}
-\end{frame}
+%\begin{frame}{Differencing schemes - 1D conservation law}
+%\begin{tikzpicture}[remember picture,overlay]
+%\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+%	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+%\end{tikzpicture}
+%\vspace{-0.5cm}
+%\begin{align*}
+%	u_t + u_x = 0 \quad &\forall x \in (0, 1), \; \forall t \in (0, 0.5)\\
+%	u(x, 0) = 0 \quad &\forall x \in (0, 1)\\
+%	u(0, t) = 1 \quad &\forall t \in (0, 0.5)
+%\end{align*}
+%\vspace{-1cm}
+%\begin{figure}
+%	\centering
+%	\input{../img/1Dconslaw}
+%\end{figure}
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Total Variation Diminishing (TVD) methods}
 \begin{itemize}
@@ -435,17 +442,17 @@ $\psi(r) = 0$ for $r<0$
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{TVD - 1D conservation law}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\begin{figure}
-	\centering
-	\hspace{-1cm}
-	\input{../img/1DconslawTVD}
-\end{figure}
-\end{frame}
+%\begin{frame}{TVD - 1D conservation law}
+%\begin{tikzpicture}[remember picture,overlay]
+%\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
+%	\includegraphics[width=1.33cm]{logo_ff.pdf}};
+%\end{tikzpicture}
+%\begin{figure}
+%	\centering
+%	\hspace{-1cm}
+%	\input{../img/1DconslawTVD}
+%\end{figure}
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Non-uniform grids - [Li et al., 2008]}
 \noindent
@@ -725,7 +732,7 @@ porous medium between the two cavities.
 \begin{figure}
 	\centering
 	\hspace{-0.5cm}
-	\input{../img/cavities_coupled_velx}
+	\input{../img/cavities_coupled_velx_latex}
 %	\caption{\scriptsize $u$ profiles at $y=h$}
 \end{figure}
 \end{frame}
@@ -769,12 +776,12 @@ Outlook:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}
 	\centering
-	{\LARGE Thank you for the attention!}
-	\vspace{2cm}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.4\textwidth]{logosfb.png}
-	\end{figure}
+	{\LARGE Thank you for the attention}
+%	\vspace{2cm}
+%	\begin{figure}
+%		\centering
+%		\includegraphics[width=0.4\textwidth]{logosfb.png}
+%	\end{figure}
 	
 %	\vspace{2cm}
 %	Andrea Vescovini\\
