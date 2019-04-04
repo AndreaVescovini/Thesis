@@ -136,68 +136,39 @@
 	\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Introduction}
+	Second slide with the introduction.
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Outline}
 	\tableofcontents
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Governing equations}
-\subsection*{Free-flow}
 \begin{frame}{Free-flow}
-Navier-Stokes equations for an incompressible fluid:
-\begin{align*}
-\nabla \cdot \mathbf{v} = 0&\\
-\frac{\partial \mathbf{v}}{\partial t} + \nabla 
-\cdot (\mathbf{v} \mathbf{v}^\mathrm{T}) - \nabla \cdot (\nu \nabla 
-\mathbf{v}) + \frac{1}{\varrho}\nabla p  - \mathbf{g} = \mathbf{0}&
-\end{align*}
-%\pause
-RANS equations with Boussinesq approximation:
+RANS equations:
 \begin{align*}
 \nabla \cdot \bar{\mathbf{v}} = 0&\\
 \frac{\partial \bar{\mathbf{v}}}{\partial t} + \nabla 
 \cdot (\bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) - \nabla \cdot 
-((\nu + \nu_t) \nabla \bar{\mathbf{v}}) + \frac{1}{\varrho}\nabla p_\text{gen} 
--\mathbf{g}= \mathbf{0}&
+((\nu + \nu_t) \nabla \bar{\mathbf{v}}) + \frac{1}{\varrho}\nabla p_\text{gen} = \mathbf{0}&
 \end{align*}
-\begin{equation*}
-	p_\text{gen} = \bar{p}+\frac{2}{3}\varrho k
-\end{equation*}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=ko]{\hyperlink{koSupp}{$k\text{-}\omega$ turbulence model}}
-\begin{equation*}
-\nu_t = \frac{k}{\tilde{\omega}}
-\end{equation*}
-Evolution equations for the turbulent kinetic energy $k$ and the specific 
-dissipation 
-rate $\omega$:
-\begin{gather*}
-\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla \cdot
+$k\text{-}\omega$ turbulence model $\nu_t = k / \tilde{\omega}$ with limiters:
+\begin{align*}
+&\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla \cdot
 \bigg[\bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] -P + \beta^* k 
-\omega = 0\\ \hspace{-1cm}
-\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \mathbf{v}) - 
+\omega = 0\\
+%\end{gather*}
+%\begin{multline*}
+&\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \mathbf{v}) - 
 \nabla \cdot \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla \omega 
-\bigg] - \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
+\bigg]-\\
+&\hspace{2.5cm}- \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
 -\frac{\sigma_d}{\omega} \nabla k \cdot 
 \nabla \omega+ \beta \omega^2 = 0
-\end{gather*}
-Limiters for the production $P$ and for $\omega$:
-\begin{equation*}
-P = \min \{ 2 \nu_t \mathbf{S} \cdot \mathbf{S}, 20 \beta^* k \omega \} \quad 
-\tilde{\omega} = \max \Bigg\{ \omega, C_\text{lim} \sqrt{ 
-2\frac{\mathbf{S}\cdot\mathbf{S}}{\beta^*}} \Bigg\}
-\end{equation*}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
+\end{align*}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Porous-medium flow}
 \begin{frame}{Porous-medium flow - REV scale approach}
 Continuity equation for a single-phase incompressible fluid:
 \begin{equation*}
@@ -216,15 +187,10 @@ Momentum equation:
 	\end{equation*}
 	It models a quadratic drag and it holds at higher $Re$ than the Darcy's law.
 \end{itemize}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_pm.pdf}};
-\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Coupling conditions}
 \begin{frame}{Coupling conditions}
-At the interface $\Gamma_\text{int}$ we apply:
+At the interface we apply:
 \begin{itemize}
 	\item Continuity of normal velocity:
 	\begin{equation*}
@@ -246,337 +212,44 @@ At the interface $\Gamma_\text{int}$ we apply:
 	\quad \forall i \in \{1, \dots, dim - 1\}
 	\end{equation*}
 \end{itemize}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_int2.pdf}};
-\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical model}
-\subsection*{Free-flow}
-\begin{frame}{Staggered grid discretization}
-\begin{itemize}
-	\item Scalar variables are stored at the centre of the cells.
-	\item Components of vectorial variables are stored on faces, aligned to the 
-	faces normal direction.
-\end{itemize}
-%\vspace{0.15cm}
-\begin{figure}
-	\centering
-	\includegraphics[trim={2cm 1cm 0cm 0cm}, clip, 
-	height=0.65\textheight]{staggered_grid_mia.pdf}
-%	\includegraphics[height=0.7\textheight]{staggered_grid_mia.png}
-\end{figure}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Convective term}
-\vspace{-0.5cm}
-\begin{equation*}
-	\int_V \nabla \cdot \underbrace{(\mathbf{v} 
-	\mathbf{v}^\mathrm{T})}_{\text{\makebox[0pt]{$\mathbf{v} = 
-	[u,v]^\mathrm{T}$}}} \; dV = \int_{\partial V} 
-	\overbrace{\mathbf{v}}^{\substack{\text{\makebox[0pt]{transported}} 
-	\\ \text{\makebox[0pt]{field}}}} \underbrace{(\mathbf{v} \cdot 
-	\mathbf{n})}_{\substack{\text{\makebox[0pt]{transporting}} \\
-	\text{\makebox[0pt]{velocity}}}} \; dA = \int_e uu \; dA + \dots
-\end{equation*}
-\begin{equation*}
-\int_e uu \; dA \approx u^* u_\text{avg} |e|, \quad 
-u_\text{avg} = \frac{u^D + u^U}{2}, \quad u^* = \; ?
-\end{equation*}
-\begin{minipage}[t]{0.79\textwidth}
-\begin{figure}
-	\centering
-	\includegraphics[height=0.4\textheight]{trecelle_faces.pdf}
-\end{figure}
-\end{minipage}
-\begin{minipage}[t]{0.19\textwidth}
-	\vspace*{1cm}
-	Supposing $u_\text{avg} > 0$
-\end{minipage}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Differencing schemes}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\begin{itemize}
-	\item Central Differencing (CD): second order, not stable as it does not 
-	include the flow direction.
-	\begin{equation*}
-	u^* = \frac{u^D + u^U}{2}
-	\end{equation*}
-	\item Upwind: first order, stable but it introduces considerable numerical 
-	diffusion.
-	\begin{equation*}
-		u^* = u^U
-	\end{equation*}
-	\item QUICK: third order, it can introduce unphysical overshoots and 
-	undershoots.
-	\begin{equation*}
-		u^* = \frac{3u^D + 6u^U - u^{FU}}{8}
-	\end{equation*}
-\end{itemize}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Differencing schemes - 1D conservation law}
-%\begin{tikzpicture}[remember picture,overlay]
-%\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-%	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-%\end{tikzpicture}
-%\vspace{-0.5cm}
-%\begin{align*}
-%	u_t + u_x = 0 \quad &\forall x \in (0, 1), \; \forall t \in (0, 0.5)\\
-%	u(x, 0) = 0 \quad &\forall x \in (0, 1)\\
-%	u(0, t) = 1 \quad &\forall t \in (0, 0.5)
-%\end{align*}
-%\vspace{-1cm}
-%\begin{figure}
-%	\centering
-%	\input{../img/1Dconslaw}
-%\end{figure}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Total Variation Diminishing (TVD) methods}
-\begin{itemize}
-	\item Second order accuracy.
-	\item Oscillation free: they are \emph{monotonicity preserving} thanks to 
-	the TVD condition:
-\end{itemize}
-\vspace{0.3cm}
-\begin{equation*}
-	TV(u^{n+1}) \leq TV(u^n) \quad \forall n>0
-\end{equation*}
-\begin{equation*}
-	TV(u) = 
-	\sum_{i=1}^{N_\text{dof}-1} |u_{i+1} - u_i|
-\end{equation*}
-\vspace{0.3cm}
-\begin{itemize}
-	\item A non-linear anti-diffusive flux is added to the upwind contribution:
-\end{itemize}
-\begin{equation*}
-u^* = u^U + \frac{1}{2} \psi(r)(u^D - u^U), \quad r = \frac{u^U - u^{FU}}{u^D 
-- u^U}
-\end{equation*}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{TVD region - Sweby's diagram}
-\begin{minipage}[t]{0.63\textwidth}
-\begin{figure}
-	\centering
-	\hspace{-1.24cm}
-	\input{../img/Tvd_region_slides}
-\end{figure}
-\end{minipage}
-\begin{minipage}[t]{0.35\textwidth}
-	\vspace{1cm}
-%	\hspace{1cm}
-\begin{equation*}
-	r \leq \psi \leq \min \{2r, 1\}, \; r\leq1
-\end{equation*}
-\begin{equation*}
-	1 \leq \psi \leq \min \{r, 2\}, \; r>1
-\end{equation*}
-\centering
-	Symmetry property:
-	\begin{equation*}
-	\psi\bigg(\frac{1}{r}\bigg) = \frac{\psi(r)}{r}
-	\end{equation*}
-\end{minipage}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Flux limiter functions}
-%There are several possibilities for the flux limiter function $\psi$:
+\begin{frame}{Finite volumes discretization}
 	\begin{itemize}
-	\item Van Leer: $\psi(r) = \frac{r+|r|}{1+r}$
-	\item Van Alabada: $\psi(r)= \dfrac{r^2+r}{r^2+1} \quad \text{if $r\geq 
-		0$}, \quad 0 \quad \text{otherwise}$
-	\item Min-Mod: 	$\psi(r) = \max \{0, \min \{ r,1\} \}$
-	\vspace{0.4\baselineskip}
-	\item Superbee: $\psi(r)=\max \{0, \min \{ 2r, 1\}, \min \{ r, 2\} \}$
-	\vspace{0.2\baselineskip}
-	\item UMIST: $\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{3r+1}{4}, 
-	\frac{r+3}{4}, 2\bigg\} \bigg\}$
-	\item MC Limiter: $\psi(r)=\max \bigg\{0, \min \bigg\{ 2r, \frac{r+1}{2}, 
-	2\bigg\} \bigg\}$
-	\item \dots
+		\item Staggered grid approach in the free-flow:
+		\begin{figure}
+			\centering
+	\includegraphics[trim={2cm 1cm 0cm 0cm}, clip, 
+height=0.65\textheight]{staggered_grid_mia.pdf}
+		\end{figure}
+		\item Cell-centred approach in the porous-medium flow.
 	\end{itemize}
-\begin{block}{Remark} %\vspace*{-3ex} in the title to delete the dark blue bar
-	\centering
-$\psi(r) = 0$ for $r<0$
-\end{block}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Flux limiter functions}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-%\vspace{-0.5cm}
-\begin{figure}
-	\centering
-	\hspace{-1cm}
-	\input{../img/flux_limiters_slides}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{TVD - 1D conservation law}
-%\begin{tikzpicture}[remember picture,overlay]
-%\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-%	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-%\end{tikzpicture}
-%\begin{figure}
-%	\centering
-%	\hspace{-1cm}
-%	\input{../img/1DconslawTVD}
-%\end{figure}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Non-uniform grids - [Li et al., 2008]}
-\noindent
-Reconstruct with a linear approximation the value of $u$ at\\
-the position $FU^*$, as if the grid was uniform:
-\begin{figure}
-	\centering
-%	\includegraphics[width=0.9\textwidth]{non_uniform_cells.png}
-	\includegraphics[width=0.86\textwidth]{non_uniform_cells2.pdf}
-\end{figure}
+\begin{frame}{TVD methods}
+Non-linear convective term of th Navier-Stokes equations:
 \begin{equation*}
-r = \frac{u^U - u^{FU^*}}{u^D-u^U}, \quad u^{FU^*} \approx u^{FU} + 
-\frac{du^{FU}}{dx}r_{FU, FU^*}
+	\underbrace{\mathbf{v}}_\text{\makebox[0pt]{ciao}}\overbrace{\mathbf{v}^\mathrm{T}}^\text{\makebox[0pt]{bello}}
 \end{equation*}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
-Generalize the TVD formula in order to take into account\\
-also staggered cell 
-sizes:
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{cells_with_sizes.pdf}
-\end{figure}
-\begin{equation*}
-	u^* = u^U + \frac{1}{R_{U,D}} \psi(r)(u^D-u^U)
-\end{equation*}
-\begin{equation*}
-		r = \frac{u^U-u^{FU}}{u^D-u^U}\cdot\frac{x^D-x^U}{x^U-x^{FU}}, \quad 
-		R_{U,D} 
-		= \frac{\Delta x_U + \Delta x_D}{\Delta x_U}
-\end{equation*}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Non-uniform grids - [Hou et al., 2012]}
-Imposing the TVD condition, a generalized TVD region\\is obtained:
-%\vspace{-0.15cm}
-\begin{figure}
-	\centering
-	\hspace{-1.5cm}
-	\input{../img/tvd_region_modified_hou_final}
-\end{figure}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Temporal discretization}
-We employ fully implicit methods, unconditionally stable:
+With TVD methods we have:
 \begin{itemize}
-	\item Backward Euler, first order accuracy:
-	\begin{equation*}
-	\frac{\mathbf{v}^{n+1}-\mathbf{v}^n}{\Delta t} = 
-	\mathbf{F}(\mathbf{v}^{n+1}, 
-	t^{n+1})
-	\end{equation*}
-	\item BDF2, second order accuracy:
-	\begin{equation*}
-	\frac{3\mathbf{v}^{n+1}- 4\mathbf{v}^{n} + \mathbf{v}^{n-1}}{2\Delta t} = 
-	\mathbf{F}(\mathbf{v}^{n+1}, t^{n+1})
-	\end{equation*}
-	Generalized for the case of non constant time-steps.
+	\item Second order accuracy
+	\item Oscillation-free
 \end{itemize}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_ff.pdf}};
-\end{tikzpicture}
+Immagine e TVD formula
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Porous-medium flow}
-\begin{frame}{Cell-centred discretization}
-\begin{minipage}[t]{0.49\textwidth}
-	\vspace{0.5cm}
-\begin{equation*}
-\int_{V_L} \nabla \cdot \mathbf{v} \; dA = \int_{\partial V_L} \mathbf{v} 
-\cdot \mathbf{n} \; dA
-\end{equation*}
-\end{minipage}
-\begin{minipage}[t]{0.49\textwidth}
-\begin{figure}
-	\centering
-	\includegraphics[height=0.3\textheight]{cctpfa.pdf}
-\end{figure}
-\end{minipage}
-\begin{equation*}
-	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} |\mathbf{v}| 
-	\mathbf{v} = - \frac{1}{\mu}\mathbf{K} (\nabla p - \varrho \mathbf{g})
-\end{equation*}
-\begin{itemize}
-	\item Newton's method to compute the velocity.
-	\item Upwind approximation for the viscosity $\mu$.
-	\item Harmonic average for $\mathbf{K}$ (TPFA).
-\end{itemize}
-\begin{tikzpicture}[remember picture,overlay]
-\node[xshift=-1.3cm,yshift=-1.5cm] at (current page.north east){%
-	\includegraphics[width=1.33cm]{logo_pm.pdf}};
-\end{tikzpicture}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}
+	\begin{itemize}
+		\item Monolithic approach
+		\item Newton's method
+		\item BDF2 or Backward Euler methods
+		\item Direct linear solver with UMFPack
+	\end{itemize}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical results}
-\subsection*{Navier-Stokes}
-\begin{frame}[label=spaceconv]{\hyperlink{spaceconvSupp}{Spatial convergence - 
-steady SinCos problem}}
-\vspace{0.5cm}
-Rotating field around the position $(0,0)$.
-\vspace{-0.5cm}
-\begin{figure}
-	\centering
-	\subfloat[{\tiny Velocity field [m/s]}]{%
-		\includegraphics[width=0.55\textwidth]{sincos_exact_v.png}}
-	\subfloat[{\tiny Pressure field [Pa]}]{%
-		\includegraphics[width=0.55\textwidth]{sincos_exact_p.png}}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
 \begin{frame}{\hyperlink{spaceconvSupp}{Spatial convergence - 
 		steady SinCos problem}}
 \vspace{-0.8cm}
@@ -603,59 +276,7 @@ Rotating field around the position $(0,0)$.
 	\caption{\tiny Convergence orders with $Re = 1000$}
 \end{table}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=timeconv]{\hyperlink{timeconvSupp}{Time convergence - 
-unsteady SinCos problem}}
-\begin{figure}
-	\centering
-	\input{../img/time_convergence_tot}
-%	\caption{\scriptsize $Re=10$}
-\end{figure}
-\vspace{-0.3cm}
-\begin{itemize}
-\item Error = $|\!|p_h - p_\text{ex}|\!|_{L^\infty(0,T;L^2(\Omega_\text{ff}))} 
-+ |\!|\mathbf{v}_h - 
-\mathbf{v}_\text{ex}|\!|_{L^\infty(0,T;L^2(\Omega_\text{ff}))}$
-\item $T = \SI{1}{s}$, $Re=10$
-\end{itemize}
-\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=rough]{\hyperlink{roughSupp}{Rough channel}}
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\textwidth]{rough_channel_vl_barra.png}
-	\caption{\tiny Velocity magnitude [$\si{m/s}$]. $Re=2000$, $u_\text{in} = 
-	\SI{1}{m/s}$, $\mu=\SI{5e-4}{\pascal\second}$.}
-\end{figure}
-$L^2$-errors of the magnitude of the velocity computed using as ``exact'' 
-solution the one obtained with a grid 6 times finer:
-\begin{table}
-	\footnotesize
-	\centering
-	\[
-	\begin{array}{ccc}
-	\toprule
-	\text{Upwind} & \text{Van Leer} & \text{Van Alabada}\\
-	\midrule
-	\num{1.708e-4} & \num{9.556e-6} & \num{1.119e-5}\\
-	\midrule
-	\text{Min-Mod} & \text{Superbee} & \text{MC Limiter} \\ 
-	\midrule
-	\num{1.537e-5} & \num{8.335e-6} & \num{8.659e-6}\\
-	\bottomrule
-	\end{array}
-	\]
-\end{table}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{roughSupp}{Rough channel - deep cavities}}
-\begin{figure}
-	\centering
-	\input{../img/line_comparison_highstep}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{RANS}
 \begin{frame}[label=bfs]{\hyperlink{bfsSupp}{Backward facing step}}
 \begin{figure}
 	\centering
@@ -674,16 +295,6 @@ solution the one obtained with a grid 6 times finer:
 \begin{figure}
 	\centering
 	\input{../img/bfs_fin_cf}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{bfsSupp}{Backward facing step - velocity profiles}}
-\vspace{-0.7cm}
-\begin{figure}
-%	\centering
-	\subfloat[\tiny Profile at 
-	$x/H=1$]{\hspace{-1cm}\input{../img/bfs_fin_vel1}}
-	\subfloat[\tiny Profile at $x/H=6$]{\input{../img/bfs_fin_vel3}}
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -713,9 +324,7 @@ solution the one obtained with a grid 6 times finer:
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection*{Coupled model}
-\begin{frame}[label=coupled]{\hyperlink{coupledSupp}{Cavities coupled with a 
-porous-medium}}
+\begin{frame}{Cavities coupled with porous-medium}
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{cavities_multidomain.pdf}
@@ -728,7 +337,7 @@ porous medium between the two cavities.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{coupledSupp}{Cavities coupled with a porous-medium}}
+\begin{frame}{Cavities coupled with a porous-medium}
 \begin{figure}
 	\centering
 	\hspace{-0.5cm}
@@ -737,7 +346,7 @@ porous medium between the two cavities.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{coupledSupp}{Cavities coupled with a porous-medium}}
+\begin{frame}{Cavities coupled with a porous-medium}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_first_cavity.png}
@@ -745,7 +354,7 @@ porous medium between the two cavities.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{coupledSupp}{Cavities coupled with a porous-medium}}
+\begin{frame}{Cavities coupled with a porous-medium}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_second_cavity.png}
@@ -753,8 +362,7 @@ porous medium between the two cavities.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Conclusions} % Toglie la conclusione da section precedente ma mette 
-%segnalibro
+\section{Conclusions}
 \begin{frame}{Conclusions}
 TVD methods:
 \begin{itemize}
@@ -773,240 +381,5 @@ Outlook:
 	\item High order on adapted grids with hanging nodes
 \end{itemize}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-	\centering
-	{\LARGE Thank you for the attention}
-%	\vspace{2cm}
-%	\begin{figure}
-%		\centering
-%		\includegraphics[width=0.4\textwidth]{logosfb.png}
-%	\end{figure}
-	
-%	\vspace{2cm}
-%	Andrea Vescovini\\
-%	andrea.vescovini@mail.polimi.it
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\appendix
-\begin{frame}{Main references}
-\begin{itemize}
-	\footnotesize
-	\item T. Fetzer. `Coupled Free and Porous-Medium Flow Processes Affected by 
-	Turbulence and Roughness'. PhD thesis. Universit\"at Stuttgart, 2018.
-	\item J. Hou et al. `Improved total variation diminishing schemes for 
-	advection simulation of arbitrary grids'. \emph{International Journal for 
-	Numerical Methods in Fluids} 70 (2012).
-	\item L. Li et al. `An improved r-factor algorithm for TVD schemes'. 
-	\emph{International Journal of Heat and Mass Transfer} 51 (2008).
-	\item K. Mosthaf. `Modeling and Analysis of Coupled  Porous-Medium and Free 
-	Flow with Application to Evaporation Processes'. PhD thesis. Universit\"at 
-	Stuttgart, 2014.
-	\item D. A. Nield et al. \emph{Convection in Porous Media}. Springer, 2017.
-	\item P. K. Sweby. `High Resolution Schemes Using Flux limiters for 
-	Hyperbolic Conservation Laws'. \emph{SIAM Journal on Numerical Analysis} 
-	21(5) (1984).
-	\item H. K. Versteeg et al. \emph{An Introduction to Computational Fluid 
-	Dynamics: The Finite Volume Method}. Pearson Education Limited, 2007.
-	\item D. C. Wilcox. \emph{Turbulence Modeling for CFD}. DCW industries, 
-	2006. 
-\end{itemize}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=koSupp]{\hyperlink{ko}{$k\text{-}\omega$ coefficients}}
-Generalized pressure in the RANS equations:
-\begin{equation*}
-	p_\text{gen} = \bar{p} + \frac{2}{3}k, \quad k = \frac{1}{2} 
-	\sum_{i=1}^{dim} \overline{(v_i')^2}
-\end{equation*}
-$\sigma_d$ activates the cross-diffusion term:
-\begin{equation*}
-\sigma_d =
-\begin{cases} 0 &\text{if $\nabla k \cdot \nabla \omega \leq 0$}\\
-\sigma_{do} &\text{if $\nabla k \cdot \nabla \omega > 0$}
-\end{cases},
-\quad \sigma_{do} = \frac{1}{8}
-\end{equation*}
-Dimensionless coefficients:
-\begin{equation*}
-\beta^* = \frac{9}{100} \quad \sigma^* = \frac{3}{5} \quad \alpha = 
-\frac{13}{25} \quad \beta = \frac{177}{2500} \quad \sigma = \frac{1}{2} 
-\quad C_\text{lim} = \frac{7}{8}
-\end{equation*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=spaceconvSupp]{\hyperlink{spaceconv}{SinCos steady problem}}
-\begin{align*}
-\nabla \cdot \mathbf{v} =& \; 0 \quad \text{in} \quad \Omega\\
-\nabla \cdot (\mathbf{v} \mathbf{v^\mathrm{T}}) - \nabla \cdot (\nu 
-\nabla \mathbf{v}) + \frac{1}{\varrho}\nabla p =& \; \mathbf{f} \quad \text{in} 
-\quad \Omega\\
-\mathbf{v} =& \; \mathbf{v}_\text{ex} \quad \text{on} \quad \partial \Omega
-%\\p =& \; p_\text{ex} \quad \text{on the lower left cell}
-\end{align*}
-$\Omega = (0,1)^2$, $\varrho = 1$. The the source term is:
-\begin{equation*}
-\mathbf{f} = [-2 \nu \cos(x) \sin(y), \; 2 \nu \cos(y) \sin(x)]^\mathrm{T}
-\end{equation*}
-such that the exact solution is:
-\begin{align*}
-&\mathbf{v}_\text{ex} = [-\cos(x) \sin(y), \; \sin(x) \cos(y)]^\mathrm{T}\\
-&p_\text{ex} = -\frac{1}{4} (\cos(2x)+\cos(2y))
-\end{align*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{spaceconv}{Spatial convergence - steady SinCos 
-problem}}
-\begin{figure}
-	\centering
-	\input{../img/l2error_test_navierstokes_sincos_vl_hre_slides}
-	\caption{\tiny Van Leer, $Re=1000$}
-\end{figure}
-\vspace{-0.3cm}
-\begin{table}\footnotesize
-	\[
-	\begin{array}{c|ccc}
-	\toprule
-	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
-	\midrule
-	p & 1.008 & 1.569 & 1.626\\
-	u & 1.143 & 1.962 & 1.977\\
-	v & 1.058 & 1.928 & 1.945\\
-	\bottomrule
-	\end{array}
-	\]
-	\caption{\tiny Convergence orders with $Re = 1$}
-\end{table}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=timeconvSupp]{\hyperlink{timeconv}{SinCos unsteady problem}}
-\begin{align*}
-\nabla \cdot \mathbf{v} =& \; 0 \quad \text{in} \quad \Omega \times (0,T)\\
-\frac{\partial \mathbf{v}}{\partial t} + \nabla \cdot ( \mathbf{v} 
-\mathbf{v^\mathrm{T}}) - \nabla \cdot (\nu \nabla \mathbf{v}) + 
-\frac{1}{\varrho} \nabla p =& \; \mathbf{f} \quad \text{in} \quad \Omega 
-\times (0,T)\\
-\mathbf{v} =& \; \mathbf{v}_\text{ex} \quad \text{on} \quad \partial \Omega 
-\times (0,T)
-\\p=p_\text{ex},\;\mathbf{v} =&\; \mathbf{v}_\text{ex} \quad \text{in} \quad 
-\Omega, \; t=0
-\end{align*}
-$\Omega = (0,1)^2$, $T=1$, $\varrho = 1$. The source term is:
-\begin{equation*}
-\mathbf{f} = 2(\cos(2t)/\varrho +\nu \sin(2t))[-\cos(x) \sin(y), \; \cos(y) 
-\sin(x)]^\mathrm{T}
-\end{equation*}
-such that the exact solution is:
-\begin{align*}
-&\mathbf{v}_\text{ex} = \sin(2t)[-\cos(x) \sin(y), \; \sin(x) 
-\cos(y)]^\mathrm{T}\\
-&p_\text{ex} = -\frac{1}{4} (\cos(2x)+\cos(2y))sin^2(2t)
-\end{align*}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{timeconv}{Time convergence}}
-\vspace{-0.8cm}
-	\begin{figure}
-		\centering
-		\subfloat[Pressure]{\hspace{-1cm}\input{../img/time_convergence_p}}
-		\subfloat[Velocity]{\input{../img/time_convergence_v}}
-	\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=roughSupp]{\hyperlink{rough}{Rough channel}}
-Domain size: $\SI{9.5x1}{m}$\\[\baselineskip]
-Grid:
-\begin{itemize}
-	\item $\num{95x50}$ in the tests $\rightarrow$ cell size: 
-	$\SI{0.1x0.05}{m}$
-	\item $\num{570x300}$ in the reference $\rightarrow$ cell size: 
-	$\SI{16.67x8.33}{mm}$
-\end{itemize}
-Extended in the case of deep cavities.\\[\baselineskip]
-Final time: $T=\SI{10}{s}$, initial time-step: $\Delta 
-t=\SI{5}{ms}$.\\[\baselineskip]
-Gravity is neglected.
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
-\begin{frame}{\hyperlink{rough}{Rough channel}}
-	\begin{figure}
-		\centering
-		\input{../img/line_comparison}
-	\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{rough}{Rough channel - $Re=1$}}
-\begin{figure}
-	\centering
-	\input{../img/line_comparison_lre}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=bfsSupp]{\hyperlink{bfs}{Backward facing step}}
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{bfs_domain.pdf}
-\end{figure}
-\begin{itemize}
-	\item $U_\text{in} = \SI{44.2}{m/s}$, $\varrho=\SI{1}{kg/m^3}$, 
-	$\mu=\SI{1.228e-3}{\pascal\second}$
-	\item $T_\text{end}=\SI{30}{s}$, approximately at $t=\SI{20}{s}$ the 
-	solution becomes stationary
-	\item Initial time-step $\Delta t=\SI{e-5}{s}$
-	\item Gravity is neglected
-\end{itemize}
-After a sensibility analysis based on $C_f$ we chose a grid made of 
-$\num{121x70}$ cells with gradings up to 1.25 in order to better 
-refine the walls.
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{bfs}{Backward facing step - velocity profiles}}
-\vspace{-0.7cm}
-\begin{figure}
-	%	\centering
-	\subfloat[\tiny Profile at 
-	$x/H=-4$]{\hspace{-1cm}\input{../img/bfs_fin_vel0}}
-	\subfloat[\tiny Profile at 
-	$x/H=4$]{\hspace{-0.3cm}\input{../img/bfs_fin_vel2}}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=cavitiesSupp]{\hyperlink{cavities}{Cavities}}
-\begin{itemize}
-	\item $U_\text{in} = \SI{1}{m/s}$, $\varrho=\SI{1}{kg/m^3}$, 
-	$\mu=\SI{e-5}{\pascal\second}$
-	\item Grid of $\num{377x50}$ cells (for $d=\SI{0.5}{m}$), with gradings in 
-	the inlet and outlet portions of the channel in order to have uniform cells 
-	around the cavities ($\SI{5x3.3}{mm}$).
-	\item $T_\text{end}=\SI{30}{s}$, initial time-step $\Delta t = \SI{5}{ms}$.
-\end{itemize}
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{cavities_dist1_k.png}
-	\caption{\tiny Turbulent kinetic energy k [$\si{m^2/s^2}$], $d=\SI{1}{m}$, 
-	$Re=\num{6e5}$.}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{cavities}{Cavities}}
-\begin{figure}
-	\centering
-	\includegraphics[height=0.8\textheight]{cavities_vel_split.png}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=coupledSupp]{\hyperlink{coupled}{Cavities coupled with a 
-porous-medium}}
-\begin{figure}
-\centering
-\includegraphics[width=\textwidth]{coupled_split_comparison.png}
-\vspace{0.1cm}
-\caption{\footnotesize $y$-component of the velocity near the end 
-of 
-the first 
-cavity in $\Omega_\text{ff}$. $\mathrm{K}=\SI{3.1e-7}{m^2}$ on the left and 
-$\mathrm{K}=\SI{3.1e-9}{m^2}$ on the right.}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \end{document}
