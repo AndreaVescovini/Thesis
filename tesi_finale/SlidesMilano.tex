@@ -54,6 +54,7 @@
 \newlength{\timeheight}\setlength{\timeheight}{0.65\textheight}
 \newlength{\timehalfwidth}\setlength{\timehalfwidth}{0.45\textwidth}
 \newlength{\timehalfheight}\setlength{\timehalfheight}{0.82\textheight}
+\newlength{\widthsette}\setlength{\widthsette}{0.4\textwidth}
 
 \graphicspath{{../img/}}
 
@@ -87,7 +88,6 @@
 }
 \makeatother
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 \title{A fully implicit formulation for Navier-Stokes/Darcy coupling}
 \author[Andrea Vescovini]{Andrea Vescovini\texorpdfstring{\\[2.5ex]\scriptsize%
 %		\parbox{2cm}{Supervisor:\\Co-Supervisors:\\~}\hspace{0.1cm}\parbox{4cm}{Prof. Luca Formaggia\\Dr. Anna Scotti\\Prof. Dr.-Ing. Rainer Helmig}}%
@@ -121,23 +121,32 @@
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Introduction}
-	\begin{itemize}
-		\item Coupled free-flow and porous-medium flow systems are common in 
-		many applications: PEM fuel cells, industrial drying processes, soil 
-		evaporation, \dots
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.75\textwidth]{intropicture2.png}
-			\caption{\color{gray}T. Fetzer. Coupled Free and Porous-Medium flow 
-			processes affected by Turbulence and Roughness.}
-		\end{figure}
-		\item Important effect of turbulent eddies: TVD methods to improve the 
-		free-flow model.
-	\end{itemize}
+Coupled \textbf{free-flow} and \textbf{porous-medium flow} systems involve 
+complex phenomena acting at different scales:
+%\begin{itemize}
+%	\item involve complex phenomena acting at different scales
+%	\item are important in many applications: soil salinization, PEM fuel cells, ecc.
+%\end{itemize}
+%	\begin{itemize}
+%		\item Coupled free-flow and porous-medium flow systems are common in 
+%		many applications: PEM fuel cells, industrial drying processes, soil 
+%		evaporation, \dots
+%	\end{itemize}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{intropicture2.png}
+	\caption{\color{gray}T. Fetzer. Coupled Free and Porous-Medium flow 
+	processes affected by Turbulence and Roughness.}
+\end{figure}
+Applications: soil salinization, PEM fuel cells, drying processes, etc.
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Introduction}
-	Second slide with the introduction.
+The aims of this thesis are:
+\begin{itemize}
+	\item to implement and test TVD methods for the free-flow model.
+	\item to study effect of rough interfaces between the two subdomains.
+\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Outline}
@@ -146,24 +155,24 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Governing equations}
 \begin{frame}{Free-flow}
-RANS equations:
+Incompressible RANS equations:
 \begin{align*}
 \nabla \cdot \bar{\mathbf{v}} = 0&\\
 \frac{\partial \bar{\mathbf{v}}}{\partial t} + \nabla 
 \cdot (\bar{\mathbf{v}} \bar{\mathbf{v}}^\mathrm{T}) - \nabla \cdot 
-((\nu + \nu_t) \nabla \bar{\mathbf{v}}) + \frac{1}{\varrho}\nabla p_\text{gen} = \mathbf{0}&
+((\nu + \nu_t) \nabla \bar{\mathbf{v}}) + \frac{1}{\varrho}\nabla (p + \frac{2}{3}\varrho k) = \mathbf{0}&
 \end{align*}
 $k\text{-}\omega$ turbulence model $\nu_t = k / \tilde{\omega}$ with limiters:
 \begin{align*}
-&\frac{\partial k}{\partial t} + \nabla \cdot (k\mathbf{v}) - \nabla \cdot
+&\frac{\partial k}{\partial t} + \nabla \cdot (k\bar{\mathbf{v}}) - \nabla \cdot
 \bigg[\bigg(\nu + \sigma^*\frac{k}{\omega}\bigg) \nabla k\bigg] -P + \beta^* k 
 \omega = 0\\
 %\end{gather*}
 %\begin{multline*}
-&\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \mathbf{v}) - 
+&\frac{\partial \omega}{\partial t} + \nabla \cdot (\omega \bar{\mathbf{v}}) - 
 \nabla \cdot \bigg[ \bigg( \nu + \sigma \frac{k}{\omega} \bigg) \nabla \omega 
 \bigg]-\\
-&\hspace{2.5cm}- \alpha \frac{\omega}{k} 2 \nu_t \mathbf{S} \cdot \mathbf{S} 
+&\hspace{2.5cm}- \alpha \frac{\omega}{k} 2 \nu_t \bar{\mathbf{S}} \cdot \bar{\mathbf{S}} 
 -\frac{\sigma_d}{\omega} \nabla k \cdot 
 \nabla \omega+ \beta \omega^2 = 0
 \end{align*}
@@ -178,19 +187,20 @@ Momentum equation:
 \begin{itemize}
 	\item Darcy's law:
 \begin{equation*}
-	\mathbf{v} = -\frac{1}{\mu}\mathbf{K} (\nabla p - \varrho \mathbf{g})
+	\mathbf{v} = -\frac{1}{\mu}\mathbf{K} \nabla p
 \end{equation*}
 	\item Forchheimer's law:
 	\begin{equation*}
 	\mathbf{v} + C_F \sqrt{\mathbf{K}} \frac{\varrho}{\mu} |\mathbf{v}| 
-	\mathbf{v} = - \frac{1}{\mu}\mathbf{K} (\nabla p - \varrho \mathbf{g})
+	\mathbf{v} = - \frac{1}{\mu}\mathbf{K} \nabla p
 	\end{equation*}
-	It models a quadratic drag and it holds at higher $Re$ than the Darcy's law.
+	It models a quadratic drag and it holds at \textbf{higher} 
+	$\boldsymbol{Re}$ than the Darcy's law.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Coupling conditions}
-At the interface we apply:
+%At the interface we apply:
 \begin{itemize}
 	\item Continuity of normal velocity:
 	\begin{equation*}
@@ -217,127 +227,183 @@ At the interface we apply:
 \section{Numerical model}
 \begin{frame}{Finite volumes discretization}
 	\begin{itemize}
-		\item Staggered grid approach in the free-flow:
+		\item \textbf{Staggered grid} approach in the free-flow:
 		\begin{figure}
 			\centering
-	\includegraphics[trim={2cm 1cm 0cm 0cm}, clip, 
-height=0.65\textheight]{staggered_grid_mia.pdf}
+			\includegraphics[%
+			%trim={2cm 1cm 0cm 0cm}, clip, height=0.65\textheight]%
+			trim={2cm 5.2cm 0cm 0.8cm}, clip, height=0.4\textheight]%
+			{staggered_grid_mia.pdf}
 		\end{figure}
-		\item Cell-centred approach in the porous-medium flow.
+		\item \textbf{Cell-centred} approach in the porous-medium flow:
+		\begin{figure}
+			\centering
+			\includegraphics[height=0.3\textheight]{cellcentred.pdf}
+			\hspace{2cm}
+		\end{figure}
 	\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{TVD methods}
-Non-linear convective term of th Navier-Stokes equations:
+\begin{frame}{Differencing schemes}
+Non-linear convective term of the Navier-Stokes equations:
 \begin{equation*}
-	\underbrace{\mathbf{v}}_\text{\makebox[0pt]{ciao}}\overbrace{\mathbf{v}^\mathrm{T}}^\text{\makebox[0pt]{bello}}
+\int_V \nabla \cdot (\mathbf{v} \mathbf{v}^\mathrm{T}) \; dV = \int_{\partial 
+V} 
+\overbrace{\mathbf{v}}^{\substack{\text{\makebox[0pt]{transported}} 
+		\\ \text{\makebox[0pt]{field}}}} \underbrace{(\mathbf{v} \cdot 
+	\mathbf{n})}_{\substack{\text{\makebox[0pt]{transporting}} \\
+		\text{\makebox[0pt]{velocity}}}} \; dA
 \end{equation*}
-With TVD methods we have:
+Differencing scheme needed to approximate the transported field:
 \begin{itemize}
-	\item Second order accuracy
-	\item Oscillation-free
+	\item Upwind $\rightarrow$ $1^\text{st}$ order, high numerical dissipation
+	\item LUD, QUICK, etc. $\rightarrow$ $2^\text{nd}$ or $3^\text{rd}$ order 
+	but unstable
+	\item \textbf{TVD methods} $\rightarrow$ $2^\text{nd}$ order, 
+	oscillation-free, 
+	non-linear
 \end{itemize}
-Immagine e TVD formula
 \end{frame}
+%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{TVD methods}
+%	immagine, formula
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}
-	\begin{itemize}
-		\item Monolithic approach
-		\item Newton's method
-		\item BDF2 or Backward Euler methods
-		\item Direct linear solver with UMFPack
-	\end{itemize}
+\begin{frame}{Resulting equations}
+\begin{itemize}
+\item After having performed the spatial discretization, we obtain a system of 
+ODEs, which is solved using \textbf{implicit unconditionally stable} methods 
+(BDF2 or Backward Euler).
+
+\item The resulting non-linear algebraic system is solved 
+\textbf{monolithically}, 
+employing the \textbf{Newton's method}. The entries of the Jacobian matrix are 
+computed 
+numerically using finite differences.
+
+\item Eventually, the linear system is solved directly using the library 
+UMFPACK.
+\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical results}
-\begin{frame}{\hyperlink{spaceconvSupp}{Spatial convergence - 
-		steady SinCos problem}}
-\vspace{-0.8cm}
-\begin{figure}
-	\centering
-	\subfloat[\tiny Figure: Upwind, 
-	$Re=1000$]{\hspace{-0.5cm}\input{../img/l2error_test_navierstokes_sincos_hre_slides}}
-	\subfloat[\tiny Figure: Min-Mod, 
-	$Re=1000$]{\input{../img/l2error_test_navierstokes_sincos_mm_hre_slides}}
-\end{figure}
-\vspace{-0.3cm}
-\begin{table}\footnotesize
-	\[
-	\begin{array}{c|ccc}
-	\toprule
-	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
-	\midrule
-	p & 1.148 & 1.659 & 1.058\\
-	u & 1.071 & 1.441 & 1.437\\
-	v & 1.068 & 1.533 & 1.560\\
-	\bottomrule
-	\end{array}
-	\]
-	\caption{\tiny Convergence orders with $Re = 1000$}
-\end{table}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=bfs]{\hyperlink{bfsSupp}{Backward facing step}}
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{bfs_glimphs.png}
-\end{figure}
-\vspace{0.5cm}
+\begin{frame}{Free-flow Validation tests}
 \begin{itemize}
-	\item $Re_H = 36000$, based on the step height $H$.
-	\item Results comparison with the NASA CFL3D code, from 
-	{\small \url{https://turbmodels.larc.nasa.gov/backstep_val.html}}.
-\end{itemize}
-
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{bfsSupp}{Backward facing step - friction coefficient}}
-\begin{figure}
-	\centering
-	\input{../img/bfs_fin_cf}
-\end{figure}
-\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}[label=cavities]{\hyperlink{cavitiesSupp}{Cavities}}
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth]{cavities_domain.pdf}
-\end{figure}
-\begin{figure}
-	\centering
-	\includegraphics[width=\textwidth, trim={0 0 0 6cm}, 
-	clip]{cavities_dist1_vel.png}
-\end{figure}
-\begin{itemize}
-	\item $Re = 60000$.
-	\item $d$ ranging from $\SI{0.05}{m}$ to $\SI{2}{m}$.
+	\item Convergence tests refining the grid, using Navier-Stokes problems 
+	with analytical solution.
+	\vspace{-0.3cm}
+	\begin{table}\scriptsize
+		\[
+		\begin{array}{c|ccc}
+		\toprule
+		& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
+		\midrule
+		p & 1.148 & 1.659 & 1.058\\
+		u & 1.071 & 1.441 & 1.437\\
+		v & 1.068 & 1.533 & 1.560\\
+		\bottomrule
+		\end{array}
+		\]
+%		\caption{\tiny Convergence orders with $Re = 1000$}
+	\end{table}
+	\item Backward facing step: comparison with the NASA CFL3D code, at 
+	$Re_H=36000$.
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.9\textwidth]{bfs_glimphs.png}
+	\end{figure}
 \end{itemize}
 \end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{\hyperlink{cavitiesSupp}{Cavities}}
-\begin{figure}
-	\centering
-	\subfloat[\scriptsize $u$ profile at $y=h$, 
-	$d=\SI{1}{m}$]{\hspace{-0.5cm}\input{../img/cavities_vel1}}
-	\subfloat[\scriptsize Peak velocity above the second 
-	cavity]{\input{../img/cavities_peaks}}
-\end{figure}
-\end{frame}
+%%%%%%%%%%%%%%%%%
+%\begin{frame}{Spatial convergence - steady SinCos problem}
+%\vspace{-0.8cm}
+%\begin{figure}
+%	\centering
+%	\subfloat[\tiny Figure: Upwind, 
+%	
+%$Re=1000$]{\hspace{-0.5cm}\input{../img/l2error_test_navierstokes_sincos_hre_slides}}
+%	\subfloat[\tiny Figure: Min-Mod, 
+%	$Re=1000$]{\input{../img/l2error_test_navierstokes_sincos_mm_hre_slides}}
+%\end{figure}
+%\vspace{-0.3cm}
+%\begin{table}\footnotesize
+%	\[
+%	\begin{array}{c|ccc}
+%	\toprule
+%	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
+%	\midrule
+%	p & 1.148 & 1.659 & 1.058\\
+%	u & 1.071 & 1.441 & 1.437\\
+%	v & 1.068 & 1.533 & 1.560\\
+%	\bottomrule
+%	\end{array}
+%	\]
+%	\caption{\tiny Convergence orders with $Re = 1000$}
+%\end{table}
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Backward facing step}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=\textwidth]{bfs_glimphs.png}
+%\end{figure}
+%\vspace{0.5cm}
+%\begin{itemize}
+%	\item $Re_H = 36000$, based on the step height $H$.
+%	\item Results comparison with the NASA CFL3D code, from 
+%	{\small \url{https://turbmodels.larc.nasa.gov/backstep_val.html}}.
+%\end{itemize}
+%
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Backward facing step - friction coefficient}
+%\begin{figure}
+%	\centering
+%	\input{../img/bfs_fin_cf}
+%\end{figure}
+%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Cavities coupled with porous-medium}
+%\begin{frame}{Cavities}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=\textwidth]{cavities_domain.pdf}
+%\end{figure}
+%\begin{figure}
+%	\centering
+%	\includegraphics[width=\textwidth, trim={0 0 0 6cm}, 
+%	clip]{cavities_dist1_vel.png}
+%\end{figure}
+%\begin{itemize}
+%	\item $Re = 60000$.
+%	\item $d$ ranging from $\SI{0.05}{m}$ to $\SI{2}{m}$.
+%\end{itemize}
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Cavities}
+%\begin{figure}
+%	\centering
+%	\subfloat[\scriptsize $u$ profile at $y=h$, 
+%	$d=\SI{1}{m}$]{\hspace{-0.5cm}\input{../img/cavities_vel1}}
+%	\subfloat[\scriptsize Peak velocity above the second 
+%	cavity]{\input{../img/cavities_peaks}}
+%\end{figure}
+%\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Coupled problem with cavities}
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{cavities_multidomain.pdf}
 \end{figure}
-We use the same configuration of the previous case ($Re=60000$) but with a 
-porous medium between the two cavities.
+Flow in a channel with two cavities on the lower boundary and a porous-medium 
+between them.
 \begin{itemize}
+	\item $Re=60000$.
 	\item Permeability ranging from $\SI{3.1e-12}{m^2}$ to $\SI{3.1e-6}{m^2}$.
 	\item $\alpha_{BJ} = 2$, $C_F=0.55$.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Cavities coupled with a porous-medium}
+\begin{frame}{Coupled problem with cavities}
 \begin{figure}
 	\centering
 	\hspace{-0.5cm}
@@ -346,7 +412,7 @@ porous medium between the two cavities.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Cavities coupled with a porous-medium}
+\begin{frame}{Coupled problem with cavities}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_first_cavity.png}
@@ -354,12 +420,31 @@ porous medium between the two cavities.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Cavities coupled with a porous-medium}
+\begin{frame}{Coupled problem with cavities}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_second_cavity.png}
 	\caption{\tiny $\mathrm{K}=\SI{3.1e-7}{m^2}$, $Re=\num{6e5}$}
 \end{figure}
+\end{frame}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Coupled problem with cavities}
+We change the domain considering deeper cavities ($\SI{0.3}{m}$ vs 
+$\SI{0.1}{m}$). We compute the \textbf{mass flow rate} from the free-flow 
+region to the porous-medium across $\Gamma_\text{int}$.
+\vspace{-1cm}
+\begin{columns}
+\column{0.5\textwidth}
+\begin{equation*}
+\dot{m} = \int_{\Gamma_\text{int}} \max \{ \varrho \mathbf{v} \cdot 
+\mathbf{n}_\text{ff} , 0 \} \; dA
+\end{equation*}
+\column{0.5\textwidth}
+\begin{figure}
+	\centering
+	\input{../img/mass_exchange_comp_slides}
+\end{figure}
+\end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Conclusions}
