@@ -142,10 +142,19 @@ Applications: soil salinization, PEM fuel cells, drying processes, etc.
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Introduction}
-The aims of this thesis are:
+Several analysis can be found in literature:
 \begin{itemize}
-	\item to implement and test TVD methods for the free-flow model.
-	\item to study effect of rough interfaces between the two subdomains.
+	\item single-domain or two-domain approach.
+	\item coupling concepts for different levels of complexity.
+	\item monolithic or iterative solution procedures.
+	\item turbulence and roughness effects.
+\end{itemize}
+\pause
+\vspace{0.5cm}
+Considering a \textbf{single-phase}, \textbf{single-component}, \textbf{isothermal fluid}, the aims of this thesis are:
+\begin{itemize}
+	\item to implement and test \textbf{TVD methods} for the free-flow model.
+	\item to study the effect of \textbf{rough interfaces} between the two subdomains of a coupled model.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -389,12 +398,12 @@ UMFPACK.
 %\end{figure}
 %\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Coupled problem with cavities}
+\begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
 	\includegraphics[width=\textwidth]{cavities_multidomain.pdf}
 \end{figure}
-Flow in a channel with two cavities on the lower boundary and a porous-medium 
+Flow in a channel with two shallow cavities on the lower boundary and a porous-medium 
 between them.
 \begin{itemize}
 	\item $Re=60000$.
@@ -403,7 +412,7 @@ between them.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Coupled problem with cavities}
+\begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
 	\hspace{-0.5cm}
@@ -412,7 +421,7 @@ between them.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Coupled problem with cavities}
+\begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_first_cavity.png}
@@ -420,7 +429,7 @@ between them.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{frame}{Coupled problem with cavities}
+\begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
 	\includegraphics[height=0.82\textheight]{coupled_second_cavity.png}
@@ -428,22 +437,37 @@ between them.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Coupled problem with cavities}
+%We change the domain considering deeper cavities ($\SI{0.3}{m}$ vs 
+%$\SI{0.1}{m}$). We compute the \textbf{mass flow rate} from the free-flow 
+%region to the porous-medium across $\Gamma_\text{int}$.
+%\vspace{-1cm}
+%\begin{columns}
+%\column{0.5\textwidth}
+%\begin{equation*}
+%\dot{m} = \int_{\Gamma_\text{int}} \max \{ \varrho \mathbf{v} \cdot 
+%\mathbf{n}_\text{ff} , 0 \} \; dA
+%\end{equation*}
+%\column{0.5\textwidth}
+%\begin{figure}
+%	\centering
+%	\input{../img/mass_exchange_comp_slides}
+%\end{figure}
+%\end{columns}
+%\end{frame}
 \begin{frame}{Coupled problem with cavities}
-We change the domain considering deeper cavities ($\SI{0.3}{m}$ vs 
-$\SI{0.1}{m}$). We compute the \textbf{mass flow rate} from the free-flow 
-region to the porous-medium across $\Gamma_\text{int}$.
-\vspace{-1cm}
+\textbf{Mass flow rate} from the free-flow region to the porous-medium across $\Gamma_\text{int}$.
 \begin{columns}
-\column{0.5\textwidth}
-\begin{equation*}
-\dot{m} = \int_{\Gamma_\text{int}} \max \{ \varrho \mathbf{v} \cdot 
-\mathbf{n}_\text{ff} , 0 \} \; dA
-\end{equation*}
-\column{0.5\textwidth}
-\begin{figure}
-	\centering
-	\input{../img/mass_exchange_comp_slides}
-\end{figure}
+	\column{0.4\textwidth}
+	\begin{equation*}
+	\dot{m} = \int_{\Gamma_\text{int}} \max \{ \varrho \mathbf{v} \cdot 
+	\mathbf{n}_\text{ff} , 0 \} \; dA
+	\end{equation*}
+	\column{0.6\textwidth}
+	\begin{figure}
+		\centering
+		\input{../img/mass_exchange_comp_slides}
+	\end{figure}
 \end{columns}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
