@@ -135,8 +135,8 @@ complex phenomena acting at different scales:
 \begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{intropicture2.png}
-	\caption{\color{gray}T. Fetzer. Coupled Free and Porous-Medium flow 
-	processes affected by Turbulence and Roughness.}
+	\caption{\color{gray}T. Fetzer. Coupled Free and Porous-Medium Flow 
+	Processes Affected by Turbulence and Roughness.}
 \end{figure}
 Applications: soil salinization, PEM fuel cells, drying processes, etc.
 \end{frame}
@@ -226,7 +226,7 @@ Momentum equation:
 	\item Beavers-Joseph-Saffman condition for the tangential component of 
 	momentum:
 	\begin{equation*}
-	\bigg[ \bigg( -\frac{\sqrt{K}}{\alpha_{BJ}} (\nabla \mathbf{v}) 
+	\bigg[ \bigg( -\frac{\sqrt{\mathrm{K}}}{\alpha_\text{BJ}} (\nabla \mathbf{v}) 
 	\mathbf{n} - \mathbf{v} \bigg) \cdot \mathbf{t}_i \bigg]_\text{ff} = 0 
 	\quad \forall i \in \{1, \dots, dim - 1\}
 	\end{equation*}
@@ -235,22 +235,69 @@ Momentum equation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical model}
 \begin{frame}{Finite volumes discretization}
+%	\begin{itemize}
+%		\item \textbf{Staggered grid} approach in the free-flow:
+%		\begin{columns}%
+%		\column{0.5\textwidth}%
+%		\begin{figure}
+%			\centering
+%			\includegraphics[%
+%			%trim={2cm 1cm 0cm 0cm}, clip, height=0.65\textheight]%
+%%			trim={2cm 5.2cm 0cm 0.8cm}, clip, height=0.4\textheight]%
+%			trim={2cm 5.2cm 7cm 0.8cm}, clip, height=0.4\textheight]%
+%			{staggered_grid_mia.pdf}
+%		\end{figure}
+%		\column{0.2\textwidth}%
+%		Primary variables: $\mathbf{v}$, $p$, $k$, $\omega$
+%		\end{columns}%
+%		\item \textbf{Cell-centred} approach in the porous-medium flow:
+%		\begin{columns}%
+%		\column{0.4\textwidth}%
+%		\begin{figure}
+%%			\centering
+%			\includegraphics[height=0.3\textheight]{cellcentred.pdf}
+%%			\hspace{2cm}
+%		\end{figure}
+%		\column{0.5\textwidth}%
+%		Primary variables: $p$
+%		\end{columns}%
+%	\end{itemize}
 	\begin{itemize}
-		\item \textbf{Staggered grid} approach in the free-flow:
+	\item \textbf{Staggered grid} approach in the free-flow:
+	\begin{minipage}{0.5\textwidth}%
 		\begin{figure}
+			\vspace{0.1cm}
 			\centering
 			\includegraphics[%
 			%trim={2cm 1cm 0cm 0cm}, clip, height=0.65\textheight]%
-			trim={2cm 5.2cm 0cm 0.8cm}, clip, height=0.4\textheight]%
+			%			trim={2cm 5.2cm 0cm 0.8cm}, clip, height=0.4\textheight]%
+			trim={2cm 5.2cm 7cm 0.8cm}, clip, height=0.4\textheight]%
 			{staggered_grid_mia.pdf}
+			\vspace{0.2cm}
 		\end{figure}
-		\item \textbf{Cell-centred} approach in the porous-medium flow:
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		Scalar primary variables:\\
+		$p$, $k$, $\omega$\\
+		Vectorial primary variables:\\
+		$\mathbf{v}=[u,v]^\mathrm{T}$
+	\end{minipage}
+	\item \textbf{Cell-centred} approach in the porous-medium flow:
+	\begin{minipage}{0.5\textwidth}%
 		\begin{figure}
-			\centering
+			\vspace{0.1cm}
+			%			\centering
 			\includegraphics[height=0.3\textheight]{cellcentred.pdf}
-			\hspace{2cm}
+			%			\hspace{2cm}
 		\end{figure}
-	\end{itemize}
+	\end{minipage}%
+	\begin{minipage}{0.5\textwidth}
+		\centering
+		Scalar primary variables:\\
+		$p$
+	\end{minipage}%
+\end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Differencing schemes}
@@ -265,12 +312,11 @@ V}
 \end{equation*}
 Differencing scheme needed to approximate the transported field:
 \begin{itemize}
-	\item Upwind $\rightarrow$ $1^\text{st}$ order, high numerical dissipation
+	\item Upwind $\rightarrow$ $1^\text{st}$ order, high numerical dissipation.
 	\item LUD, QUICK, etc. $\rightarrow$ $2^\text{nd}$ or $3^\text{rd}$ order 
-	but unstable
+	but unstable.
 	\item \textbf{TVD methods} $\rightarrow$ $2^\text{nd}$ order, 
-	oscillation-free, 
-	non-linear
+	oscillation-free, non-linear.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%
@@ -283,12 +329,13 @@ Differencing scheme needed to approximate the transported field:
 \item After having performed the spatial discretization, we obtain a system of 
 ODEs, which is solved using \textbf{implicit unconditionally stable} methods 
 (BDF2 or Backward Euler).
+\vspace{0.5cm}
 
 \item The resulting non-linear algebraic system is solved 
 \textbf{monolithically}, 
 employing the \textbf{Newton's method}. The entries of the Jacobian matrix are 
-computed 
-numerically using finite differences.
+computed numerically using finite differences.
+\vspace{0.5cm}
 
 \item Eventually, the linear system is solved directly using the library 
 UMFPACK.
@@ -296,7 +343,7 @@ UMFPACK.
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical results}
-\begin{frame}{Free-flow Validation tests}
+\begin{frame}{Free-flow validation tests}
 \begin{itemize}
 	\item Convergence tests refining the grid, using Navier-Stokes problems 
 	with analytical solution.
@@ -315,7 +362,7 @@ UMFPACK.
 		\]
 %		\caption{\tiny Convergence orders with $Re = 1000$}
 	\end{table}
-	\item Backward facing step: comparison with the NASA CFL3D code, at 
+	\item Backward facing step test: comparison with the NASA CFL3D code, at 
 	$Re_H=36000$.
 	\begin{figure}
 		\centering
@@ -408,7 +455,7 @@ between them.
 \begin{itemize}
 	\item $Re=60000$.
 	\item Permeability ranging from $\SI{3.1e-12}{m^2}$ to $\SI{3.1e-6}{m^2}$.
-	\item $\alpha_{BJ} = 2$, $C_F=0.55$.
+	\item $\alpha_\text{BJ} = 2$, $C_F=0.55$.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -456,7 +503,7 @@ between them.
 %\end{columns}
 %\end{frame}
 \begin{frame}{Coupled problem with cavities}
-\textbf{Mass flow rate} from the free-flow region to the porous-medium across $\Gamma_\text{int}$.
+\textbf{Mass flow rate} $[\si{kg/s}]$ from the free-flow region to the porous-medium across $\Gamma_\text{int}$.
 \begin{columns}
 	\column{0.4\textwidth}
 	\begin{equation*}
@@ -475,19 +522,21 @@ between them.
 \begin{frame}{Conclusions}
 TVD methods:
 \begin{itemize}
-	\item Improved accuracy with the TVD methods
-	\item Space-time high order
+	\item \textbf{improved accuracy}.
+	\item improved prediction of the reattachment length in the backward facing step test.
 \end{itemize}
-Free and porous-medium coupling:
+Free-flow and porous-medium flow coupling:
 \begin{itemize}
-	\item Mutual influence of cavities
-	\item Permeability influence
+	\item mutual influence of cavities.
+	\item \textbf{permeability influence} on the flow field.
+	\item mass flow rate.
 \end{itemize}
-%\pause
+\pause
 Outlook:
 \begin{itemize}
-	\item More complex scenarios (non-isothermal, multiphase, \dots)
-	\item High order on adapted grids with hanging nodes
+	\item other kinds of roughness.
+	\item more \textbf{complex scenarios} (non-isothermal, multiphase, etc).
+	\item high order methods on adapted grid with hanging nodes.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
