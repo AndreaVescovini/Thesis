@@ -126,15 +126,6 @@
 \begin{frame}{Introduction}
 Coupled \textbf{free-flow} and \textbf{porous-medium flow} systems involve 
 complex phenomena acting at different scales:
-%\begin{itemize}
-%	\item involve complex phenomena acting at different scales
-%	\item are important in many applications: soil salinization, PEM fuel cells, ecc.
-%\end{itemize}
-%	\begin{itemize}
-%		\item Coupled free-flow and porous-medium flow systems are common in 
-%		many applications: PEM fuel cells, industrial drying processes, soil 
-%		evaporation, \dots
-%	\end{itemize}
 \begin{figure}
 	\centering
 	\includegraphics[width=0.8\textwidth]{intropicture2.png}
@@ -167,19 +158,19 @@ Applications: soil salinization, PEM fuel cells, drying processes, etc.
 We consider a \textbf{single-phase}, \textbf{single-component}, 
 \textbf{isothermal fluid}, in \textbf{turbulent conditions}.\\
 \vspace{0.3cm}
-We want to implement \textbf{TVD methods} for the free-flow model within the 
-code \DUMUX:
-\begin{itemize}
-	\item an accurate free-flow model in important especially in turbulent 
-	conditions.
-	\item it is important to have a robust method.
-\end{itemize}
-\vspace{0.3cm}
 We want to study the effect of \textbf{rough interfaces} between the two 
 subdomains of a coupled model:
 \begin{itemize}
 	\item it is an unavoidable aspect in natural systems.
 	\item few results can be found in literature.
+\end{itemize}
+\vspace{0.3cm}
+We implemented \textbf{TVD methods} for the free-flow model within the 
+code \DUMUX:
+\begin{itemize}
+	\item an accurate free-flow model in important especially in turbulent 
+	conditions.
+	\item it is important to have a robust method.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -260,33 +251,6 @@ Momentum equation:
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical model}
 \begin{frame}{Finite volumes discretization}
-%	\begin{itemize}
-%		\item \textbf{Staggered grid} approach in the free-flow:
-%		\begin{columns}%
-%		\column{0.5\textwidth}%
-%		\begin{figure}
-%			\centering
-%			\includegraphics[%
-%			%trim={2cm 1cm 0cm 0cm}, clip, height=0.65\textheight]%
-%%			trim={2cm 5.2cm 0cm 0.8cm}, clip, height=0.4\textheight]%
-%			trim={2cm 5.2cm 7cm 0.8cm}, clip, height=0.4\textheight]%
-%			{staggered_grid_mia.pdf}
-%		\end{figure}
-%		\column{0.2\textwidth}%
-%		Primary variables: $\mathbf{v}$, $p$, $k$, $\omega$
-%		\end{columns}%
-%		\item \textbf{Cell-centred} approach in the porous-medium flow:
-%		\begin{columns}%
-%		\column{0.4\textwidth}%
-%		\begin{figure}
-%%			\centering
-%			\includegraphics[height=0.3\textheight]{cellcentred.pdf}
-%%			\hspace{2cm}
-%		\end{figure}
-%		\column{0.5\textwidth}%
-%		Primary variables: $p$
-%		\end{columns}%
-%	\end{itemize}
 	\begin{itemize}
 	\item \textbf{Staggered grid} approach in the free-flow:
 	\begin{minipage}{0.5\textwidth}%
@@ -395,80 +359,6 @@ UMFPACK.
 	\end{figure}
 \end{itemize}
 \end{frame}
-%%%%%%%%%%%%%%%%%
-%\begin{frame}{Spatial convergence - steady SinCos problem}
-%\vspace{-0.8cm}
-%\begin{figure}
-%	\centering
-%	\subfloat[\tiny Figure: Upwind, 
-%	
-%$Re=1000$]{\hspace{-0.5cm}\input{../img/l2error_test_navierstokes_sincos_hre_slides}}
-%	\subfloat[\tiny Figure: Min-Mod, 
-%	$Re=1000$]{\input{../img/l2error_test_navierstokes_sincos_mm_hre_slides}}
-%\end{figure}
-%\vspace{-0.3cm}
-%\begin{table}\footnotesize
-%	\[
-%	\begin{array}{c|ccc}
-%	\toprule
-%	& \text{Upwind} & \text{Min-Mod} & \text{Van Leer} \\ 
-%	\midrule
-%	p & 1.148 & 1.659 & 1.058\\
-%	u & 1.071 & 1.441 & 1.437\\
-%	v & 1.068 & 1.533 & 1.560\\
-%	\bottomrule
-%	\end{array}
-%	\]
-%	\caption{\tiny Convergence orders with $Re = 1000$}
-%\end{table}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Backward facing step}
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=\textwidth]{bfs_glimphs.png}
-%\end{figure}
-%\vspace{0.5cm}
-%\begin{itemize}
-%	\item $Re_H = 36000$, based on the step height $H$.
-%	\item Results comparison with the NASA CFL3D code, from 
-%	{\small \url{https://turbmodels.larc.nasa.gov/backstep_val.html}}.
-%\end{itemize}
-%
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Backward facing step - friction coefficient}
-%\begin{figure}
-%	\centering
-%	\input{../img/bfs_fin_cf}
-%\end{figure}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Cavities}
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=\textwidth]{cavities_domain.pdf}
-%\end{figure}
-%\begin{figure}
-%	\centering
-%	\includegraphics[width=\textwidth, trim={0 0 0 6cm}, 
-%	clip]{cavities_dist1_vel.png}
-%\end{figure}
-%\begin{itemize}
-%	\item $Re = 60000$.
-%	\item $d$ ranging from $\SI{0.05}{m}$ to $\SI{2}{m}$.
-%\end{itemize}
-%\end{frame}
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Cavities}
-%\begin{figure}
-%	\centering
-%	\subfloat[\scriptsize $u$ profile at $y=h$, 
-%	$d=\SI{1}{m}$]{\hspace{-0.5cm}\input{../img/cavities_vel1}}
-%	\subfloat[\scriptsize Peak velocity above the second 
-%	cavity]{\input{../img/cavities_peaks}}
-%\end{figure}
-%\end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
@@ -509,24 +399,6 @@ between them.
 \end{figure}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%\begin{frame}{Coupled problem with cavities}
-%We change the domain considering deeper cavities ($\SI{0.3}{m}$ vs 
-%$\SI{0.1}{m}$). We compute the \textbf{mass flow rate} from the free-flow 
-%region to the porous-medium across $\Gamma_\text{int}$.
-%\vspace{-1cm}
-%\begin{columns}
-%\column{0.5\textwidth}
-%\begin{equation*}
-%\dot{m} = \int_{\Gamma_\text{int}} \max \{ \varrho \mathbf{v} \cdot 
-%\mathbf{n}_\text{ff} , 0 \} \; dA
-%\end{equation*}
-%\column{0.5\textwidth}
-%\begin{figure}
-%	\centering
-%	\input{../img/mass_exchange_comp_slides}
-%\end{figure}
-%\end{columns}
-%\end{frame}
 \begin{frame}{Coupled problem with cavities}
 \textbf{Mass flow rate} $[\si{kg/s}]$ from the free-flow region to the porous-medium across $\Gamma_\text{int}$.
 \begin{columns}
