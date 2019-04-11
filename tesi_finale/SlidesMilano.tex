@@ -17,6 +17,7 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{graphicx}
+\usepackage{xspace}
 \usepackage{subfig} % affiancare figure
 \usepackage{caption} % per gestire meglio le didascalie
 \usepackage{pgfplots}
@@ -36,6 +37,8 @@
 
 \usecolortheme{orchid} % per i block
 \setbeamercovered{transparent}
+
+\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
 
 \newlength{\widthconslaw}\setlength{\widthconslaw}{0.9\textwidth}
 \newlength{\heightconslaw}\setlength{\heightconslaw}{0.43\textheight}
@@ -141,20 +144,42 @@ complex phenomena acting at different scales:
 Applications: soil salinization, PEM fuel cells, drying processes, etc.
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%\begin{frame}{Introduction}
+%Several analysis can be found in literature:
+%\begin{itemize}
+%	\item single-domain or two-domain approach.
+%	\item coupling concepts for different levels of complexity.
+%	\item monolithic or iterative solution procedures.
+%	\item turbulence and roughness effects.
+%\end{itemize}
+%%\pause
+%\vspace{0.5cm}
+%Considering a \textbf{single-phase}, \textbf{single-component}, 
+%\textbf{isothermal fluid}, the aims of this thesis are:
+%\begin{itemize}
+%	\item to implement and test \textbf{TVD methods} for the free-flow model.
+%	\item to study the effect of \textbf{rough interfaces} between the two 
+%	subdomains of a coupled model.
+%\end{itemize}
+%\end{frame}
+%
 \begin{frame}{Introduction}
-Several analysis can be found in literature:
+We consider a \textbf{single-phase}, \textbf{single-component}, 
+\textbf{isothermal fluid}, in \textbf{turbulent conditions}.\\
+\vspace{0.3cm}
+We want to implement \textbf{TVD methods} for the free-flow model within the 
+code \DUMUX:
 \begin{itemize}
-	\item single-domain or two-domain approach.
-	\item coupling concepts for different levels of complexity.
-	\item monolithic or iterative solution procedures.
-	\item turbulence and roughness effects.
+	\item an accurate free-flow model in important especially in turbulent 
+	conditions.
+	\item it is important to have a robust method.
 \end{itemize}
-\pause
-\vspace{0.5cm}
-Considering a \textbf{single-phase}, \textbf{single-component}, \textbf{isothermal fluid}, the aims of this thesis are:
+\vspace{0.3cm}
+We want to study the effect of \textbf{rough interfaces} between the two 
+subdomains of a coupled model:
 \begin{itemize}
-	\item to implement and test \textbf{TVD methods} for the free-flow model.
-	\item to study the effect of \textbf{rough interfaces} between the two subdomains of a coupled model.
+	\item it is an unavoidable aspect in natural systems.
+	\item few results can be found in literature.
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -527,7 +552,7 @@ TVD methods:
 \end{itemize}
 Free-flow and porous-medium flow coupling:
 \begin{itemize}
-	\item mutual influence of cavities.
+%	\item mutual influence of cavities.
 	\item \textbf{permeability influence} on the flow field.
 	\item mass flow rate.
 \end{itemize}
