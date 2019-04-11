@@ -312,11 +312,11 @@ V}
 \end{equation*}
 Differencing scheme needed to approximate the transported field:
 \begin{itemize}
-	\item Upwind $\rightarrow$ $1^\text{st}$ order, high numerical dissipation.
-	\item LUD, QUICK, etc. $\rightarrow$ $2^\text{nd}$ or $3^\text{rd}$ order 
-	but unstable.
-	\item \textbf{TVD methods} $\rightarrow$ $2^\text{nd}$ order, 
-	oscillation-free, non-linear.
+	\item Upwind $\rightarrow$ $1^\text{st}$ order, stable, high numerical dissipation.
+	\item LUD, QUICK, etc. $\rightarrow$ $2^\text{nd}$ or $3^\text{rd}$ order, unphysical oscillations.
+	\item \textbf{TVD methods $\rightarrow$ 2$^\text{nd}$ order, non-linear, 
+	oscillation-free}.\\
+	\emph{Flux limiters: Van Leer, Min-Mod, Van Alabada, etc.}
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%
@@ -448,7 +448,7 @@ UMFPACK.
 \begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
-	\includegraphics[width=\textwidth]{cavities_multidomain.pdf}
+	\includegraphics[width=\textwidth]{cavities_multidomain_slides.pdf}
 \end{figure}
 Flow in a channel with two shallow cavities on the lower boundary and a porous-medium 
 between them.
@@ -471,7 +471,7 @@ between them.
 \begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
-	\includegraphics[height=0.82\textheight]{coupled_first_cavity.png}
+	\includegraphics[height=0.8\textheight]{coupled_first_cavity_slides_labels.png}
 	\caption{\tiny $\mathrm{K}=\SI{3.1e-7}{m^2}$, $Re=\num{6e5}$}
 \end{figure}
 \end{frame}
@@ -479,7 +479,7 @@ between them.
 \begin{frame}{Coupled problem with shallow cavities}
 \begin{figure}
 	\centering
-	\includegraphics[height=0.82\textheight]{coupled_second_cavity.png}
+	\includegraphics[height=0.82\textheight]{coupled_second_cavity_slides_labels.png}
 	\caption{\tiny $\mathrm{K}=\SI{3.1e-7}{m^2}$, $Re=\num{6e5}$}
 \end{figure}
 \end{frame}
