@@ -158,7 +158,8 @@ Applications: soil salinization, PEM fuel cells, drying processes, etc.
 We consider a \textbf{single-phase}, \textbf{single-component}, 
 \textbf{isothermal fluid}, in \textbf{turbulent conditions}.\\
 \vspace{0.3cm}
-We want to study the effect of \textbf{rough interfaces} between the two 
+We want to study the effect on the flow field of \textbf{rough interfaces} 
+between the two 
 subdomains of a coupled model:
 \begin{itemize}
 	\item it is an unavoidable aspect in natural systems.
@@ -247,6 +248,10 @@ Momentum equation:
 	\quad \forall i \in \{1, \dots, dim - 1\}
 	\end{equation*}
 \end{itemize}
+\begin{tikzpicture}[remember picture,overlay]
+\node[xshift=-2cm,yshift=-1.8cm] at (current page.north east){%
+	\includegraphics[width=3cm]{bjs.pdf}};
+\end{tikzpicture}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Numerical model}
@@ -378,7 +383,7 @@ between them.
 \begin{figure}
 	\centering
 	\hspace{-0.5cm}
-	\input{../img/cavities_coupled_velx_latex}
+	\input{../img/cavities_coupled_velx_latex_reversed}
 %	\caption{\scriptsize $u$ profiles at $y=h$}
 \end{figure}
 \end{frame}
@@ -437,4 +442,27 @@ Outlook:
 \end{itemize}
 \end{frame}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{Main references}
+\begin{itemize}
+	\footnotesize
+	\item T. Fetzer. `Coupled Free and Porous-Medium Flow Processes Affected by 
+	Turbulence and Roughness'. PhD thesis. Universit\"at Stuttgart, 2018.
+	\item J. Hou et al. `Improved total variation diminishing schemes for 
+	advection simulation of arbitrary grids'. \emph{International Journal for 
+		Numerical Methods in Fluids} 70 (2012).
+	\item L. Li et al. `An improved r-factor algorithm for TVD schemes'. 
+	\emph{International Journal of Heat and Mass Transfer} 51 (2008).
+	\item K. Mosthaf. `Modeling and Analysis of Coupled  Porous-Medium and Free 
+	Flow with Application to Evaporation Processes'. PhD thesis. Universit\"at 
+	Stuttgart, 2014.
+	\item D. A. Nield et al. \emph{Convection in Porous Media}. Springer, 2017.
+	\item P. K. Sweby. `High Resolution Schemes Using Flux limiters for 
+	Hyperbolic Conservation Laws'. \emph{SIAM Journal on Numerical Analysis} 
+	21(5) (1984).
+	\item H. K. Versteeg et al. \emph{An Introduction to Computational Fluid 
+		Dynamics: The Finite Volume Method}. Pearson Education Limited, 2007.
+	\item D. C. Wilcox. \emph{Turbulence Modeling for CFD}. DCW industries, 
+	2006. 
+\end{itemize}
+\end{frame}
 \end{document}
