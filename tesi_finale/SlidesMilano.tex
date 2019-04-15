@@ -10,6 +10,12 @@
 \renewcommand*{\slideentry}[6]{} % toglie i pallini in alto
 \setbeamertemplate{section in toc}[ball unnumbered] % mette i bullet nella toc
 
+%\setbeamertemplate{headline}{%
+%	\begin{beamercolorbox}{section in head/foot}%
+%		\vskip2pt\insertnavigation{\paperwidth}\vskip2pt%
+%	\end{beamercolorbox}%
+%}
+
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage{lmodern}
@@ -38,7 +44,7 @@
 \usecolortheme{orchid} % per i block
 \setbeamercovered{transparent}
 
-\newcommand{\DUMUX}{DuMu$^\mathrm{x}$\xspace} %for convenience
+\newcommand{\DUMUX}{DuMu$^\text{x}$\xspace} %for convenience
 
 \newlength{\widthconslaw}\setlength{\widthconslaw}{0.9\textwidth}
 \newlength{\heightconslaw}\setlength{\heightconslaw}{0.43\textheight}
@@ -167,7 +173,7 @@ subdomains of a coupled model:
 \end{itemize}
 \vspace{0.3cm}
 We implemented \textbf{TVD methods} for the free-flow model within the 
-code \DUMUX:
+C++ library \DUMUX:
 \begin{itemize}
 	\item an accurate free-flow model in important especially in turbulent 
 	conditions.
@@ -433,7 +439,7 @@ Free-flow and porous-medium flow coupling:
 	\item \textbf{permeability influence} on the flow field.
 	\item mass flow rate.
 \end{itemize}
-\pause
+%\pause
 Outlook:
 \begin{itemize}
 	\item other kinds of roughness.
